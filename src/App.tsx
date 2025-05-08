@@ -9,10 +9,15 @@ import {
 import { doc, onSnapshot } from 'firebase/firestore';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { db } from './firebase';
+
+import Layout from './components/Layout';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
+import Diary from './pages/Diary';
+import Recipes from './pages/Recipes';
+import Settings from './pages/Settings';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
     const user = useAuth();
@@ -40,18 +45,12 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         return () => unsub();
     }, [user]);
 
-    if (loading) {
-        return <div>Chargement…</div>;
-    }
-    if (!user) {
-        return <Navigate to="/signin" replace />;
-    }
-    if (!profileExists && location.pathname !== '/profile') {
+    if (loading) return <div>Chargement…</div>;
+    if (!user) return <Navigate to="/signin" replace />;
+    if (!profileExists && location.pathname !== '/profile')
         return <Navigate to="/profile" replace />;
-    }
-    if (profileExists && location.pathname === '/profile') {
+    if (profileExists && location.pathname === '/profile')
         return <Navigate to="/" replace />;
-    }
     return <>{children}</>;
 }
 
@@ -60,10 +59,11 @@ export default function App() {
         <BrowserRouter>
             <AuthProvider>
                 <Routes>
+                    {/* Publiques, sans Layout */}
                     <Route path="/signup" element={<SignUp />} />
                     <Route path="/signin" element={<SignIn />} />
 
-                    {/* Page de complétion du profil */}
+                    {/* Profil (une fois connecté), sans Layout */}
                     <Route
                         path="/profile"
                         element={
@@ -73,13 +73,45 @@ export default function App() {
                         }
                     />
 
-                    {/* Home protégée */}
+                    {/* Protected routes avec Layout */}
                     <Route
                         path="/"
                         element={
-                            <PrivateRoute>
-                                <Home />
-                            </PrivateRoute>
+                            <Layout>
+                                <PrivateRoute>
+                                    <Home />
+                                </PrivateRoute>
+                            </Layout>
+                        }
+                    />
+                    <Route
+                        path="/diary"
+                        element={
+                            <Layout>
+                                <PrivateRoute>
+                                    <Diary />
+                                </PrivateRoute>
+                            </Layout>
+                        }
+                    />
+                    <Route
+                        path="/recipes"
+                        element={
+                            <Layout>
+                                <PrivateRoute>
+                                    <Recipes />
+                                </PrivateRoute>
+                            </Layout>
+                        }
+                    />
+                    <Route
+                        path="/settings"
+                        element={
+                            <Layout>
+                                <PrivateRoute>
+                                    <Settings />
+                                </PrivateRoute>
+                            </Layout>
                         }
                     />
                 </Routes>
