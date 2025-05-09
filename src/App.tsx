@@ -26,14 +26,14 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     const [profileExists, setProfileExists] = useState(false);
     const [loadingProfile, setLoadingProfile] = useState(true);
 
-    // On écoute l’existence du profil dès que user est connu (ou non).
+    // Dès que user passe de undefined → (null | User), on démarre la subscription
     useEffect(() => {
         if (user === undefined) {
-            // on attend la restauration de la session
+            // toujours en "loading" auth
             return;
         }
         if (user === null) {
-            // pas d’utilisateur, pas de profil à charger
+            // pas connecté, on n’essaie pas Firestore
             setLoadingProfile(false);
             return;
         }
@@ -53,23 +53,19 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         return () => unsub();
     }, [user]);
 
-    // Si auth ou profil en cours de chargement, on affiche un loader
+    // tant que auth ou profil n'est pas prêt → loader
     if (user === undefined || loadingProfile) {
         return <div className="flex items-center justify-center h-screen">Chargement…</div>;
     }
-    // Si pas connecté, on redirige vers signin
     if (user === null) {
-        return <Navigate to="/signin" replace />;
+        return <Navigate to="/signin" state={{ from: location }} replace />;
     }
-    // Si profil absent et pas sur /profile, on redirige vers /profile
     if (!profileExists && location.pathname !== '/profile') {
         return <Navigate to="/profile" replace />;
     }
-    // Si profil présent et sur /profile, on redirige vers /
     if (profileExists && location.pathname === '/profile') {
         return <Navigate to="/" replace />;
     }
-    // Tout est prêt, on rend l’enfant
     return <>{children}</>;
 }
 
@@ -78,11 +74,11 @@ export default function App() {
         <BrowserRouter>
             <AuthProvider>
                 <Routes>
-                    {/* Publiques, sans Layout */}
+                    {/* Publiques */}
                     <Route path="/signup" element={<SignUp />} />
                     <Route path="/signin" element={<SignIn />} />
 
-                    {/* Profil (une fois connecté), sans Layout */}
+                    {/* Profil (sans Layout) */}
                     <Route
                         path="/profile"
                         element={
@@ -92,44 +88,17 @@ export default function App() {
                         }
                     />
 
-                    {/* Protected routes avec Layout */}
+                    {/* Toutes les autres pages protégées dans le Layout */}
                     <Route
-                        path="/"
+                        path="/*"
                         element={
                             <Layout>
-                                <PrivateRoute>
-                                    <Home />
-                                </PrivateRoute>
-                            </Layout>
-                        }
-                    />
-                    <Route
-                        path="/diary"
-                        element={
-                            <Layout>
-                                <PrivateRoute>
-                                    <Diary />
-                                </PrivateRoute>
-                            </Layout>
-                        }
-                    />
-                    <Route
-                        path="/recipes"
-                        element={
-                            <Layout>
-                                <PrivateRoute>
-                                    <Recipes />
-                                </PrivateRoute>
-                            </Layout>
-                        }
-                    />
-                    <Route
-                        path="/settings"
-                        element={
-                            <Layout>
-                                <PrivateRoute>
-                                    <Settings />
-                                </PrivateRoute>
+                                <Routes>
+                                    <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
+                                    <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
+                                    <Route path="recipes" element={<PrivateRoute><Recipes/></PrivateRoute>} />
+                                    <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
+                                </Routes>
                             </Layout>
                         }
                     />
