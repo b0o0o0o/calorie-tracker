@@ -1,54 +1,135 @@
-# React + TypeScript + Vite
+# Calorie Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Une application **React** mobile-first pour suivre votre apport calorique et vos macros, avec authentification **Firebase**, mise en page en **Tailwind CSS** et navigation protégée.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📖 Description
 
-## Expanding the ESLint configuration
+Calorie Tracker vous permet de :
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Créer un compte et compléter votre profil (poids, taille, âge, sexe, niveau d’activité et objectif).
+- Visualiser votre TDEE (Total Daily Energy Expenditure) et votre objectif calorique ajusté selon votre objectif (perte, maintien, prise de masse).
+- Consigner vos repas et suivre vos apports macros (protéines, lipides, glucides, calories).
+- Gérer une balance d’eau quotidienne.
+- Ajouter, modifier ou consulter des recettes.
+- Mettre à jour vos paramètres de profil à tout moment.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+L’app est optimisée pour le mobile (BottomNav) et s’adapte au desktop (navbar + sidebar).
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ Tech Stack
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- **Framework** : React (v18+)
+- **Styling** : Tailwind CSS
+- **Routing** : React Router v6
+- **Auth & Database** : Firebase Auth & Firestore
+- **Icons** : react-icons
+- **State & Hooks** : Context API, hooks personnalisés
+- **Utilities** : utilitaires de calcul nutritionnel
+
+---
+
+## 🚀 Getting Started
+
+1. **Cloner le dépôt**
+   ```bash
+   git clone https://github.com/b0o0o0o/calorie-tracker.git
+   cd calorie-tracker 
+   ```
+   
+2. **Installer les dépendances**
+   ```bash
+    npm install
+    # ou
+    yarn
+   ```
+   
+3. **Configurer les variables d’environnement**
+Créez un fichier .env.local à la racine avec vos clés Firebase :
+   ```bash
+    VITE_FIREBASE_API_KEY=…
+    VITE_FIREBASE_AUTH_DOMAIN=…firebaseapp.com
+    VITE_FIREBASE_PROJECT_ID=…
+    VITE_FIREBASE_STORAGE_BUCKET=…appspot.com
+    VITE_FIREBASE_MESSAGING_SENDER_ID=…
+    VITE_FIREBASE_APP_ID=…
+   ```
+   
+4. **Lancer le serveur de développement**
+   ```bash
+    npm run dev
+    # ou
+    yarn dev
+   ```
+
+5. **Ouvrir http://localhost:5173 dans votre navigateur.**
+
+---
+
+## 🗂️ Structure du projet
+
+    ```bash
+    calorie-tracker/
+    ├─ .env.local             # Variables d’environnement Firebase
+    ├─ tailwind.config.js     # Configuration Tailwind
+    ├─ vite.config.ts         # Config Vite
+    └─ src/
+    ├─ App.tsx             # Point d’entrée React & Routes
+    ├─ firebase.ts         # Init Firebase Auth & Firestore
+    ├─ services/
+    │  └─ auth.ts          # signup / signin / signout
+    ├─ contexts/
+    │  └─ AuthContext.tsx  # useAuth() & AuthProvider
+    ├─ hooks/
+    │  ├─ useProfileFields.ts   # config champs profil
+    │  └─ useUserProfileState.ts# état utilisateur partagé
+    ├─ utils/
+    │  └─ nutrition.ts     # calcTDEE & calcCaloricGoal
+    ├─ components/
+    │  ├─ Layout.tsx
+    │  ├─ Navbar.tsx
+    │  ├─ Sidebar.tsx
+    │  ├─ BottomNav.tsx
+    │  ├─ FormField.tsx
+    │  ├─ ProfileForm.tsx
+    │  └─ FormPageLayout.tsx
+    └─ pages/
+    ├─ SignUp.tsx
+    ├─ SignIn.tsx
+    ├─ Profile.tsx
+    ├─ Settings.tsx
+    ├─ Home.tsx
+    ├─ Diary.tsx
+    ├─ Recipes.tsx
+    └─ NotFound.tsx       # (optionnel)
+    ```
+
+---
+
+## 📜 Scripts utiles
+
+- `npm run dev` / `yarn dev` : démarre le serveur de dev.
+- `npm run build` / `yarn build` : génère le build de production.
+- `npm run preview` / `yarn preview` : prévisualise le build.
+
+---
+
+## 🤝 Contribuer
+
+1. Forkez le projet
+2. Créez une branche (`git checkout -b feature/ma-fonctionnalite`)
+3. Committez vos changements (`git commit -m 'Ajout : nouvelle fonctionnalité'`)
+4. Pushez (`git push origin feature/ma-fonctionnalite`)
+5. Ouvrez une Pull Request
+
+---
+
+## 📄 License
+
+Ce projet est sous licence MIT.
+
+---
+
+Bonne traque ! 🚀
