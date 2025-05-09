@@ -1,12 +1,14 @@
+// src/contexts/AuthContext.tsx
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User } from 'firebase/auth';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
 
-const AuthContext = createContext<User | null>(null);
+const AuthContext = createContext<User | null | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [currentUser, setCurrentUser] = useState<User | null | undefined>(undefined);
 
     useEffect(
         () =>
@@ -18,17 +20,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     return (
-        <AuthContext.Provider value={currentUser}>
+        <AuthContext.Provider value={currentUser ?? null}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export function useAuth(): User | null {
+export function useAuth(): User | null | undefined {
     const user = useContext(AuthContext);
     if (user === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
+        // tant que Firebase ne nous a pas encore fourni l'utilisateur,
+        // on reste en état "loading" (user === undefined)
+        return undefined;
     }
     return user;
 }

@@ -1,3 +1,4 @@
+// src/pages/Profile.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
@@ -59,14 +60,18 @@ export default function Profile() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-                <h2 className="text-3xl font-bold mb-6 text-center">Complétez votre profil</h2>
-                {error && <p className="mb-4 text-red-600">{error}</p>}
-                <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+            <div className="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg">
+                <h2 className="text-3xl font-bold mb-6 text-center text-white">
+                    Complétez votre profil
+                </h2>
+                {error && <p className="mb-4 text-red-500 text-center">{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Poids */}
                     <div>
-                        <label htmlFor="weight" className="block mb-1 font-medium">Poids (kg)</label>
+                        <label htmlFor="weight" className="block mb-2 font-medium text-gray-200">
+                            Poids (kg)
+                        </label>
                         <input
                             id="weight"
                             type="text"
@@ -77,13 +82,21 @@ export default function Profile() {
                             }}
                             placeholder="Ex. 70"
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full px-4 py-3
+                                bg-gray-700 border border-gray-600
+                                rounded-lg text-white placeholder-gray-400
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         />
                     </div>
 
                     {/* Taille */}
                     <div>
-                        <label htmlFor="height" className="block mb-1 font-medium">Taille (cm)</label>
+                        <label htmlFor="height" className="block mb-2 font-medium text-gray-200">
+                            Taille (cm)
+                        </label>
                         <input
                             id="height"
                             type="text"
@@ -94,13 +107,21 @@ export default function Profile() {
                             }}
                             placeholder="Ex. 175"
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full px-4 py-3
+                                bg-gray-700 border border-gray-600
+                                rounded-lg text-white placeholder-gray-400
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         />
                     </div>
 
                     {/* Âge */}
                     <div>
-                        <label htmlFor="age" className="block mb-1 font-medium">Âge (ans)</label>
+                        <label htmlFor="age" className="block mb-2 font-medium text-gray-200">
+                            Âge (ans)
+                        </label>
                         <input
                             id="age"
                             type="text"
@@ -111,19 +132,33 @@ export default function Profile() {
                             }}
                             placeholder="Ex. 30"
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full px-4 py-3
+                                bg-gray-700 border border-gray-600
+                                rounded-lg text-white placeholder-gray-400
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         />
                     </div>
 
                     {/* Sexe */}
                     <div>
-                        <label htmlFor="sex" className="block mb-1 font-medium">Sexe</label>
+                        <label htmlFor="sex" className="block mb-2 font-medium text-gray-200">
+                            Sexe
+                        </label>
                         <select
                             id="sex"
                             value={sex}
                             onChange={e => setSex(e.target.value as 'male' | 'female')}
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full px-4 py-3
+                                bg-gray-700 border border-gray-600
+                                rounded-lg text-white
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         >
                             <option value="male">Homme</option>
                             <option value="female">Femme</option>
@@ -132,13 +167,21 @@ export default function Profile() {
 
                     {/* Activité */}
                     <div>
-                        <label htmlFor="activity" className="block mb-1 font-medium">Niveau d’activité</label>
+                        <label htmlFor="activity" className="block mb-2 font-medium text-gray-200">
+                            Niveau d’activité
+                        </label>
                         <select
                             id="activity"
                             value={activity}
                             onChange={e => setActivity(parseFloat(e.target.value))}
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full px-4 py-3
+                                bg-gray-700 border border-gray-600
+                                rounded-lg text-white
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         >
                             <option value={1.2}>Sédentaire</option>
                             <option value={1.375}>Légèrement actif</option>
@@ -150,13 +193,21 @@ export default function Profile() {
 
                     {/* Objectif */}
                     <div>
-                        <label htmlFor="goal" className="block mb-1 font-medium">Objectif</label>
+                        <label htmlFor="goal" className="block mb-2 font-medium text-gray-200">
+                            Objectif
+                        </label>
                         <select
                             id="goal"
                             value={goal}
                             onChange={e => setGoal(e.target.value as GoalType)}
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full px-4 py-3
+                                bg-gray-700 border border-gray-600
+                                rounded-lg text-white
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         >
                             <option value="loss">Perte de poids</option>
                             <option value="maintain">Maintien</option>
@@ -167,7 +218,12 @@ export default function Profile() {
                     {/* Bouton */}
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
+                        className="
+                            w-full py-3
+                            bg-yellow-400 text-gray-900 font-semibold
+                            rounded-lg hover:bg-yellow-500
+                            transition-colors
+                        "
                     >
                         Enregistrer
                     </button>

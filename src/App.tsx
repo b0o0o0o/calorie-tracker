@@ -1,3 +1,4 @@
+// src/App.tsx
 import React, { useState, useEffect } from 'react';
 import {
     BrowserRouter,
@@ -20,37 +21,55 @@ import Recipes from './pages/Recipes';
 import Settings from './pages/Settings';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
-    const user = useAuth();
+    const user = useAuth();  // User | null | undefined
     const location = useLocation();
-    const [loading, setLoading] = useState(true);
     const [profileExists, setProfileExists] = useState(false);
+    const [loadingProfile, setLoadingProfile] = useState(true);
 
+    // On écoute l’existence du profil dès que user est connu (ou non).
     useEffect(() => {
-        if (!user) {
-            setLoading(false);
+        if (user === undefined) {
+            // on attend la restauration de la session
             return;
         }
+        if (user === null) {
+            // pas d’utilisateur, pas de profil à charger
+            setLoadingProfile(false);
+            return;
+        }
+        setLoadingProfile(true);
         const unsub = onSnapshot(
             doc(db, 'users', user.uid),
             snap => {
                 setProfileExists(snap.exists());
-                setLoading(false);
+                setLoadingProfile(false);
             },
             err => {
                 console.error('[PrivateRoute] onSnapshot error', err);
                 setProfileExists(false);
-                setLoading(false);
+                setLoadingProfile(false);
             }
         );
         return () => unsub();
     }, [user]);
 
-    if (loading) return <div>Chargement…</div>;
-    if (!user) return <Navigate to="/signin" replace />;
-    if (!profileExists && location.pathname !== '/profile')
+    // Si auth ou profil en cours de chargement, on affiche un loader
+    if (user === undefined || loadingProfile) {
+        return <div className="flex items-center justify-center h-screen">Chargement…</div>;
+    }
+    // Si pas connecté, on redirige vers signin
+    if (user === null) {
+        return <Navigate to="/signin" replace />;
+    }
+    // Si profil absent et pas sur /profile, on redirige vers /profile
+    if (!profileExists && location.pathname !== '/profile') {
         return <Navigate to="/profile" replace />;
-    if (profileExists && location.pathname === '/profile')
+    }
+    // Si profil présent et sur /profile, on redirige vers /
+    if (profileExists && location.pathname === '/profile') {
         return <Navigate to="/" replace />;
+    }
+    // Tout est prêt, on rend l’enfant
     return <>{children}</>;
 }
 

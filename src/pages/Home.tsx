@@ -1,3 +1,4 @@
+// src/pages/Home.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -49,32 +50,46 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
-                <h2 className="text-3xl font-bold mb-4">Bienvenue, {user?.email}</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+            <div className="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg text-center">
+                <h2 className="text-3xl font-bold mb-4 text-white">
+                    Bienvenue, {user?.email}
+                </h2>
 
                 {loading ? (
-                    <p>Chargement des données…</p>
+                    <p className="text-gray-400">Chargement des données…</p>
                 ) : (
                     <>
                         {goal && caloricGoal != null ? (
                             <>
-                                <p className="text-xl mb-2">
-                                    Objectif : <span className="font-semibold">{goalLabels[goal]}</span>
+                                <p className="text-xl mb-2 text-gray-200">
+                                    Objectif :{' '}
+                                    <span className="font-semibold text-white">
+                                        {goalLabels[goal]}
+                                    </span>
                                 </p>
-                                <p className="text-xl mb-6">
-                                    Apport calorique cible : <span className="font-semibold">{caloricGoal} kcal</span>
+                                <p className="text-xl mb-6 text-gray-200">
+                                    Apport calorique cible :{' '}
+                                    <span className="font-semibold text-white">
+                                        {caloricGoal} kcal
+                                    </span>
                                 </p>
                             </>
                         ) : (
-                            <p className="text-red-600">Profil incomplet ou introuvable.</p>
+                            <p className="text-red-500">Profil incomplet ou introuvable.</p>
                         )}
                     </>
                 )}
 
                 <button
                     onClick={handleSignout}
-                    className="w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition"
+                    className="
+                        w-full
+                        py-3
+                        bg-yellow-400 text-gray-900 font-semibold
+                        rounded-lg hover:bg-yellow-500
+                        transition-colors
+                   "
                 >
                     Déconnexion
                 </button>

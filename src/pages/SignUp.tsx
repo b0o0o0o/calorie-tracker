@@ -1,3 +1,4 @@
+// src/pages/SignUp.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../services/auth';
@@ -30,25 +31,35 @@ export default function SignUp() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-                <h2 className="text-3xl font-bold mb-6 text-center">Inscription</h2>
-                {error && <p className="mb-4 text-red-600">{error}</p>}
-                <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+            <div className="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg">
+                <h2 className="text-3xl font-bold mb-6 text-center text-white">Inscription</h2>
+                {error && <p className="mb-4 text-red-500 text-center">{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label htmlFor="email" className="block mb-1 font-medium">Email</label>
+                        <label htmlFor="email" className="block mb-2 font-medium text-gray-200">Email</label>
                         <input
                             id="email"
                             type="email"
                             value={email}
                             onChange={handleEmailChange}
-                            placeholder="Ex. vous@example.com"
+                            placeholder="vous@example.com"
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full
+                                px-4 py-3
+                                bg-gray-700
+                                border border-gray-600
+                                rounded-lg
+                                text-white
+                                placeholder-gray-400
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block mb-1 font-medium">Mot de passe</label>
+                        <label htmlFor="password" className="block mb-2 font-medium text-gray-200">Mot de passe</label>
                         <input
                             id="password"
                             type="password"
@@ -56,12 +67,31 @@ export default function SignUp() {
                             onChange={handlePwdChange}
                             placeholder="Votre mot de passe"
                             required
-                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            className="
+                                w-full
+                                px-4 py-3
+                                bg-gray-700
+                                border border-gray-600
+                                rounded-lg
+                                text-white
+                                placeholder-gray-400
+                                focus:outline-none focus:ring-2 focus:ring-yellow-400
+                                transition
+                            "
                         />
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
+                        className="
+                            w-full
+                            py-3
+                            bg-yellow-400
+                            text-gray-900
+                            font-semibold
+                            rounded-lg
+                            hover:bg-yellow-500
+                            transition-colors
+                        "
                     >
                         S’inscrire
                     </button>

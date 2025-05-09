@@ -6,6 +6,7 @@ interface SidebarProps {
     onClose: () => void;
 }
 
+// Drawer latéral déclenché par le hamburger
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     return (
         <>
@@ -19,11 +20,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
         `}
             />
-            {/* Drawer */}
+            {/* Contenu du drawer */}
             <aside
                 className={`
           fixed inset-y-0 left-0 z-50
-          w-64 bg-white shadow-lg
+          w-64 bg-gray-800
           transform transition-transform duration-300
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
@@ -31,17 +32,18 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <button
                     onClick={onClose}
                     aria-label="Fermer le menu"
-                    className="p-2 focus:outline-none"
+                    className="p-2 focus:outline-none text-white"
                 >
                     <FaTimes size={20} />
                 </button>
-                <nav className="mt-4 flex flex-col space-y-2 px-4">
+                <nav className="mt-4 flex flex-col space-y-4 px-4">
+                    {/* Liens de navigation */}
                     <NavLink
                         to="/"
                         end
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-100' : 'hover:bg-gray-50'
+                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >
@@ -51,7 +53,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         to="/diary"
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-100' : 'hover:bg-gray-50'
+                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >
@@ -61,7 +63,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         to="/recipes"
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-100' : 'hover:bg-gray-50'
+                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >
@@ -71,7 +73,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         to="/settings"
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-100' : 'hover:bg-gray-50'
+                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >

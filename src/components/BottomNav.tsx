@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom';
 
+// Barre d’onglets en bas pour mobile
 export default function BottomNav() {
     return (
         <footer
             className="
         fixed inset-x-0 bottom-0 h-14
-        bg-white border-t border-gray-200
+        bg-gray-900
         flex justify-around items-center
-        md:hidden
         z-50
       "
         >
@@ -15,7 +15,9 @@ export default function BottomNav() {
                 to="/"
                 end
                 className={({ isActive }) =>
-                    `text-2xl ${isActive ? 'text-blue-500' : 'text-gray-500'}`
+                    `text-2xl ${
+                        isActive ? 'text-yellow-400' : 'text-gray-500'
+                    }`
                 }
             >
                 🏠
@@ -23,7 +25,9 @@ export default function BottomNav() {
             <NavLink
                 to="/diary"
                 className={({ isActive }) =>
-                    `text-2xl ${isActive ? 'text-blue-500' : 'text-gray-500'}`
+                    `text-2xl ${
+                        isActive ? 'text-yellow-400' : 'text-gray-500'
+                    }`
                 }
             >
                 📔
@@ -31,7 +35,9 @@ export default function BottomNav() {
             <NavLink
                 to="/recipes"
                 className={({ isActive }) =>
-                    `text-2xl ${isActive ? 'text-blue-500' : 'text-gray-500'}`
+                    `text-2xl ${
+                        isActive ? 'text-yellow-400' : 'text-gray-500'
+                    }`
                 }
             >
                 🍽️
@@ -39,7 +45,9 @@ export default function BottomNav() {
             <NavLink
                 to="/settings"
                 className={({ isActive }) =>
-                    `text-2xl ${isActive ? 'text-blue-500' : 'text-gray-500'}`
+                    `text-2xl ${
+                        isActive ? 'text-yellow-400' : 'text-gray-500'
+                    }`
                 }
             >
                 ⚙️

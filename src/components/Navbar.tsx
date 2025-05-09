@@ -4,14 +4,15 @@ interface NavbarProps {
     onMenuClick: () => void;
 }
 
+// Barre de navigation fixe en haut — uniquement en desktop (cachée en mobile)
 export default function Navbar({ onMenuClick }: NavbarProps) {
     return (
         <header
             className="
-        hidden md:flex               /* caché par défaut, flex à partir de md */
+        hidden md:flex                /* cachée par défaut, affichée à partir de md */
         fixed inset-x-0 top-0 h-14
         items-center px-4
-        bg-white border-b border-gray-200
+        bg-gray-900 text-white
         z-50
       "
         >

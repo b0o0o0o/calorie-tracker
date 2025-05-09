@@ -5,23 +5,13 @@ import {
     signOut as firebaseSignOut,
 } from 'firebase/auth';
 
-/**
- * Crée un nouveau compte Firebase avec email/mot de passe
- */
-export function signup(email: string, password: string) {
-    return createUserWithEmailAndPassword(auth, email, password);
+// Service d’authentification : signup / signin / signout
+export function signup(email: string, pwd: string) {
+    return createUserWithEmailAndPassword(auth, email, pwd);
 }
-
-/**
- * Connecte un utilisateur existant
- */
-export function signin(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password);
+export function signin(email: string, pwd: string) {
+    return signInWithEmailAndPassword(auth, email, pwd);
 }
-
-/**
- * Déconnecte l’utilisateur courant
- */
 export function signout() {
     return firebaseSignOut(auth);
 }
