@@ -1,4 +1,4 @@
-// src/contexts/AuthContext.tsx
+// src/context/AuthContext.tsx
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User } from 'firebase/auth';

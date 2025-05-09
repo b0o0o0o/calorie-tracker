@@ -8,7 +8,7 @@ import {
     useLocation,
 } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { db } from './firebase';
 
 import Layout from './components/Layout';

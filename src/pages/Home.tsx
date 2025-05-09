@@ -1,7 +1,7 @@
 // src/pages/Home.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { signout } from '../services/auth';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
