@@ -105,6 +105,21 @@ Créez un fichier .env.local à la racine avec vos clés Firebase :
     ├─ Recipes.tsx
     └─ NotFound.tsx       # (optionnel)
     ```
+Configuration Firebase (src/firebase.ts)
+
+Service d’auth (src/services/auth.ts)
+
+Contexte d’authentification (src/contexts/AuthContext.tsx)
+
+Routes et Layout (src/App.tsx, Layout.tsx, Navbar.tsx, Sidebar.tsx, BottomNav.tsx)
+
+Hooks (useProfileFields.ts, useUserProfileState.ts)
+
+Utilitaires nutritionnels (src/utils/nutrition.ts)
+
+Pages principales (SignUp.tsx, SignIn.tsx, Profile.tsx, Settings.tsx, Home.tsx, Diary.tsx, Recipes.tsx)
+
+Composants réutilisables (FormField.tsx, ProfileForm.tsx, FormPageLayout.tsx)
 
 ---
 
