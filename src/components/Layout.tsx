@@ -7,21 +7,27 @@ import BottomNav from './BottomNav';
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+    const toggleSidebar = () => setSidebarOpen(open => !open);
+    const closeSidebar = () => setSidebarOpen(false);
+
     return (
-        <>
-            <Navbar onMenuClick={() => setSidebarOpen(true)} />
+        <div className="flex flex-col h-screen">
+            <Navbar
+                isSidebarOpen={isSidebarOpen}
+                onMenuClick={toggleSidebar}
+            />
 
             <Sidebar
                 isOpen={isSidebarOpen}
-                onClose={() => setSidebarOpen(false)}
+                onClose={closeSidebar}
             />
 
-            {/* Contenu principal avec padding-bottom pour BottomNav */}
-            <main>
+            {/* Contenu principal prend tout l’espace restant */}
+            <main className="flex-1 bg-black text-white no-scrollbar overflow-auto pb-14 md:pb-0 md:pt-14">
                 {children}
             </main>
 
             <BottomNav />
-        </>
+        </div>
     );
 }

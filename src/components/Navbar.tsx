@@ -1,11 +1,12 @@
-import { FaBars } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 interface NavbarProps {
+    isSidebarOpen: boolean;
     onMenuClick: () => void;
 }
 
 // Barre de navigation fixe en haut — uniquement en desktop (cachée en mobile)
-export default function Navbar({ onMenuClick }: NavbarProps) {
+export default function Navbar({ isSidebarOpen, onMenuClick }: NavbarProps) {
     return (
         <header
             className="
@@ -18,10 +19,10 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         >
             <button
                 onClick={onMenuClick}
-                aria-label="Ouvrir le menu"
+                aria-label={isSidebarOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
                 className="p-2 focus:outline-none"
             >
-                <FaBars size={20} />
+                {isSidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
             </button>
             <h1 className="ml-4 text-lg font-semibold">Calorie Tracker</h1>
         </header>

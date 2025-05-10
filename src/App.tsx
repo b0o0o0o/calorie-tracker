@@ -12,6 +12,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { db } from './firebase';
 
 import Layout from './components/Layout';
+import AddFoodPage from './pages/AddFood';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import Profile from './pages/Profile';
@@ -96,6 +97,7 @@ export default function App() {
                                 <Routes>
                                     <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
                                     <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
+                                    <Route path="add-food" element={<PrivateRoute><AddFoodPage/></PrivateRoute>} />
                                     <Route path="recipes" element={<PrivateRoute><Recipes/></PrivateRoute>} />
                                     <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
                                 </Routes>

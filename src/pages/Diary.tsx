@@ -1,22 +1,26 @@
 // src/pages/Diary.tsx
 import React, { useState } from 'react';
 import { format, parseISO, addDays, subDays } from 'date-fns';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Link } from 'react-router-dom';
 import { useUserProfileState } from '../hooks/useUserProfileState';
 import FormPageLayout from '../components/FormPageLayout';
 import MealEntryList from '../components/Diary/MealEntryList';
 import type { MealEntry } from '../components/Diary/MealEntryList';
-import AddFoodModal from '../components/Diary/AddFoodModal';
+import WaterTracker from '../components/Diary/WaterTracker';
+
 import {
     WiSunrise,
     WiDaySunny,
     WiMoonWaningCrescent2,
-    WiRaindrop,
 } from 'react-icons/wi';
 import {
     IoFastFoodOutline,
-    IoChevronDownOutline,
     IoChevronUpOutline,
-    IoSaveOutline,
+    IoChevronDownOutline,
+    IoChevronBackOutline,
+    IoChevronForwardOutline,
 } from 'react-icons/io5';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
@@ -24,7 +28,7 @@ type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 const MEALS: {
     key: MealType;
     label: string;
-    Icon: React.ComponentType<{ size?: number }>;
+    Icon: React.ComponentType<{ size?: number; className?: string }>;
 }[] = [
     { key: 'breakfast', label: 'Breakfast', Icon: WiSunrise },
     { key: 'lunch',     label: 'Lunch',     Icon: WiDaySunny },
@@ -40,7 +44,6 @@ const Diary: React.FC = () => {
         setSelectedDate,
         diaryEntries,
         waterIntake,
-        addEntry,
         updateEntry,
         deleteEntry,
         addWater,
@@ -48,12 +51,11 @@ const Diary: React.FC = () => {
 
     const [expanded, setExpanded] = useState<Record<MealType, boolean>>({
         breakfast: true,
-        lunch: false,
-        dinner: false,
-        snack: false,
+        lunch:     false,
+        dinner:    false,
+        snack:     false,
     });
 
-    const today = format(new Date(), 'yyyy-MM-dd');
     const isoDate = parseISO(selectedDate);
 
     // Totaux journaliers
@@ -67,54 +69,68 @@ const Diary: React.FC = () => {
         { calories: 0, protein: 0, carbs: 0, fat: 0 }
     );
 
-    const goPrev = () =>
-        setSelectedDate(format(subDays(isoDate, 1), 'yyyy-MM-dd'));
-    const goNext = () =>
-        setSelectedDate(format(addDays(isoDate, 1), 'yyyy-MM-dd'));
+    const goPrev = () => {
+        const prev = subDays(isoDate, 1);
+        setSelectedDate(format(prev, 'yyyy-MM-dd'));
+    };
+    const goNext = () => {
+        const next = addDays(isoDate, 1);
+        setSelectedDate(format(next, 'yyyy-MM-dd'));
+    };
 
     return (
         <FormPageLayout>
             {loading && <p className="text-center">Chargement...</p>}
-            {error && <p className="text-center text-red-500">{error}</p>}
+            {error   && <p className="text-center text-red-500">{error}</p>}
 
             {!loading && !error && (
                 <>
-                    {/* Sélecteur de date */}
-                    <div className="flex items-center justify-center space-x-4 mb-4">
-                        <button onClick={goPrev}>‹</button>
-                        <input
-                            type="date"
-                            value={selectedDate}
-                            onChange={e => setSelectedDate(e.target.value)}
-                            className="text-center bg-transparent border-none"
-                            max={today}
+                    {/* Sélecteur de date via calendrier */}
+                    <div className="flex items-center justify-center mt-4 mb-6 space-x-4">
+                        <button onClick={goPrev} aria-label="Jour précédent">
+                            <IoChevronBackOutline size={24} />
+                        </button>
+                        <DatePicker
+                            selected={isoDate}
+                            onChange={(date: Date | null) => {
+                                if (date) {
+                                    setSelectedDate(format(date, 'yyyy-MM-dd'));
+                                }
+                            }}
+                            dateFormat="dd.MM.yy"
+                            className="text-center bg-gray-900 text-white border border-gray-700 rounded px-2 py-1 text-sm focus:outline-none"
+                            calendarClassName="bg-gray-800 text-white rounded shadow-lg"
+                            popperClassName="z-50"
+                            showPopperArrow={false}
                         />
-                        <button onClick={goNext}>›</button>
+                        <button onClick={goNext} aria-label="Jour suivant">
+                            <IoChevronForwardOutline size={24} />
+                        </button>
                     </div>
 
-                    {/* Résumé macros/calories */}
-                    <div className="grid grid-cols-4 text-center text-sm mb-4">
+                    {/* Résumé macros */}
+                    <div className="grid grid-cols-4 text-center text-xs text-gray-400 mb-2">
                         <div>
-                            <p className="font-medium">Protein</p>
-                            <p>{totals.protein}</p>
+                            <p className="uppercase">Protein</p>
+                            <p className="mt-1 font-bold text-white">{totals.protein}</p>
                         </div>
                         <div>
-                            <p className="font-medium">Fats</p>
-                            <p>{totals.fat}</p>
+                            <p className="uppercase">Fats</p>
+                            <p className="mt-1 font-bold text-white">{totals.fat}</p>
                         </div>
                         <div>
-                            <p className="font-medium">Carbs</p>
-                            <p>{totals.carbs}</p>
+                            <p className="uppercase">Carbs</p>
+                            <p className="mt-1 font-bold text-white">{totals.carbs}</p>
                         </div>
                         <div>
-                            <p className="font-medium">Calories</p>
-                            <p>{totals.calories}</p>
+                            <p className="uppercase">Calories</p>
+                            <p className="mt-1 font-bold text-white">{totals.calories}</p>
                         </div>
                     </div>
-                    <hr className="border-gray-300 mb-4" />
+                    <hr className="border-gray-700 mb-6" />
 
-                    {/* Sections repas */}
-                    <div className="space-y-4">
+                    {/* Cartes repas */}
+                    <div className="space-y-4 px-4">
                         {MEALS.map(({ key, label, Icon }) => {
                             const items = diaryEntries.filter(
                                 (e: MealEntry) => e.mealType === key
@@ -131,19 +147,26 @@ const Diary: React.FC = () => {
                             const isOpen = expanded[key];
 
                             return (
-                                <div
-                                    key={key}
-                                    className="bg-gray-800 text-white rounded-lg p-4"
-                                >
-                                    <div className="flex items-center justify-between">
+                                <div key={key} className="bg-gray-800 rounded-xl p-4">
+                                    <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center space-x-2">
-                                            <Icon size={20} />
-                                            <span className="font-medium">{label}</span>
+                                            <Icon size={20} className="text-yellow-400" />
+                                            <span className="font-semibold text-white">{label}</span>
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <span>{mealTotals.calories} cal</span>
-                                            {/* + ajoute un aliment avec le bon mealType */}
-                                            <AddFoodModal mealType={key} onAdd={addEntry} />
+                      <span className="text-sm text-white">
+                        {mealTotals.calories} cal
+                      </span>
+                                            <Link
+                                                to={`/add-food?meal=${key}`}
+                                                className="p-1 rounded hover:bg-gray-700"
+                                                aria-label={`Ajouter au ${label}`}
+                                            >
+                                                <IoFastFoodOutline
+                                                    size={20}
+                                                    className="text-green-400"
+                                                />
+                                            </Link>
                                             <button
                                                 onClick={() =>
                                                     setExpanded(prev => ({
@@ -161,55 +184,29 @@ const Diary: React.FC = () => {
                                         </div>
                                     </div>
 
+                                    <div className="grid grid-cols-3 text-center text-xs text-gray-400 mb-2">
+                                        <span>{mealTotals.protein}</span>
+                                        <span>{mealTotals.fat}</span>
+                                        <span>{mealTotals.carbs}</span>
+                                    </div>
+
                                     {isOpen && (
-                                        <>
-                                            <div className="grid grid-cols-3 text-center text-xs mt-2">
-                                                <span>{mealTotals.protein}</span>
-                                                <span>{mealTotals.fat}</span>
-                                                <span>{mealTotals.carbs}</span>
-                                            </div>
-
-                                            <MealEntryList
-                                                entries={items}
-                                                onUpdate={updateEntry}
-                                                onDelete={deleteEntry}
-                                            />
-
-                                            <div className="flex justify-end mt-2">
-                                                <button>
-                                                    <IoSaveOutline size={20} />
-                                                </button>
-                                            </div>
-                                        </>
+                                        <MealEntryList
+                                            entries={items}
+                                            onUpdate={updateEntry}
+                                            onDelete={deleteEntry}
+                                        />
                                     )}
                                 </div>
                             );
                         })}
 
-                        {/* Water Balance */}
-                        <div className="bg-gray-800 text-white rounded-lg p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center space-x-2">
-                                    <WiRaindrop size={20} />
-                                    <span className="font-medium">Water Balance</span>
-                                </div>
-                                <span>
-                  {waterIntake} / 2000 ml
-                </span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                {[300, 500].map(size => (
-                                    <button
-                                        key={size}
-                                        onClick={() => addWater(size)}
-                                        className="flex flex-col items-center justify-center w-12 h-12 border rounded-full"
-                                    >
-                                        <span className="text-sm">{size}</span>
-                                        <span className="text-xs">ml</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                        {/* WaterTracker */}
+                        <WaterTracker
+                            amount={waterIntake}
+                            onAdd={addWater}
+                            onReset={() => addWater(-waterIntake)}
+                        />
                     </div>
                 </>
             )}

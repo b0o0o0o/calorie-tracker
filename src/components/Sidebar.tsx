@@ -20,6 +20,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
         `}
             />
+
             {/* Contenu du drawer */}
             <aside
                 className={`
@@ -36,44 +37,59 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 >
                     <FaTimes size={20} />
                 </button>
+
                 <nav className="mt-4 flex flex-col space-y-4 px-4">
-                    {/* Liens de navigation */}
                     <NavLink
                         to="/"
                         end
+                        onClick={onClose}
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                isActive
+                                    ? 'font-bold bg-gray-700 text-white'
+                                    : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >
                         Home
                     </NavLink>
+
                     <NavLink
                         to="/diary"
+                        onClick={onClose}
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                isActive
+                                    ? 'font-bold bg-gray-700 text-white'
+                                    : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >
                         Diary
                     </NavLink>
+
                     <NavLink
                         to="/recipes"
+                        onClick={onClose}
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                isActive
+                                    ? 'font-bold bg-gray-700 text-white'
+                                    : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >
                         Recettes
                     </NavLink>
+
                     <NavLink
                         to="/settings"
+                        onClick={onClose}
                         className={({ isActive }) =>
                             `block py-2 px-2 rounded ${
-                                isActive ? 'font-bold bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                isActive
+                                    ? 'font-bold bg-gray-700 text-white'
+                                    : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                             }`
                         }
                     >
