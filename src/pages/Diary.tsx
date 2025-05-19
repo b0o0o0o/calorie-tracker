@@ -11,11 +11,6 @@ import type { MealEntry } from '../components/Diary/MealEntryList';
 import WaterTracker from '../components/Diary/WaterTracker';
 
 import {
-    WiSunrise,
-    WiDaySunny,
-    WiMoonWaningCrescent2,
-} from 'react-icons/wi';
-import {
     IoFastFoodOutline,
     IoChevronUpOutline,
     IoChevronDownOutline,
@@ -39,6 +34,11 @@ const MEALS: {
     { key: 'dinner',    label: 'Dinner',    Icon: IoPizzaOutline },
     { key: 'snack',     label: 'Snack',     Icon: IoFastFoodOutline },
 ];
+
+// Utilitaire pour afficher un nombre avec 1 décimale seulement si nécessaire
+function formatMacro(val: number) {
+    return Number.isInteger(val) ? val : val.toFixed(1);
+}
 
 const Diary: React.FC = () => {
     const {
@@ -116,19 +116,19 @@ const Diary: React.FC = () => {
                     <div className="grid grid-cols-4 text-center text-xs text-gray-400 mb-2">
                         <div>
                             <p className="uppercase">Protein</p>
-                            <p className="mt-1 font-bold text-white">{totals.protein}</p>
+                            <p className="mt-1 font-bold text-white">{formatMacro(totals.protein)}</p>
                         </div>
                         <div>
                             <p className="uppercase">Fats</p>
-                            <p className="mt-1 font-bold text-white">{totals.fat}</p>
+                            <p className="mt-1 font-bold text-white">{formatMacro(totals.fat)}</p>
                         </div>
                         <div>
                             <p className="uppercase">Carbs</p>
-                            <p className="mt-1 font-bold text-white">{totals.carbs}</p>
+                            <p className="mt-1 font-bold text-white">{formatMacro(totals.carbs)}</p>
                         </div>
                         <div>
                             <p className="uppercase">Calories</p>
-                            <p className="mt-1 font-bold text-white">{totals.calories}</p>
+                            <p className="mt-1 font-bold text-white">{Math.round(totals.calories)}</p>
                         </div>
                     </div>
                     <hr className="border-gray-700 mb-6" />
@@ -159,7 +159,7 @@ const Diary: React.FC = () => {
                                         </div>
                                         <div className="flex items-center space-x-4">
                                             <span className="text-sm text-white">
-                                                {mealTotals.calories} cal
+                                                {Math.round(mealTotals.calories)} cal
                                             </span>
                                             <Link
                                                 to={`/add-food?meal=${key}`}
@@ -190,9 +190,9 @@ const Diary: React.FC = () => {
                                     </div>
 
                                     <div className="grid grid-cols-3 text-center text-xs text-gray-400 mb-2">
-                                        <span>{mealTotals.protein}</span>
-                                        <span>{mealTotals.fat}</span>
-                                        <span>{mealTotals.carbs}</span>
+                                        <span>{formatMacro(mealTotals.protein)}</span>
+                                        <span>{formatMacro(mealTotals.fat)}</span>
+                                        <span>{formatMacro(mealTotals.carbs)}</span>
                                     </div>
 
                                     {isOpen && (

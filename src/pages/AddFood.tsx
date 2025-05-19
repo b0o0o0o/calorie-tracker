@@ -171,25 +171,7 @@ export default function AddFoodPage() {
                 <div className="flex items-center justify-between px-4 py-3 bg-gray-900 rounded-lg mb-4">
                     <button 
                         onClick={() => {
-                            if (selectedMeal) {
-                                // Si on a un repas sélectionné, on vérifie d'où on vient
-                                const referrer = document.referrer;
-                                if (referrer.includes('/diary')) {
-                                    // Si on vient du journal, on y retourne
-                                    navigate('/diary');
-                                } else {
-                                    // Sinon on revient au menu de sélection
-                                    setParams({});
-                                    setSelectedMeal(null);
-                                    setSelectedFood(null);
-                                }
-                            } else if (showManualForm) {
-                                // Si on est en mode ajout manuel, on revient au menu de sélection
-                                setShowManualForm(false);
-                            } else {
-                                // Dans les autres cas, on revient à la page précédente
-                                navigate(-1);
-                            }
+                            navigate('/diary');
                         }} 
                         aria-label="Retour">
                         <IoChevronBackOutline size={24} />
@@ -347,6 +329,38 @@ export default function AddFoodPage() {
                                     setShowManualForm(false);
                                 }}
                             >Enregistrer dans la base</button>
+                        )}
+                        {selectedMeal !== null && (
+                            <button
+                                className="flex-1 px-3 py-2 rounded-md bg-green-600 hover:bg-green-500 text-white font-medium"
+                                onClick={async () => {
+                                    if (!manualEntry.name) return;
+                                    const newIngredient: FoodItem = {
+                                        foodId: manualEntry.name.toLowerCase().replace(/\s+/g, '_'),
+                                        label: manualEntry.name,
+                                        nutrients: {
+                                            calories: Number(manualEntry.calories) || 0,
+                                            protein: Number(manualEntry.protein) || 0,
+                                            carbs: Number(manualEntry.carbs) || 0,
+                                            fat: Number(manualEntry.fat) || 0
+                                        },
+                                        servingSize: 100,
+                                        unit: manualEntry.unit,
+                                        category: manualEntry.category,
+                                    };
+                                    addCustomIngredient(newIngredient);
+                                    await addEntry({
+                                        mealType: selectedMeal,
+                                        name: manualEntry.name,
+                                        calories: Number(manualEntry.calories) || 0,
+                                        protein: Number(manualEntry.protein) || 0,
+                                        carbs: Number(manualEntry.carbs) || 0,
+                                        fat: Number(manualEntry.fat) || 0
+                                    });
+                                    setShowManualForm(false);
+                                    navigate('/diary');
+                                }}
+                            >Ajouter au journal</button>
                         )}
                         <button
                             className="flex-1 px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white font-medium"

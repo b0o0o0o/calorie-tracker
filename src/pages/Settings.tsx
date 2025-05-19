@@ -6,6 +6,9 @@ import { useProfileFields } from '../hooks/useProfileFields';
 import ProfileForm from '../components/ProfileForm';
 import { calcTDEE, calcCaloricGoal } from '../utils/nutrition';
 import { useUserProfileState } from '../hooks/useUserProfileState';
+import { signout } from '../services/auth';
+import { IoLogOutOutline } from 'react-icons/io5';
+import FormPageLayout from '../components/FormPageLayout';
 
 export default function Settings() {
     const {
@@ -76,22 +79,32 @@ export default function Settings() {
             navigate('/', { replace: true });
         } catch (err) {
             console.error('[Settings] setDoc error', err);
-            setError('Erreur lors de l’enregistrement. Réessayez.');
+            setError("Erreur lors de l'enregistrement. Réessayez.");
+        }
+    };
+
+    const handleSignOut = async () => {
+        try {
+            await signout();
+            navigate('/signin', { replace: true });
+        } catch (err) {
+            console.error('[Settings] signout error', err);
+            setError("Erreur lors de la déconnexion. Réessayez.");
         }
     };
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-screen bg-gray-900">
+            <div className="flex items-center justify-center h-screen bg-gray-900" role="status" aria-label="Chargement">
                 <p className="text-gray-400">Chargement…</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
-            <div className="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg">
-                <h2 className="text-3xl font-bold mb-6 text-center text-white">
+        <FormPageLayout>
+            <div className="w-full max-w-md mx-auto bg-gray-800 p-8 rounded-2xl shadow-lg">
+                <h2 className="text-3xl font-bold mb-6 text-center text-white" id="settings-title">
                     Paramètres du profil
                 </h2>
                 <ProfileForm
@@ -100,8 +113,19 @@ export default function Settings() {
                     error={error}
                     onSubmit={handleSubmit}
                     submitLabel="Mettre à jour"
+                    aria-labelledby="settings-title"
                 />
+                <div className="mt-8 pt-6 border-t border-gray-700">
+                    <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+                        aria-label="Se déconnecter"
+                    >
+                        <IoLogOutOutline size={20} />
+                        <span>Se déconnecter</span>
+                    </button>
+                </div>
             </div>
-        </div>
+        </FormPageLayout>
     );
 }
