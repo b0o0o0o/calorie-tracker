@@ -44,7 +44,7 @@ const AddFoodModal: React.FC<AddFoodModalProps> = ({ mealType, onAdd }) => {
                             {/* Nom */}
                             <div>
                                 <label htmlFor="food-name" className="block text-sm font-medium text-gray-700">
-                                    Nom de l’aliment
+                                    Nom de l'aliment
                                 </label>
                                 <input
                                     id="food-name"
@@ -65,6 +65,7 @@ const AddFoodModal: React.FC<AddFoodModalProps> = ({ mealType, onAdd }) => {
                                     type="text"
                                     value={calories || ''}
                                     onChange={e => setCalories(Number(e.target.value))}
+                                    onFocus={e => { if (e.target.value === '0') e.target.value = ''; }}
                                     className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-black"
                                 />
                             </div>
@@ -80,6 +81,7 @@ const AddFoodModal: React.FC<AddFoodModalProps> = ({ mealType, onAdd }) => {
                                         type="text"
                                         value={protein || ''}
                                         onChange={e => setProtein(Number(e.target.value))}
+                                        onFocus={e => { if (e.target.value === '0') e.target.value = ''; }}
                                         className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-black"
                                     />
                                 </div>
@@ -92,6 +94,7 @@ const AddFoodModal: React.FC<AddFoodModalProps> = ({ mealType, onAdd }) => {
                                         type="text"
                                         value={carbs || ''}
                                         onChange={e => setCarbs(Number(e.target.value))}
+                                        onFocus={e => { if (e.target.value === '0') e.target.value = ''; }}
                                         className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-black"
                                     />
                                 </div>
@@ -104,6 +107,7 @@ const AddFoodModal: React.FC<AddFoodModalProps> = ({ mealType, onAdd }) => {
                                         type="text"
                                         value={fat || ''}
                                         onChange={e => setFat(Number(e.target.value))}
+                                        onFocus={e => { if (e.target.value === '0') e.target.value = ''; }}
                                         className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-black"
                                     />
                                 </div>

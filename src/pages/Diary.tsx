@@ -21,6 +21,10 @@ import {
     IoChevronDownOutline,
     IoChevronBackOutline,
     IoChevronForwardOutline,
+    IoAddOutline,
+    IoRestaurantOutline,
+    IoCafeOutline,
+    IoPizzaOutline,
 } from 'react-icons/io5';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
@@ -30,9 +34,9 @@ const MEALS: {
     label: string;
     Icon: React.ComponentType<{ size?: number; className?: string }>;
 }[] = [
-    { key: 'breakfast', label: 'Breakfast', Icon: WiSunrise },
-    { key: 'lunch',     label: 'Lunch',     Icon: WiDaySunny },
-    { key: 'dinner',    label: 'Dinner',    Icon: WiMoonWaningCrescent2 },
+    { key: 'breakfast', label: 'Breakfast', Icon: IoCafeOutline },
+    { key: 'lunch',     label: 'Lunch',     Icon: IoRestaurantOutline },
+    { key: 'dinner',    label: 'Dinner',    Icon: IoPizzaOutline },
     { key: 'snack',     label: 'Snack',     Icon: IoFastFoodOutline },
 ];
 
@@ -150,19 +154,19 @@ const Diary: React.FC = () => {
                                 <div key={key} className="bg-gray-800 rounded-xl p-4">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center space-x-2">
-                                            <Icon size={20} className="text-yellow-400" />
+                                            <Icon size={20} className="text-green-400" />
                                             <span className="font-semibold text-white">{label}</span>
                                         </div>
-                                        <div className="flex items-center space-x-2">
-                      <span className="text-sm text-white">
-                        {mealTotals.calories} cal
-                      </span>
+                                        <div className="flex items-center space-x-4">
+                                            <span className="text-sm text-white">
+                                                {mealTotals.calories} cal
+                                            </span>
                                             <Link
                                                 to={`/add-food?meal=${key}`}
-                                                className="p-1 rounded hover:bg-gray-700"
+                                                className="p-1.5 rounded-xl hover:bg-gray-700 transition-all duration-200"
                                                 aria-label={`Ajouter au ${label}`}
                                             >
-                                                <IoFastFoodOutline
+                                                <IoAddOutline
                                                     size={20}
                                                     className="text-green-400"
                                                 />
@@ -174,11 +178,12 @@ const Diary: React.FC = () => {
                                                         [key]: !prev[key],
                                                     }))
                                                 }
+                                                className="p-1.5 rounded-xl hover:bg-gray-700 transition-all duration-200"
                                             >
                                                 {isOpen ? (
-                                                    <IoChevronUpOutline size={20} />
+                                                    <IoChevronUpOutline size={20} className="text-gray-400" />
                                                 ) : (
-                                                    <IoChevronDownOutline size={20} />
+                                                    <IoChevronDownOutline size={20} className="text-gray-400" />
                                                 )}
                                             </button>
                                         </div>

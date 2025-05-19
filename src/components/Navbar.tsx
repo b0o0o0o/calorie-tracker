@@ -1,30 +1,22 @@
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa';
 
-interface NavbarProps {
-    isSidebarOpen: boolean;
+interface NavBarProps {
     onMenuClick: () => void;
 }
 
-// Barre de navigation fixe en haut — uniquement en desktop (cachée en mobile)
-export default function Navbar({ isSidebarOpen, onMenuClick }: NavbarProps) {
+export default function NavBar({ onMenuClick }: NavBarProps) {
     return (
-        <header
-            className="
-        hidden md:flex                /* cachée par défaut, affichée à partir de md */
-        fixed inset-x-0 top-0 h-14
-        items-center px-4
-        bg-gray-900 text-white
-        z-50
-      "
-        >
-            <button
-                onClick={onMenuClick}
-                aria-label={isSidebarOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
-                className="p-2 focus:outline-none"
-            >
-                {isSidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-            </button>
-            <h1 className="ml-4 text-lg font-semibold">Calorie Tracker</h1>
-        </header>
+        <nav className="md:hidden fixed top-0 left-0 right-0 z-30 bg-gray-800/90 backdrop-blur-lg border-b border-gray-700">
+            <div className="flex items-center justify-between px-6 py-4">
+                <h1 className="text-lg font-semibold text-white">Calorie Tracker</h1>
+                <button
+                    onClick={onMenuClick}
+                    className="p-2 focus:outline-none text-white hover:bg-gray-700 rounded-xl transition-all duration-200"
+                    aria-label="Menu"
+                >
+                    <FaBars size={20} />
+                </button>
+            </div>
+        </nav>
     );
 }

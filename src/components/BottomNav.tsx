@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-// Barre d’onglets en bas pour mobile
+// Barre d'onglets en bas pour mobile
 export default function BottomNav() {
     return (
         <footer
@@ -31,16 +31,6 @@ export default function BottomNav() {
                 }
             >
                 📔
-            </NavLink>
-            <NavLink
-                to="/recipes"
-                className={({ isActive }) =>
-                    `text-2xl ${
-                        isActive ? 'text-yellow-400' : 'text-gray-500'
-                    }`
-                }
-            >
-                🍽️
             </NavLink>
             <NavLink
                 to="/settings"

@@ -21,15 +21,16 @@ export default function FormField({
                                   }: FormFieldProps) {
     const baseClasses = `
     w-full px-4 py-3
-    bg-gray-700 border border-gray-600
-    rounded-lg text-white placeholder-gray-400
-    focus:outline-none focus:ring-2 focus:ring-yellow-400
-    transition
+    bg-gray-800 border border-gray-700
+    rounded-xl text-white placeholder-gray-400
+    focus:outline-none focus:ring-2 focus:ring-green-500
+    transition-all duration-200
+    text-sm
   `;
 
     return (
-        <div>
-            <label htmlFor={id} className="block mb-2 font-medium text-gray-200">
+        <div className="mb-4">
+            <label htmlFor={id} className="block mb-2 text-sm font-medium text-gray-300">
                 {label}
             </label>
 
@@ -56,6 +57,7 @@ export default function FormField({
                     placeholder={placeholder}
                     required
                     className={baseClasses}
+                    onFocus={e => { if (type === 'number' && e.target.value === '0') e.target.value = ''; }}
                 />
             )}
         </div>

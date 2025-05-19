@@ -18,7 +18,6 @@ import SignIn from './pages/SignIn';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Diary from './pages/Diary';
-import Recipes from './pages/Recipes';
 import Settings from './pages/Settings';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -34,7 +33,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
             return;
         }
         if (user === null) {
-            // pas connecté, on n’essaie pas Firestore
+            // pas connecté, on n'essaie pas Firestore
             setLoadingProfile(false);
             return;
         }
@@ -98,7 +97,6 @@ export default function App() {
                                     <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
                                     <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
                                     <Route path="add-food" element={<PrivateRoute><AddFoodPage/></PrivateRoute>} />
-                                    <Route path="recipes" element={<PrivateRoute><Recipes/></PrivateRoute>} />
                                     <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
                                 </Routes>
                             </Layout>
