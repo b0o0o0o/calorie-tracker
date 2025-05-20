@@ -1,7 +1,9 @@
 // src/pages/Home.tsx
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useUserProfileState } from '../hooks/useUserProfileState';
 import FormPageLayout from '../components/FormPageLayout';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
 
 // Couleurs macros
 const COLORS = {
@@ -19,10 +21,18 @@ export default function Home() {
     user,
   } = useUserProfileState();
 
-  // Objectif calorique (par défaut 2000)
-  const caloricGoal = useMemo(() => {
-    if (!user) return 2000;
-    return 2000;
+  // Objectif calorique depuis le profil
+  const [caloricGoal, setCaloricGoal] = useState(2000);
+
+  useEffect(() => {
+    if (!user) return;
+    const userDoc = doc(db, 'users', user.uid);
+    const unsub = onSnapshot(userDoc, (snap) => {
+      if (snap.exists()) {
+        setCaloricGoal(snap.data().caloricGoal ?? 2000);
+      }
+    });
+    return () => unsub();
   }, [user]);
 
   // Totaux du jour

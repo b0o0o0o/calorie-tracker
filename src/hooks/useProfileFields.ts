@@ -6,7 +6,7 @@ export type InputField = {
     id: string;
     label: string;
     type: 'number';
-    value: number;
+    value: number | string;
     placeholder: string;
     onChange: (val: string) => void;
 };
@@ -25,7 +25,8 @@ export function useProfileFields(
     age: number,       setAge: Dispatch<SetStateAction<number>>,
     sex: 'male'|'female', setSex: Dispatch<SetStateAction<'male'|'female'>>,
     activity: number,  setActivity: Dispatch<SetStateAction<number>>,
-    goal: GoalType,    setGoal: Dispatch<SetStateAction<GoalType>>
+    goal: GoalType,    setGoal: Dispatch<SetStateAction<GoalType>>,
+    waist: number | null, setWaist: Dispatch<SetStateAction<number | null>>
 ): { inputFields: InputField[]; selectFields: SelectField[] } {
     const inputFields: InputField[] = [
         {
@@ -43,6 +44,11 @@ export function useProfileFields(
             value: age, placeholder: 'Ex. 30',
             onChange: v => setAge(parseInt(v, 10) || 0),
         },
+        {
+            id: 'waist', label: 'Tour de taille (cm)', type: 'number',
+            value: waist !== null ? waist : '', placeholder: 'Optionnel',
+            onChange: v => setWaist(v === '' ? null : parseFloat(v)),
+        },
     ];
 
     const selectFields: SelectField[] = [
@@ -55,7 +61,7 @@ export function useProfileFields(
             onChange: v => setSex(v as 'male'|'female'),
         },
         {
-            id: 'activity', label: 'Niveau d’activité', value: activity,
+            id: 'activity', label: "Niveau d'activité", value: activity,
             options: [
                 { value: '1.2',   label: 'Sédentaire' },
                 { value: '1.375', label: 'Légèrement actif' },

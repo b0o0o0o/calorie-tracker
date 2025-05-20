@@ -19,6 +19,7 @@ import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Diary from './pages/Diary';
 import Settings from './pages/Settings';
+import Results from './pages/Results';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
     const user = useAuth();  // User | null | undefined
@@ -98,6 +99,7 @@ export default function App() {
                                     <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
                                     <Route path="add-food" element={<PrivateRoute><AddFoodPage/></PrivateRoute>} />
                                     <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
+                                    <Route path="results" element={<Results />} />
                                 </Routes>
                             </Layout>
                         }

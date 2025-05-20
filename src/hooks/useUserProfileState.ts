@@ -27,6 +27,7 @@ export function useUserProfileState(initialLoading = false) {
     const [sex, setSex]           = useState<'male' | 'female'>('male');
     const [activity, setActivity] = useState<number>(1.2);
     const [goal, setGoal]         = useState<GoalType>('maintain');
+    const [waist, setWaist]       = useState<number | null>(null);
     const [error, setError]       = useState<string | null>(null);
     const [loading, setLoading]   = useState<boolean>(initialLoading);
 
@@ -57,6 +58,7 @@ export function useUserProfileState(initialLoading = false) {
                     setSex(data.sex ?? 'male');
                     setActivity(data.activity ?? 1.2);
                     setGoal(data.goal ?? 'maintain');
+                    setWaist(data.waist ?? null);
                 } else {
                     navigate('/profile');
                 }
@@ -107,7 +109,7 @@ export function useUserProfileState(initialLoading = false) {
         const userDocRef = doc(db, 'users', user.uid);
         await setDoc(
             userDocRef,
-            { weight, height, age, sex, activity, goal },
+            { weight, height, age, sex, activity, goal, waist },
             { merge: true }
         );
     };
@@ -180,6 +182,7 @@ export function useUserProfileState(initialLoading = false) {
         sex, setSex,
         activity, setActivity,
         goal, setGoal,
+        waist, setWaist,
         error, setError,
         loading, setLoading,
         updateProfile,

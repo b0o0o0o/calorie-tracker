@@ -4,7 +4,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useProfileFields } from '../hooks/useProfileFields';
 import ProfileForm from '../components/ProfileForm';
-import { calcTDEE, calcCaloricGoal } from '../utils/nutrition';
+import { calcTDEE, calcCaloricGoal, calcBodyFatPercent, calcProteinGoal, calcFatGoal, calcCarbGoal } from '../utils/nutrition';
 import { useUserProfileState } from '../hooks/useUserProfileState';
 
 export default function Profile() {
@@ -17,6 +17,7 @@ export default function Profile() {
         sex, setSex,
         activity, setActivity,
         goal, setGoal,
+        waist, setWaist,
         error, setError,
     } = useUserProfileState(false);
 
@@ -26,7 +27,8 @@ export default function Profile() {
         age, setAge,
         sex, setSex,
         activity, setActivity,
-        goal, setGoal
+        goal, setGoal,
+        waist, setWaist
     );
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,6 +38,13 @@ export default function Profile() {
         try {
             const tdee = calcTDEE(weight, height, age, sex, activity);
             const caloricGoal = calcCaloricGoal(tdee, goal);
+            const currentBodyfat = calcBodyFatPercent({ sex, age, height, weight, waist });
+            // Pour le bodyfat objectif, on suppose le même âge/taille/waist, mais avec le poids cible
+            const targetWeight = goal === 'loss' || goal === 'maintain' ? weight - 5 : weight + 5; // à ajuster selon le formulaire
+            const goalBodyfat = calcBodyFatPercent({ sex, age, height, weight: targetWeight, waist });
+            const proteinGoal = calcProteinGoal(targetWeight);
+            const fatGoal = calcFatGoal(targetWeight);
+            const carbGoal = calcCarbGoal({ caloricGoal, proteinGrams: proteinGoal, fatGrams: fatGoal });
 
             await setDoc(doc(db, 'users', user.uid), {
                 weight,
@@ -46,9 +55,15 @@ export default function Profile() {
                 tdee,
                 goal,
                 caloricGoal,
+                waist,
+                currentBodyfat,
+                goalBodyfat,
+                proteinGoal,
+                fatGoal,
+                carbGoal,
                 updatedAt: new Date(),
             });
-            navigate('/', { replace: true });
+            navigate('/results', { replace: true });
         } catch (err) {
             console.error('[Profile] setDoc error', err);
             setError('Une erreur est survenue, veuillez réessayer.');
