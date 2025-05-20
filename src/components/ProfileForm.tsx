@@ -17,7 +17,6 @@ export default function ProfileForm({
                                         selectFields,
                                         error,
                                         onSubmit,
-                                        submitLabel = 'Generate',
                                     }: ProfileFormProps) {
     // Extraction des champs pour un placement précis
     const ageField = inputFields.find(f => f.id === 'age');
@@ -58,13 +57,13 @@ export default function ProfileForm({
                 </div>
             )}
 
-            {/* Age et taille sur deux colonnes (toujours deux colonnes, même sur mobile) */}
+            {/* Age et taille sur deux colonnes */}
             <div className="grid grid-cols-2 gap-4">
                 {ageField && <FormField {...ageField} />}
                 {heightField && <FormField {...heightField} />}
             </div>
 
-            {/* Poids et tour de taille sur deux colonnes (toujours deux colonnes, même sur mobile) */}
+            {/* Poids et tour de taille sur deux colonnes */}
             <div className="grid grid-cols-2 gap-4">
                 {weightField && <FormField {...weightField} />}
                 {waistField && <FormField {...waistField} />}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
@@ -32,10 +32,6 @@ export default function Results() {
           <div className="flex justify-between text-lg">
             <span className="text-gray-300">Bodyfat actuel %</span>
             <span className="font-bold text-red-400">{data.currentBodyfat}</span>
-          </div>
-          <div className="flex justify-between text-lg">
-            <span className="text-gray-300">Bodyfat objectif %</span>
-            <span className="font-bold text-blue-400">{data.goalBodyfat}</span>
           </div>
           <div className="flex justify-between text-lg">
             <span className="text-gray-300">Calories max/jour</span>

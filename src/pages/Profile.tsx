@@ -39,9 +39,7 @@ export default function Profile() {
             const tdee = calcTDEE(weight, height, age, sex, activity);
             const caloricGoal = calcCaloricGoal(tdee, goal);
             const currentBodyfat = calcBodyFatPercent({ sex, age, height, weight, waist });
-            // Pour le bodyfat objectif, on suppose le même âge/taille/waist, mais avec le poids cible
             const targetWeight = goal === 'loss' || goal === 'maintain' ? weight - 5 : weight + 5; // à ajuster selon le formulaire
-            const goalBodyfat = calcBodyFatPercent({ sex, age, height, weight: targetWeight, waist });
             const proteinGoal = calcProteinGoal(targetWeight);
             const fatGoal = calcFatGoal(targetWeight);
             const carbGoal = calcCarbGoal({ caloricGoal, proteinGrams: proteinGoal, fatGrams: fatGoal });
@@ -57,7 +55,6 @@ export default function Profile() {
                 caloricGoal,
                 waist,
                 currentBodyfat,
-                goalBodyfat,
                 proteinGoal,
                 fatGoal,
                 carbGoal,
