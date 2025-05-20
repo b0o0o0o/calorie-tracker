@@ -1,87 +1,13 @@
-// src/pages/Settings.tsx
-import React, { useEffect } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useProfileFields } from '../hooks/useProfileFields';
-import ProfileForm from '../components/ProfileForm';
-import { calcTDEE, calcCaloricGoal } from '../utils/nutrition';
+
 import { useUserProfileState } from '../hooks/useUserProfileState';
 import { signout } from '../services/auth';
 import { IoLogOutOutline } from 'react-icons/io5';
-import FormPageLayout from '../components/FormPageLayout';
+import { useNavigate } from 'react-router-dom';
 
 export default function Settings() {
-    const {
-        user,
-        navigate,
-        weight, setWeight,
-        height, setHeight,
-        age, setAge,
-        sex, setSex,
-        activity, setActivity,
-        goal, setGoal,
-        error, setError,
-        loading, setLoading,
-    } = useUserProfileState(true);
+    const navigate = useNavigate();
+    const {loading, setError } = useUserProfileState();       
 
-    const { inputFields, selectFields } = useProfileFields(
-        weight, setWeight,
-        height, setHeight,
-        age, setAge,
-        sex, setSex,
-        activity, setActivity,
-        goal, setGoal
-    );
-
-    // Charger les données existantes
-    useEffect(() => {
-        if (!user) return;
-        (async () => {
-            try {
-                const snap = await getDoc(doc(db, 'users', user.uid));
-                if (snap.exists()) {
-                    const data = snap.data();
-                    setWeight(data.weight ?? 0);
-                    setHeight(data.height ?? 0);
-                    setAge(data.age ?? 0);
-                    setSex(data.sex ?? 'male');
-                    setActivity(data.activity ?? 1.2);
-                    setGoal(data.goal ?? 'maintain');
-                }
-            } catch (err) {
-                console.error('[Settings] getDoc error', err);
-                setError('Impossible de charger vos données.');
-            } finally {
-                setLoading(false);
-            }
-        })();
-    }, [setActivity, setAge, setError, setGoal, setHeight, setLoading, setSex, setWeight, user]);
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!user) return;
-        setError(null);
-        try {
-            const tdee = calcTDEE(weight, height, age, sex, activity);
-            const caloricGoal = calcCaloricGoal(tdee, goal);
-
-            await setDoc(doc(db, 'users', user.uid), {
-                weight,
-                height,
-                age,
-                sex,
-                activity,
-                tdee,
-                goal,
-                caloricGoal,
-                updatedAt: new Date(),
-            });
-            navigate('/', { replace: true });
-        } catch (err) {
-            console.error('[Settings] setDoc error', err);
-            setError("Erreur lors de l'enregistrement. Réessayez.");
-        }
-    };
 
     const handleSignOut = async () => {
         try {
@@ -102,19 +28,8 @@ export default function Settings() {
     }
 
     return (
-        <FormPageLayout>
+        <>
             <div className="w-full max-w-md mx-auto bg-gray-800 p-8 rounded-2xl shadow-lg">
-                <h2 className="text-3xl font-bold mb-6 text-center text-white" id="settings-title">
-                    Paramètres du profil
-                </h2>
-                <ProfileForm
-                    inputFields={inputFields}
-                    selectFields={selectFields}
-                    error={error}
-                    onSubmit={handleSubmit}
-                    submitLabel="Mettre à jour"
-                    aria-labelledby="settings-title"
-                />
                 <div className="mt-8 pt-6 border-t border-gray-700">
                     <button
                         onClick={handleSignOut}
@@ -126,6 +41,6 @@ export default function Settings() {
                     </button>
                 </div>
             </div>
-        </FormPageLayout>
+        </>
     );
 }

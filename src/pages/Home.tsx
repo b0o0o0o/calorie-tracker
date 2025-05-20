@@ -1,7 +1,6 @@
 // src/pages/Home.tsx
 import { useMemo, useState, useEffect } from 'react';
 import { useUserProfileState } from '../hooks/useUserProfileState';
-import FormPageLayout from '../components/FormPageLayout';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 

@@ -3,9 +3,8 @@ import { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUserProfileState } from '../hooks/useUserProfileState';
-import { IoChevronBackOutline, IoCheckmarkOutline, IoSearchOutline, IoAddOutline, IoCafeOutline, IoRestaurantOutline, IoFastFoodOutline, IoPizzaOutline } from 'react-icons/io5';
+import { IoCloseSharp, IoSearchOutline, IoAddOutline, IoCafeOutline, IoRestaurantOutline, IoFastFoodOutline, IoPizzaOutline } from 'react-icons/io5';
 import { FaLeaf } from 'react-icons/fa';
-import FormPageLayout from '../components/FormPageLayout';
 import { BASE_INGREDIENTS } from '../data/baseIngredients';
 import type { FoodItem } from '../data/baseIngredients';
 import { getCustomIngredients, addCustomIngredient, removeCustomIngredient } from '../data/customIngredients';
@@ -35,12 +34,15 @@ const MEAL_OPTIONS = [
     { value: 'snack', label: 'Snack', icon: IoFastFoodOutline },
 ];
 
+// Palette personnalisée
+
 export default function AddFoodPage() {
     const navigate = useNavigate();
     const [params, setParams] = useSearchParams();
     let mealType = params.get('meal') as MealType | null;
+    let dateParam = params.get('date');
     const [selectedMeal, setSelectedMeal] = useState<MealType | null>(mealType);
-    const { addEntry } = useUserProfileState();
+    const { addEntry, selectedDate, setSelectedDate } = useUserProfileState();
 
     const [search, setSearch] = useState<string>('');
     const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
@@ -78,27 +80,13 @@ export default function AddFoodPage() {
     // Lors de l'ajout manuel, ajouter à la base locale puis demander la quantité
 
     // Valider l'ajout au journal après saisie de la quantité
-    const handleConfirmQuantity = async () => {
-        if (!pendingManualIngredient) return;
-        const ratio = quantityToAdd / 100;
-        await addEntry({
-            mealType: selectedMeal!,
-            name: pendingManualIngredient.label,
-            calories: Math.round(pendingManualIngredient.nutrients.calories * ratio),
-            protein: Math.round(pendingManualIngredient.nutrients.protein * ratio * 10) / 10,
-            carbs: Math.round(pendingManualIngredient.nutrients.carbs * ratio * 10) / 10,
-            fat: Math.round(pendingManualIngredient.nutrients.fat * ratio * 10) / 10
-        });
-        setPendingManualIngredient(null);
-        setQuantityToAdd(100);
-        navigate('/diary');
-    };
 
     // Ajouter un aliment sélectionné au journal
     const handleAddSelectedFood = async () => {
         if (!selectedFood) return;
-        const ratio = quantity / selectedFood.servingSize;
-                await addEntry({
+        const isEgg = selectedFood.foodId.startsWith('oeuf');
+        const ratio = isEgg ? quantity : quantity / selectedFood.servingSize;
+        await addEntry({
             mealType: selectedMeal!,
             name: selectedFood.label,
             calories: Math.round(selectedFood.nutrients.calories * ratio),
@@ -126,35 +114,42 @@ export default function AddFoodPage() {
         }
     }, [mealType]);
 
+    // Synchronise la date sélectionnée avec l'URL si besoin
+    useEffect(() => {
+        if (dateParam && dateParam !== selectedDate) {
+            setSelectedDate(dateParam);
+        }
+    }, [dateParam, selectedDate, setSelectedDate]);
+
     // Si aucun repas n'est sélectionné, afficher le choix du repas
     if (!selectedMeal && !showManualForm) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-                <div className="bg-gray-900 rounded-3xl p-10 shadow-2xl flex flex-col gap-8 items-center w-full max-w-sm">
-                    <h2 className="text-2xl font-extrabold mb-2 tracking-tight">Dans quel repas ?</h2>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-[#F9FAFB]">
+                <div className="bg-white rounded-2xl shadow-xl px-8 py-8 max-w-lg w-full mx-auto flex flex-col gap-6">
+                    <h2 className="text-2xl font-extrabold mb-2 tracking-tight text-[#4D9078]">Dans quel repas ?</h2>
                     <div className="flex flex-col gap-4 w-full">
                         {MEAL_OPTIONS.map(opt => (
                             <button
                                 key={opt.value}
-                                className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-gray-800 hover:bg-green-700/80 text-white font-semibold text-lg shadow-md transition-all duration-200 border border-transparent hover:border-green-500 group"
+                                className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-[#e7f2e5] hover:bg-[#5FAD56]/20 text-[#4D9078] font-semibold text-lg shadow-md transition-all duration-200 border border-[#5FAD56]/30 hover:border-[#5FAD56] group"
                                 onClick={() => {
                                     setParams({ meal: opt.value });
                                     setSelectedMeal(opt.value as MealType);
                                 }}
                             >
-                                <opt.icon size={28} className="text-green-400 group-hover:scale-110 transition-transform" />
+                                <opt.icon size={28} className="text-[#5FAD56] group-hover:scale-110 transition-transform" />
                                 <span className="tracking-wide text-xl">{opt.label}</span>
                             </button>
                         ))}
                         <button
-                            className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-gradient-to-r from-green-700 via-green-500 to-green-400 text-white font-bold text-lg shadow-xl border-2 border-green-500 hover:from-green-600 hover:to-green-500 transition-all duration-200 mt-2"
+                            className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-gradient-to-r from-[#5FAD56] via-[#F2C14E] to-[#B4436C] text-white font-bold text-lg shadow-xl border-2 border-[#5FAD56] hover:from-[#4D9078] hover:to-[#B4436C] transition-all duration-200 mt-2"
                             onClick={() => {
                                 setSelectedMeal(null);
                                 setParams({});
                                 setShowManualForm(true);
                             }}
                         >
-                            <FaLeaf size={28} className="text-green-200 drop-shadow-lg" />
+                            <FaLeaf size={28} className="text-white drop-shadow-lg" />
                             <span className="tracking-wide text-xl">+ Ingrédient</span>
                         </button>
                     </div>
@@ -164,32 +159,23 @@ export default function AddFoodPage() {
     }
 
     return (
-        <FormPageLayout>
-        <div className="flex flex-col h-full bg-black text-white">
+        <div className="max-w-3xl mx-auto p-2">
+        <div className="flex flex-col h-full text-[#4D9078]">
             {/* Header affiché uniquement si on n'est PAS en ajout manuel feuille verte */}
             {!(showManualForm && selectedMeal === null) && (
-                <div className="flex items-center justify-between px-4 py-3 bg-gray-900 rounded-lg mb-4">
+                <div className="flex items-center justify-between px-4 py-3 rounded-lg mb-4">
+                    <div className="w-[24px]"></div>
+                    <h1 className="text-lg font-semibold">Ajouter un aliment au journal</h1>
                     <button 
+                        className="cursor-pointer"
                         onClick={() => {
                             navigate('/diary');
                         }} 
                         aria-label="Retour">
-                        <IoChevronBackOutline size={24} />
+                        <IoCloseSharp size={24} />
                     </button>
-                    <h1 className="text-lg font-semibold">Ajouter un aliment</h1>
-                    {pendingManualIngredient && (
-                        <button
-                            onClick={handleConfirmQuantity}
-                            disabled={!pendingManualIngredient}
-                            aria-label="Valider"
-                        >
-                            <IoCheckmarkOutline
-                                size={24}
-                                className={!pendingManualIngredient ? 'opacity-50' : ''}
-                            />
-                        </button>
-                    )}
                 </div>
+                
             )}
 
             {/* Saisie de quantité après ajout manuel */}
@@ -360,7 +346,7 @@ export default function AddFoodPage() {
                                     setShowManualForm(false);
                                     navigate('/diary');
                                 }}
-                            >Ajouter au journal</button>
+                            >Ajouter au Journal</button>
                         )}
                         <button
                             className="flex-1 px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white font-medium"
@@ -391,7 +377,7 @@ export default function AddFoodPage() {
                                 setSearch(e.target.value);
                                 searchFood(e.target.value);
                             }}
-                            className="w-full bg-gray-700 border border-gray-600 text-white rounded-xl px-4 py-3 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
+                            className="w-full bg-gray-100 border border-gray-300 text-gray-900 rounded-lg px-4 py-2 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 px-10"
                         />
                         <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     </div>
@@ -401,7 +387,7 @@ export default function AddFoodPage() {
                         {searchResults.map(food => (
                             <div
                                 key={food.foodId}
-                                className={`flex items-center justify-between bg-gray-800 rounded-xl p-4 transition-all duration-200 ${selectedFood?.foodId === food.foodId ? 'ring-2 ring-green-500' : ''}`}
+                                className={`flex items-center justify-between bg-white border border-gray-100 rounded-xl p-4 transition-all duration-200 ${selectedFood?.foodId === food.foodId ? 'ring-2 ring-green-500' : ''}`}
                                 onClick={() => setSelectedFood(food)}
                                 style={{ cursor: 'pointer' }}
                             >
@@ -412,7 +398,7 @@ export default function AddFoodPage() {
                                         readOnly
                                         className="form-radio text-green-400 focus:ring-green-500"
                                     />
-                                    <span className="text-white text-sm font-medium">{food.label}</span>
+                                    <span className="text-gray-900 text-sm font-medium">{food.label}</span>
                                 </div>
                                 {Boolean(getCustomIngredients().find(i => i.foodId === food.foodId)) && (
                                     <button
@@ -463,6 +449,6 @@ export default function AddFoodPage() {
                 </>
             )}
         </div>
-    </FormPageLayout>
+    </div>
 );
 }

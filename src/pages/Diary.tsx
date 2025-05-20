@@ -1,14 +1,15 @@
 // src/pages/Diary.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, parseISO, addDays, subDays } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Link } from 'react-router-dom';
 import { useUserProfileState } from '../hooks/useUserProfileState';
-import FormPageLayout from '../components/FormPageLayout';
 import MealEntryList from '../components/Diary/MealEntryList';
 import type { MealEntry } from '../components/Diary/MealEntryList';
 import WaterTracker from '../components/Diary/WaterTracker';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 
 import {
     IoFastFoodOutline,
@@ -66,17 +67,17 @@ const Diary: React.FC = () => {
         updateEntry,
         deleteEntry,
         addWater,
+        user,
     } = useUserProfileState();
 
     const [expanded, setExpanded] = useState<Record<MealType, boolean>>({
-        breakfast: true,
+        breakfast: false,
         lunch:     false,
         dinner:    false,
         snack:     false,
     });
 
     const isoDate = parseISO(selectedDate);
-
     // Totaux journaliers
     const totals = diaryEntries.reduce(
         (acc, e) => ({
@@ -108,7 +109,7 @@ const Diary: React.FC = () => {
                         {/* Sélecteur de date via calendrier */}
                         <div className="flex items-center justify-center mt-4 mb-6 space-x-4">
                             <button onClick={goPrev} aria-label="Jour précédent">
-                                <IoChevronBackOutline size={24} />
+                                <IoChevronBackOutline size={24} className="text-gray-500 cursor-pointer"/>
                             </button>
                             <DatePicker
                                 selected={isoDate}
@@ -118,13 +119,13 @@ const Diary: React.FC = () => {
                                     }
                                 }}
                                 dateFormat="dd.MM.yy"
-                                className="text-center bg-white text-[#4D9078] border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none"
+                                className="cursor-pointer text-center bg-white text-[#4D9078] border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none"
                                 calendarClassName="bg-white text-[#4D9078] rounded shadow-lg"
                                 popperClassName="z-50"
                                 showPopperArrow={false}
                             />
                             <button onClick={goNext} aria-label="Jour suivant">
-                                <IoChevronForwardOutline size={24} />
+                                <IoChevronForwardOutline size={24} className="text-gray-500 cursor-pointer"/>
                             </button>
                         </div>
 
@@ -170,7 +171,7 @@ const Diary: React.FC = () => {
                                     <div key={key} className="bg-white rounded-xl p-4 border border-gray-100 shadow">
                                         <div className="flex items-center justify-between mb-2">
                                             <div className="flex items-center space-x-2">
-                                                <Icon size={20} className="text-[#5FAD56]" />
+                                                <Icon size={18} className="text-[#4D9078]" />
                                                 <span className="font-semibold text-[#4D9078]">{label}</span>
                                             </div>
                                             <div className="flex items-center space-x-4">
@@ -178,14 +179,14 @@ const Diary: React.FC = () => {
                                                     {Math.round(mealTotals.calories)} cal
                                                 </span>
                                                 <Link
-                                                    to={`/add-food?meal=${key}`}
+                                                    to={`/add-food?meal=${key}&date=${selectedDate}`}
                                                     className="p-1.5 rounded-xl hover:bg-[#F2C14E]/30 transition-all duration-200"
                                                     aria-label={`Ajouter au ${label}`}
                                                 >
                                                     <IoAddOutline
                                                         size={20}
                                                         className=""
-                                                        style={{color:PALETTE.yellow}}
+                                                        style={{color:PALETTE.teal}}
                                                     />
                                                 </Link>
                                                 <button
@@ -198,9 +199,9 @@ const Diary: React.FC = () => {
                                                     className="p-1.5 rounded-xl hover:bg-[#5FAD56]/20 transition-all duration-200"
                                                 >
                                                     {isOpen ? (
-                                                        <IoChevronUpOutline size={20} className="text-gray-400" />
+                                                        <IoChevronUpOutline size={20} className="text-gray-500" />
                                                     ) : (
-                                                        <IoChevronDownOutline size={20} className="text-gray-400" />
+                                                        <IoChevronDownOutline size={20} className="text-gray-500" />
                                                     )}
                                                 </button>
                                             </div>

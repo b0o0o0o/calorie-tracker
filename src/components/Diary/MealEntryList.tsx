@@ -24,18 +24,6 @@ interface MealEntryListProps {
 }
 
 // Palette personnalisée
-const PALETTE = {
-  green: '#5FAD56',
-  yellow: '#F2C14E',
-  orange: '#F78154',
-  teal: '#4D9078',
-  pink: '#B4436C',
-};
-const COLORS = {
-  protein: PALETTE.pink,
-  carbs: PALETTE.yellow,
-  fat: PALETTE.orange,
-};
 
 const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDelete }) => {
     const [editingEntry, setEditingEntry] = useState<MealEntry | null>(null);

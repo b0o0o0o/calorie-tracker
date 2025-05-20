@@ -1,11 +1,16 @@
 @import "tailwindcss";
 
-@media (max-width: 767px) {
-    .no-scrollbar {
-        -ms-overflow-style: none;  /* IE et Edge */
-        scrollbar-width: none;     /* Firefox */
-    }
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;             /* Chrome, Safari, Opera */
-    }
+/* Cacher la scrollbar sur tous les navigateurs */
+body, * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+  }
+  body::-webkit-scrollbar, *::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+.dp-highlight {
+  background: #5FAD56 !important;
+  color: #fff !important;
+  border-radius: 9999px !important;
 }
