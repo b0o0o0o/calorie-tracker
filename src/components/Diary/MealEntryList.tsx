@@ -23,6 +23,20 @@ interface MealEntryListProps {
     onDelete: (id: string) => void;
 }
 
+// Palette personnalisée
+const PALETTE = {
+  green: '#5FAD56',
+  yellow: '#F2C14E',
+  orange: '#F78154',
+  teal: '#4D9078',
+  pink: '#B4436C',
+};
+const COLORS = {
+  protein: PALETTE.pink,
+  carbs: PALETTE.yellow,
+  fat: PALETTE.orange,
+};
+
 const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDelete }) => {
     const [editingEntry, setEditingEntry] = useState<MealEntry | null>(null);
     const [quantity, setQuantity] = useState(100);
@@ -88,7 +102,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
             {entries.map(entry => (
                 <li
                     key={entry.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between border rounded p-3"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between border border-gray-100 rounded-xl p-3 bg-white shadow"
                 >
                     {editingEntry?.id === entry.id ? (
                         // Mode édition
@@ -99,7 +113,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                         .find(i => i.label === entry.name)?.category || 'autre',
                                     22
                                 )}
-                                <span className="font-medium">{entry.name}</span>
+                                <span className="font-semibold text-[#4D9078]">{entry.name}</span>
                             </div>
                             
                             <div className="mb-4">
@@ -109,17 +123,17 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                     value={quantity}
                                     onChange={e => setQuantity(Number(e.target.value))}
                                     min={1}
-                                    className="w-full border rounded px-2 py-1"
+                                    className="w-full border border-gray-200 rounded px-2 py-1 bg-[#F9FAFB] focus:border-[#4D9078] focus:ring-1 focus:ring-[#4D9078]"
                                     onFocus={e => { if (e.target.value === '0') e.target.value = ''; }}
                                 />
                             </div>
 
-                            <div className="bg-gray-50 rounded p-3 mb-4">
-                                <p className="text-sm text-gray-600 mb-2">Aperçu des modifications :</p>
+                            <div className="bg-[#F9FAFB] rounded p-3 mb-4">
+                                <p className="text-sm text-[#4D9078] mb-2">Aperçu des modifications :</p>
                                 <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div>
                                         <span className="text-gray-600">Calories :</span>
-                                        <span className={`ml-2 ${previewValues.calories !== entry.calories ? 'text-blue-600 font-medium' : ''}`}>
+                                        <span className={`ml-2 ${previewValues.calories !== entry.calories ? 'text-[#4D9078] font-medium' : ''}`}>
                                             {previewValues.calories} kcal
                                             {previewValues.calories !== entry.calories && (
                                                 <span className="text-xs text-gray-500 ml-1">
@@ -130,7 +144,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                     </div>
                                     <div>
                                         <span className="text-gray-600">Protéines :</span>
-                                        <span className={`ml-2 ${previewValues.protein !== entry.protein ? 'text-blue-600 font-medium' : ''}`}>
+                                        <span className={`ml-2 ${previewValues.protein !== entry.protein ? 'text-[#B4436C] font-medium' : ''}`}>
                                             {previewValues.protein}g
                                             {previewValues.protein !== entry.protein && (
                                                 <span className="text-xs text-gray-500 ml-1">
@@ -141,7 +155,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                     </div>
                                     <div>
                                         <span className="text-gray-600">Glucides :</span>
-                                        <span className={`ml-2 ${previewValues.carbs !== entry.carbs ? 'text-blue-600 font-medium' : ''}`}>
+                                        <span className={`ml-2 ${previewValues.carbs !== entry.carbs ? 'text-[#F2C14E] font-medium' : ''}`}>
                                             {previewValues.carbs}g
                                             {previewValues.carbs !== entry.carbs && (
                                                 <span className="text-xs text-gray-500 ml-1">
@@ -152,7 +166,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                     </div>
                                     <div>
                                         <span className="text-gray-600">Lipides :</span>
-                                        <span className={`ml-2 ${previewValues.fat !== entry.fat ? 'text-blue-600 font-medium' : ''}`}>
+                                        <span className={`ml-2 ${previewValues.fat !== entry.fat ? 'text-[#F78154] font-medium' : ''}`}>
                                             {previewValues.fat}g
                                             {previewValues.fat !== entry.fat && (
                                                 <span className="text-xs text-gray-500 ml-1">
@@ -167,13 +181,13 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleSave}
-                                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                                    className="px-3 py-1 bg-[#5FAD56] text-white rounded hover:bg-[#4D9078]"
                                 >
                                     Enregistrer
                                 </button>
                                 <button
                                     onClick={handleCancel}
-                                    className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+                                    className="px-3 py-1 bg-gray-300 text-[#4D9078] rounded hover:bg-gray-400"
                                 >
                                     Annuler
                                 </button>
@@ -183,7 +197,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                         // Mode affichage
                         <>
                             <div>
-                                <p className="font-medium text-lg flex items-center gap-2">
+                                <p className="font-medium text-lg flex items-center gap-2 text-[#4D9078]">
                                     {getFoodCategoryIcon(
                                         [...BASE_INGREDIENTS, ...getCustomIngredients()]
                                             .find(i => i.label === entry.name)?.category || 'autre',
@@ -192,19 +206,19 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                     {entry.name}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    {entry.calories} kcal &middot; P {entry.protein} g &middot; C {entry.carbs} g &middot; L {entry.fat} g
+                                    {entry.calories} kcal &middot; <span className="text-[#B4436C]">P {entry.protein} g</span> &middot; <span className="text-[#F2C14E]">C {entry.carbs} g</span> &middot; <span className="text-[#F78154]">L {entry.fat} g</span>
                                 </p>
                             </div>
                             <div className="mt-2 sm:mt-0 flex space-x-3">
                                 <button
                                     onClick={() => handleEdit(entry)}
-                                    className="text-blue-500 hover:underline text-sm"
+                                    className="text-[#4D9078] hover:underline text-sm font-semibold"
                                 >
                                     Modifier
                                 </button>
                                 <button
                                     onClick={() => onDelete(entry.id)}
-                                    className="text-red-500 hover:underline text-sm"
+                                    className="text-[#B4436C] hover:underline text-sm font-semibold"
                                 >
                                     Supprimer
                                 </button>

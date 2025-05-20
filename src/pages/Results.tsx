@@ -22,45 +22,46 @@ export default function Results() {
     fetchData();
   }, [user]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">Chargement...</div>;
-  if (!data) return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">Aucune donnée trouvée.</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-white text-black">Chargement...</div>;
+  if (!data) return <div className="min-h-screen flex items-center justify-center bg-white text-black">Aucune donnée trouvée.</div>;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
-      <div className="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg flex flex-col items-center">
-        <div className="space-y-4 w-full">
-          <div className="flex justify-between text-lg">
-            <span className="text-gray-300">Bodyfat actuel %</span>
-            <span className="font-bold text-red-400">{data.currentBodyfat}</span>
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="w-full max-w-xs flex flex-col items-center">
+        <div className="space-y-7 w-full">
+          <div className="flex flex-col items-start w-full">
+            <span className="text-black text-base font-normal">Bodyfat actuel %</span>
+            <span className="text-2xl font-semibold text-red-400 mt-1">{data.currentBodyfat}</span>
           </div>
-          <div className="flex justify-between text-lg">
-            <span className="text-gray-300">Calories max/jour</span>
-            <span className="font-bold text-green-400">{data.caloricGoal}</span>
+          <div className="flex flex-col items-start w-full">
+            <span className="text-black text-base font-normal">Calories max/jour</span>
+            <span className="text-2xl font-semibold text-green-500 mt-1">{data.caloricGoal}</span>
           </div>
-          <div className="flex justify-between text-lg">
-            <span className="text-gray-300">Protéines/jour (g)</span>
-            <span className="font-bold text-purple-400">{data.proteinGoal}</span>
+          <div className="flex flex-col items-start w-full">
+            <span className="text-black text-base font-normal">Protéines/jour (g)</span>
+            <span className="text-2xl font-semibold text-purple-400 mt-1">{data.proteinGoal}</span>
           </div>
-          <div className="flex justify-between text-lg">
-            <span className="text-gray-300">Glucides/jour (g)</span>
-            <span className="font-bold text-yellow-400">{data.carbGoal}</span>
+          <div className="flex flex-col items-start w-full">
+            <span className="text-black text-base font-normal">Glucides/jour (g)</span>
+            <span className="text-2xl font-semibold text-blue-400 mt-1">{data.carbGoal}</span>
           </div>
-          <div className="flex justify-between text-lg">
-            <span className="text-gray-300">Lipides/jour (g)</span>
-            <span className="font-bold text-pink-400">{data.fatGoal}</span>
+          <div className="flex flex-col items-start w-full">
+            <span className="text-black text-base font-normal">Lipides/jour (g)</span>
+            <span className="text-2xl font-semibold text-pink-400 mt-1">{data.fatGoal}</span>
           </div>
         </div>
-        <div className="mt-8 w-full flex flex-col items-center">
-          <button
-            className="w-40 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors text-lg shadow flex items-center justify-center"
-            onClick={() => navigate('/')}
-          >
-            I'm In.
-          </button>
-        </div>
-        <div className="mt-4 text-xs text-red-400 text-center">
+        <div className="flex items-center mt-8 text-red-400 text-sm font-normal">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 3.75h.007v-.008H12v.008zm9.003-7.5a9 9 0 11-18.001 0 9 9 0 0118.001 0z" />
+          </svg>
           <span>Note : Le % de masse grasse est une approximation basée sur vos données et peut ne pas être 100% précis.</span>
         </div>
+        <button
+          className="mt-8 w-56 py-3 bg-gray-900 text-white font-medium rounded-lg shadow hover:bg-gray-800 transition-colors text-base"
+          onClick={() => navigate('/')}
+        >
+          I'm In.
+        </button>
       </div>
     </div>
   );

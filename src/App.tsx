@@ -99,10 +99,14 @@ export default function App() {
                                     <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
                                     <Route path="add-food" element={<PrivateRoute><AddFoodPage/></PrivateRoute>} />
                                     <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
-                                    <Route path="results" element={<Results />} />
                                 </Routes>
                             </Layout>
                         }
+                    />
+
+                    <Route
+                        path="/results"
+                        element={<Results />}
                     />
                 </Routes>
             </AuthProvider>
