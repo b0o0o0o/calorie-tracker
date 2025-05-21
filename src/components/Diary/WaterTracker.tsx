@@ -1,24 +1,16 @@
 // src/components/Diary/WaterTracker.tsx
 import React from 'react';
 import { WiRaindrop } from 'react-icons/wi';
+import { PALETTE } from '../../config/theme';
 
 interface WaterTrackerProps {
     amount: number;            // quantité d'eau déjà consommée (en ml)
-    onAdd: (qty: number) => void;
+    onAdd: (amount: number) => void;
     onReset: () => void;       // callback pour réinitialiser la quantité
 }
 
 const WaterTracker: React.FC<WaterTrackerProps> = ({ amount, onAdd, onReset }) => {
     const TARGET = 2000; // objectif quotidien en ml
-
-    // Palette personnalisée
-    const PALETTE = {
-        green: '#5FAD56',
-        yellow: '#F2C14E',
-        orange: '#F78154',
-        teal: '#4D9078',
-        pink: '#B4436C',
-    };
 
     return (
         <div className="bg-white border border-gray-100 rounded-xl p-4 shadow">
@@ -31,28 +23,33 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ amount, onAdd, onReset }) =
                     {amount} / {TARGET} ml
                 </span>
             </div>
-
-            <div className="flex items-center justify-between mb-4">
-                {/* Boutons d'ajout à gauche */}
-                <div className="flex items-center space-x-2">
-                    {[250, 500].map(size => (
+            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div 
+                    className="h-full transition-all duration-300 ease-out"
+                    style={{ 
+                        width: `${Math.min(100, (amount / TARGET) * 100)}%`,
+                        background: PALETTE.teal
+                    }}
+                />
+            </div>
+            <div className="flex justify-between mt-4">
+                <button
+                    onClick={() => onAdd(250)}
+                    className="px-3 py-1.5 bg-[#e7f2e5] text-[#4D9078] rounded-lg hover:bg-[#5FAD56]/20 transition-colors"
+                >
+                    + 250ml
+                </button>
                         <button
-                            key={size}
-                            onClick={() => onAdd(size)}
-                            className="flex flex-col items-center justify-center w-12 h-12 border border-[#5FAD56] text-[#5FAD56] bg-white rounded-full font-bold hover:bg-[#5FAD56] hover:text-white transition-colors"
+                    onClick={() => onAdd(500)}
+                    className="px-3 py-1.5 bg-[#e7f2e5] text-[#4D9078] rounded-lg hover:bg-[#5FAD56]/20 transition-colors"
                         >
-                            <span className="text-sm">{size}</span>
-                            <span className="text-xs">ml</span>
+                    + 500ml
                         </button>
-                    ))}
-                </div>
-
-                {/* Bouton Reset à droite */}
                 <button
                     onClick={onReset}
-                    className="bg-[#B4436C] text-white px-4 py-2 rounded shadow hover:bg-[#F78154] transition-colors"
+                    className="px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg hover:bg-gray-200 transition-colors"
                 >
-                    Réinitialiser
+                    Reset
                 </button>
             </div>
         </div>

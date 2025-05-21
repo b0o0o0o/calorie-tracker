@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { DateProvider } from './context/DateContext';
 import { db } from './firebase';
 
 import Layout from './components/Layout';
@@ -74,41 +75,45 @@ export default function App() {
     return (
         <BrowserRouter>
             <AuthProvider>
-                <Routes>
-                    {/* Publiques */}
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/signin" element={<SignIn />} />
+                <DateProvider>
+                    <Routes>
+                        {/* Publiques */}
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/signin" element={<SignIn />} />
 
-                    {/* Profil (sans Layout) */}
-                    <Route
-                        path="/profile"
-                        element={
-                            <PrivateRoute>
-                                <Profile />
-                            </PrivateRoute>
-                        }
-                    />
-
-                    {/* Toutes les autres pages protégées dans le Layout */}
-                    <Route
-                        path="/*"
-                        element={
-                            <Layout>
-                                <Routes>
-                                    <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
-                                    <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
-                                    <Route path="add-food" element={<PrivateRoute><AddFoodPage/></PrivateRoute>} />
-                                    <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
-                                </Routes>
-                            </Layout>
-                        }
-                    />
-
-                    <Route
-                        path="/results"
-                        element={<Results />}
-                    />
-                </Routes>
+                        {/* Profil et Résultats (sans Layout) */}
+                        <Route
+                            path="/profile"
+                            element={
+                                <PrivateRoute>
+                                    <Profile />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/results"
+                            element={
+                                <PrivateRoute>
+                                    <Results />
+                                </PrivateRoute>
+                            }
+                        />
+                        {/* Toutes les autres pages protégées dans le Layout */}
+                        <Route
+                            path="/*"
+                            element={
+                                <Layout>
+                                    <Routes>
+                                        <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
+                                        <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
+                                        <Route path="add-food" element={<PrivateRoute><AddFoodPage/></PrivateRoute>} />
+                                        <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
+                                    </Routes>
+                                </Layout>
+                            }
+                        />
+                    </Routes>
+                </DateProvider>
             </AuthProvider>
         </BrowserRouter>
     );

@@ -1,8 +1,8 @@
 // src/hooks/useUserProfileState.ts
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
+import { useDate } from '../context/DateContext';
 import { db } from '../firebase';
 import {
     doc,
@@ -19,6 +19,7 @@ import type { GoalType } from '../utils/nutrition';
 export function useUserProfileState(initialLoading = false) {
     const user = useAuth();
     const navigate = useNavigate();
+    const { selectedDate } = useDate();
 
     // Profil
     const [weight, setWeight]     = useState<number>(0);
@@ -32,9 +33,6 @@ export function useUserProfileState(initialLoading = false) {
     const [loading, setLoading]   = useState<boolean>(initialLoading);
 
     // Journal
-    const [selectedDate, setSelectedDate] = useState(
-        format(new Date(), 'yyyy-MM-dd')
-    );
     const [diaryEntries, setDiaryEntries] = useState<MealEntry[]>([]);
     const [waterIntake, setWaterIntake]   = useState<number>(0);
 
@@ -186,7 +184,7 @@ export function useUserProfileState(initialLoading = false) {
         error, setError,
         loading, setLoading,
         updateProfile,
-        selectedDate, setSelectedDate,
+        selectedDate,
         diaryEntries, waterIntake,
         addEntry, updateEntry, deleteEntry, addWater,
     };

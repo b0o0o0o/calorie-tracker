@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { FaHome, FaBook, FaPlus, FaCog } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
+import { PALETTE } from '../config/theme';
 
 const navItems = [
     { to: '/', label: 'Accueil', icon: FaHome },
@@ -8,14 +9,6 @@ const navItems = [
     { to: '/add-food', label: '+ Aliment', icon: FaPlus, green: true },
     { to: '/settings', label: 'Réglages', icon: FaCog },
 ];
-
-const PALETTE = {
-    green: '#5FAD56',
-    yellow: '#F2C14E',
-    orange: '#F78154',
-    teal: '#4D9078',
-    pink: '#B4436C',
-};
 
 function useIsDesktop() {
     const [isDesktop, setIsDesktop] = useState(() => window.matchMedia('(min-width: 768px)').matches);
