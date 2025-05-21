@@ -29,7 +29,7 @@ export default function ProfileForm({
     return (
         <form
             onSubmit={onSubmit}
-            className="bg-white rounded-2xl shadow-xl px-8 py-10 max-w-lg w-full mx-auto flex flex-col gap-6"
+            className="bg-white rounded-2xl px-8 py-10 max-w-lg w-full mx-auto flex flex-col gap-6"
         >
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Informations</h2>
             <div className="border-b border-gray-200 mb-4" />

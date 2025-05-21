@@ -11,7 +11,10 @@ export function calcTDEE(
     sex: 'male' | 'female',
     activity: number
 ): number {
+    // Calcul du BMR (Basal Metabolic Rate) avec la formule de Mifflin-St Jeor
     const bmr = 10 * weight + 6.25 * height - 5 * age + (sex === 'male' ? 5 : -161);
+    
+    // Application du multiplicateur d'activité
     return Math.round(bmr * activity);
 }
 
@@ -22,92 +25,70 @@ export function calcTDEE(
  * – maintien : TDEE
  */
 export function calcCaloricGoal(tdee: number, goal: GoalType): number {
-    if (goal === 'loss') return tdee - 500;
-    if (goal === 'gain') return tdee + 350;
-    return tdee;
+    switch (goal) {
+        case 'loss':
+            return Math.round(tdee - 500); // Déficit de 500 calories
+        case 'gain':
+            return Math.round(tdee + 500); // Surplus de 500 calories
+        case 'maintain':
+        default:
+            return Math.round(tdee);
+    }
 }
 
 /**
- * Calcule le pourcentage de masse grasse (bodyfat %).
- * Si le tour de taille est renseigné, utilise la formule Navy, sinon une approximation IMC/âge/sexe.
+ * Calcule le pourcentage de masse grasse (bodyfat %) basé sur l'IMC, l'âge et le sexe.
+ * Formule simplifiée basée sur l'étude de Deurenberg et al.
  */
 export function calcBodyFatPercent({
     sex,
     age,
     height,
-    weight,
-    waist
+    weight
 }: {
     sex: 'male' | 'female',
     age: number,
     height: number,
-    weight: number,
-    waist?: number | null
+    weight: number
 }): number {
-    // Vérification des valeurs de base avec des logs pour le débogage
-    console.log('Valeurs reçues:', { sex, age, height, weight, waist });
-    
-    // Vérification plus souple des valeurs
+    // Vérification des valeurs de base
     if (typeof height !== 'number' || typeof weight !== 'number' || typeof age !== 'number' ||
         isNaN(height) || isNaN(weight) || isNaN(age) ||
         height <= 0 || weight <= 0 || age <= 0) {
-        console.warn('Valeurs invalides pour le calcul de masse graisseuse');
         return 0;
     }
 
-    // Conversion en centimètres si nécessaire
-    const heightInCm = height < 3 ? height * 100 : height;
-    const waistInCm = waist && waist < 3 ? waist * 100 : waist;
-
-    if (waistInCm && waistInCm > 0) {
-        try {
-            // Formule Navy (en cm)
-            if (sex === 'male') {
-                const logWaistHeight = Math.log10(Math.max(1, waistInCm - heightInCm));
-                const logHeight = Math.log10(heightInCm);
-                const result = 495 / (1.0324 - 0.19077 * logWaistHeight + 0.15456 * logHeight) - 450;
-                console.log('Calcul Navy (homme):', { logWaistHeight, logHeight, result });
-                return Math.max(0, Math.min(100, Math.round(result)));
-            } else {
-                // Pour les femmes, la Navy nécessite aussi le tour de hanches, ici on fait une approximation
-                const logWaistHeight = Math.log10(Math.max(1, waistInCm + heightInCm));
-                const logHeight = Math.log10(heightInCm);
-                const result = 495 / (1.29579 - 0.35004 * logWaistHeight + 0.22100 * logHeight) - 450;
-                console.log('Calcul Navy (femme):', { logWaistHeight, logHeight, result });
-                return Math.max(0, Math.min(100, Math.round(result)));
-            }
-        } catch (error) {
-            console.warn('Erreur dans le calcul Navy:', error);
-        }
-    }
-
-    // Approximation basée sur l'IMC, l'âge et le sexe
-    const bmi = weight / Math.pow(heightInCm / 100, 2);
-    console.log('Calcul IMC:', { bmi, heightInCm, weight });
+    // Conversion en mètres si nécessaire
+    const heightInM = height < 3 ? height / 100 : height / 100;
     
+    // Calcul de l'IMC
+    const bmi = weight / (heightInM * heightInM);
+    
+    // Formule de Deurenberg simplifiée
+    let result;
     if (sex === 'male') {
-        const result = 1.20 * bmi + 0.23 * age - 16.2;
-        console.log('Résultat final (homme):', result);
-        return Math.max(0, Math.min(100, Math.round(result)));
+        result = (1.20 * bmi) + (0.23 * age) - 16.2;
     } else {
-        const result = 1.20 * bmi + 0.23 * age - 5.4;
-        console.log('Résultat final (femme):', result);
-        return Math.max(0, Math.min(100, Math.round(result)));
+        result = (1.20 * bmi) + (0.23 * age) - 5.4;
     }
+
+    return Math.max(0, Math.min(100, Math.round(result)));
 }
 
 /**
  * Calcule l'objectif de protéines (g/jour) : 2g/kg de poids cible.
  */
-export function calcProteinGoal(targetWeight: number): number {
-    return Math.round(targetWeight * 2);
+export function calcProteinGoal(weight: number): number {
+    // 2g de protéines par kg de poids corporel
+    return Math.round(weight * 2);
 }
 
 /**
  * Calcule l'objectif de lipides (g/jour) : 1g/kg de poids cible.
  */
-export function calcFatGoal(targetWeight: number): number {
-    return Math.round(targetWeight * 1);
+export function calcFatGoal(weight: number): number {
+    // 0.8g de lipides par kg de poids corporel
+    return Math.round(weight * 0.8);
 }
 
 /**
@@ -122,8 +103,13 @@ export function calcCarbGoal({
     proteinGrams: number,
     fatGrams: number
 }): number {
-    const proteinCals = proteinGrams * 4;
-    const fatCals = fatGrams * 9;
-    const carbsCals = caloricGoal - (proteinCals + fatCals);
-    return Math.max(0, Math.round(carbsCals / 4));
+    // Calcul des calories des protéines et lipides
+    const proteinCalories = proteinGrams * 4; // 4 calories par gramme de protéines
+    const fatCalories = fatGrams * 9; // 9 calories par gramme de lipides
+    
+    // Calcul des calories restantes pour les glucides
+    const carbCalories = caloricGoal - proteinCalories - fatCalories;
+    
+    // Conversion en grammes (4 calories par gramme de glucides)
+    return Math.round(carbCalories / 4);
 }

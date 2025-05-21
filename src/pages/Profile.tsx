@@ -1,11 +1,9 @@
 // src/pages/Profile.tsx
 import React from 'react';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase';
 import { useProfileFields } from '../hooks/useProfileFields';
 import ProfileForm from '../components/ProfileForm';
-import { calcTDEE, calcCaloricGoal, calcBodyFatPercent, calcProteinGoal, calcFatGoal, calcCarbGoal } from '../utils/nutrition';
 import { useUserProfileState } from '../hooks/useUserProfileState';
+import { useProfileSubmit } from '../hooks/useProfileSubmit';
 
 export default function Profile() {
     const {
@@ -17,9 +15,10 @@ export default function Profile() {
         sex, setSex,
         activity, setActivity,
         goal, setGoal,
-        waist, setWaist,
         error, setError,
     } = useUserProfileState(false);
+
+    const { handleSubmit } = useProfileSubmit();
 
     const { inputFields, selectFields } = useProfileFields(
         weight, setWeight,
@@ -27,57 +26,33 @@ export default function Profile() {
         age, setAge,
         sex, setSex,
         activity, setActivity,
-        goal, setGoal,
-        waist, setWaist
+        goal, setGoal
     );
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!user) return;
         setError(null);
-        try {
-            const tdee = calcTDEE(weight, height, age, sex, activity);
-            const caloricGoal = calcCaloricGoal(tdee, goal);
-            const currentBodyfat = calcBodyFatPercent({ sex, age, height, weight, waist });
-            const targetWeight = goal === 'loss' || goal === 'maintain' ? weight - 5 : weight + 5; // à ajuster selon le formulaire
-            const proteinGoal = calcProteinGoal(targetWeight);
-            const fatGoal = calcFatGoal(targetWeight);
-            const carbGoal = calcCarbGoal({ caloricGoal, proteinGrams: proteinGoal, fatGrams: fatGoal });
-
-            await setDoc(doc(db, 'users', user.uid), {
-                weight,
-                height,
-                age,
-                sex,
-                activity,
-                tdee,
-                goal,
-                caloricGoal,
-                waist,
-                currentBodyfat,
-                proteinGoal,
-                fatGoal,
-                carbGoal,
-                updatedAt: new Date(),
-            });
-            navigate('/results', { replace: true });
-        } catch (err) {
-            console.error('[Profile] setDoc error', err);
-            setError('Une erreur est survenue, veuillez réessayer.');
-        }
+        
+        await handleSubmit(
+            { user, weight, height, age, sex, activity, goal },
+            {
+                onSuccess: () => navigate('/results', { replace: true }),
+                onError: setError
+            }
+        );
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
-            <div className="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg">
-                <h2 className="text-3xl font-bold mb-6 text-center text-white">
+        <div className="min-h-screen flex items-center justify-center bg-white px-4">
+            <div className="w-full max-w-md p-8 rounded-2xl shadow-lg">
+                <h2 className="text-3xl font-bold mb-6 text-center text-gray-900">
                     Complétez votre profil
                 </h2>
                 <ProfileForm
                     inputFields={inputFields}
                     selectFields={selectFields}
                     error={error}
-                    onSubmit={handleSubmit}
+                    onSubmit={onSubmit}
                 />
             </div>
         </div>

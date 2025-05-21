@@ -56,7 +56,7 @@ export default function FormField({
                     placeholder={placeholder}
                     className={baseClasses}
                     onFocus={e => { if (type === 'number' && e.target.value === '0') e.target.value = ''; }}
-                    {...(id === 'waist' ? { required: false } : { required: true })}
+                    required={true}
                 />
             )}
         </div>

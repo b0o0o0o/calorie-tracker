@@ -102,9 +102,11 @@ export default function App() {
                         <Route
                             path="/results"
                             element={
+                                <Layout>
                                 <PrivateRoute>
                                     <Results />
                                 </PrivateRoute>
+                                </Layout>
                             }
                         />
                         {/* Toutes les autres pages protégées dans le Layout */}
