@@ -7,6 +7,7 @@ import { PALETTE } from '../config/theme';
 import ProgressCircle from '../components/Home/ProgressCircle';
 import MacroGauge from '../components/Home/MacroGauge';
 import WaterProgress from '../components/Home/WaterProgress';
+import DateSelector from '../components/Diary/DateSelector';
 import {
     calculateMacroTotals,
     calculateMacroGoals,
@@ -53,6 +54,9 @@ export default function Home() {
             <h1 className="text-xl sm:text-2xl tracking-widest text-[#4D9078] text-center my-8 font-bold opacity-90 drop-shadow" style={{letterSpacing:'0.15em'}}>
                 CALORIES COUNTER
             </h1>
+
+            <DateSelector />
+
         <div className="flex flex-col items-center w-full max-w-xs gap-10">
           {/* Cercle principal */}
                 <ProgressCircle value={totals.calories} max={caloricGoal}>
