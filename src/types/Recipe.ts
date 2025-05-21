@@ -19,8 +19,31 @@ export interface Recipe {
   totalFat: number;
   preparationTime: number;
   servings: number;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface RecipeFormData extends Omit<Recipe, 'id' | 'createdAt' | 'updatedAt'> {} 
+export interface RecipeFormData {
+  name: string;
+  ingredients: Ingredient[];
+  totalCalories: number;
+  totalProtein: number;
+  totalCarbs: number;
+  totalFat: number;
+  preparationTime: number;
+  servings: number;
+}
+
+export interface SearchableRecipe {
+  foodId: string;
+  label: string;
+  nutrients: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  servingSize: number;
+  unit: 'g';
+  category: 'recipe';
+  recipeId: string;
+  servings: number;
+} 

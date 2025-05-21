@@ -1,23 +1,53 @@
 import { BASE_INGREDIENTS } from '../data/baseIngredients';
 import { getCustomIngredients } from '../data/customIngredients';
 import type { FoodItem } from '../data/baseIngredients';
+import type { SearchableRecipe } from '../types/Recipe';
+import { recipeService } from '../services/recipeService';
 
-export const searchFood = (query: string): FoodItem[] => {
+export const searchFood = async (query: string, excludeRecipes: boolean = false): Promise<(FoodItem | SearchableRecipe)[]> => {
     if (!query.trim()) {
         return [];
     }
     const customs = getCustomIngredients();
     const allIngredients = [...customs, ...BASE_INGREDIENTS];
     const lowerQuery = query.toLowerCase();
-    // On trie pour mettre les oeufs en premier si la recherche contient 'oeuf'
-    const sorted = allIngredients
+
+    // Recherche des recettes seulement si on ne les exclut pas
+    let searchableRecipes: SearchableRecipe[] = [];
+    if (!excludeRecipes) {
+        const recipes = await recipeService.getAllRecipes();
+        searchableRecipes = recipes.map(recipe => ({
+            foodId: `recipe_${recipe.id}`,
+            label: recipe.name,
+            nutrients: {
+                calories: recipe.totalCalories,
+                protein: recipe.totalProtein,
+                carbs: recipe.totalCarbs,
+                fat: recipe.totalFat
+            },
+            servingSize: 1,
+            unit: 'g',
+            category: 'recipe',
+            recipeId: recipe.id,
+            servings: recipe.servings
+        }));
+    }
+
+    // Combiner et trier les résultats
+    const allResults = [...allIngredients, ...searchableRecipes];
+    const sorted = allResults
         .filter(item => item.label.toLowerCase().includes(lowerQuery))
         .sort((a, b) => {
             const aIsEgg = a.label.toLowerCase().includes('oeuf');
             const bIsEgg = b.label.toLowerCase().includes('oeuf');
             const aIsBeef = a.label.toLowerCase().includes('boeuf');
             const bIsBeef = b.label.toLowerCase().includes('boeuf');
-            // Priorité oeuf > boeuf > autres
+            const aIsRecipe = a.category === 'recipe';
+            const bIsRecipe = b.category === 'recipe';
+            
+            // Priorité : recettes > oeuf > boeuf > autres
+            if (aIsRecipe && !bIsRecipe) return -1;
+            if (!aIsRecipe && bIsRecipe) return 1;
             if (aIsEgg && !bIsEgg) return -1;
             if (!aIsEgg && bIsEgg) return 1;
             if (aIsBeef && !bIsBeef) return 1;

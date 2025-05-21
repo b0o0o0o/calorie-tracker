@@ -5,6 +5,7 @@ import { useUserProfileState } from '../hooks/useUserProfileState';
 import { useDate } from '../context/DateContext';
 import { IoCloseSharp, IoAddOutline } from 'react-icons/io5';
 import type { FoodItem } from '../data/baseIngredients';
+import type { SearchableRecipe } from '../types/Recipe';
 import { addCustomIngredient } from '../data/customIngredients';
 import type { MealType } from '../config/theme';
 import type { FoodFormData } from '../types/food';
@@ -28,8 +29,8 @@ export default function AddFoodPage() {
     const { selectedDate, setSelectedDate } = useDate();
 
     const [search, setSearch] = useState<string>('');
-    const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
-    const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
+    const [searchResults, setSearchResults] = useState<(FoodItem | SearchableRecipe)[]>([]);
+    const [selectedFood, setSelectedFood] = useState<(FoodItem | SearchableRecipe) | null>(null);
     const [quantity, setQuantity] = useState<number>(100);
     const [showManualForm, setShowManualForm] = useState(false);
     const [pendingManualIngredient, setPendingManualIngredient] = useState<FoodItem | null>(null);
@@ -45,24 +46,42 @@ export default function AddFoodPage() {
         category: 'autre',
     });
 
-    const handleSearch = (query: string) => {
+    const handleSearch = async (query: string) => {
         setSearch(query);
-        setSearchResults(searchFoodUtil(query));
+        const results = await searchFoodUtil(query);
+        setSearchResults(results);
     };
 
     const handleAddSelectedFood = async () => {
         if (!selectedFood) return;
-        const nutritionValues = calculateNutritionValues(selectedFood, quantity);
-        await addEntry({
-            mealType: selectedMeal!,
-            name: selectedFood.label,
-            ...nutritionValues
-        });
+        
+        if ('recipeId' in selectedFood) {
+            // C'est une recette
+            const nutritionValues = {
+                calories: selectedFood.nutrients.calories,
+                protein: selectedFood.nutrients.protein,
+                carbs: selectedFood.nutrients.carbs,
+                fat: selectedFood.nutrients.fat
+            };
+            await addEntry({
+                mealType: selectedMeal!,
+                name: selectedFood.label,
+                ...nutritionValues
+            });
+        } else {
+            // C'est un aliment normal
+            const nutritionValues = calculateNutritionValues(selectedFood, quantity);
+            await addEntry({
+                mealType: selectedMeal!,
+                name: selectedFood.label,
+                ...nutritionValues
+            });
+        }
         navigate('/diary');
     };
 
     useEffect(() => {
-        if (selectedFood) {
+        if (selectedFood && !('recipeId' in selectedFood)) {
             setQuantity(getDefaultQuantity(selectedFood));
         }
     }, [selectedFood]);
@@ -79,63 +98,76 @@ export default function AddFoodPage() {
         }
     }, [dateParam, selectedDate, setSelectedDate]);
 
-    if (!selectedMeal && !showManualForm) {
+    if (!selectedMeal) {
         return (
             <MealSelector
-                onMealSelect={(meal) => {
-                    setParams({ meal });
-                    setSelectedMeal(meal);
-                }}
-                onManualAdd={() => {
-                    setSelectedMeal(null);
-                    setParams({});
-                    setShowManualForm(true);
-                }}
+                onMealSelect={(meal) => setSelectedMeal(meal)}
+                onManualAdd={() => setShowManualForm(true)}
             />
         );
     }
 
     return (
-        <div className="max-w-3xl mx-auto p-2">
-            <div className="flex flex-col h-full text-[#4D9078]">
-                {!(showManualForm && selectedMeal === null) && (
-                    <div className="flex items-center justify-between px-4 py-3 rounded-lg mb-4">
-                        <div className="w-[24px]"></div>
-                        <h1 className="text-lg font-semibold">Ajouter un aliment au journal</h1>
-                        <button 
-                            className="cursor-pointer"
-                            onClick={() => navigate('/diary')} 
-                            aria-label="Retour">
-                            <IoCloseSharp size={24} />
-                        </button>
-                    </div>
-                )}
+        <div className="container mx-auto px-4 py-8">
+            <div className="max-w-2xl mx-auto">
+                <div className="flex items-center justify-between mb-6">
+                    <h1 className="text-2xl font-bold text-gray-900">Ajouter un aliment</h1>
+                    <button
+                        onClick={() => navigate('/diary')}
+                        className="text-gray-500 hover:text-gray-700"
+                    >
+                        <IoCloseSharp size={24} />
+                    </button>
+                </div>
 
-                {pendingManualIngredient && (
-                    <div className="flex flex-col items-center justify-center flex-1">
-                        <div className="mb-4 text-center">
-                            <div className="text-lg font-semibold mb-2">Quantité à ajouter au journal</div>
-                            <div className="mb-2">{pendingManualIngredient.label} (valeurs pour 100{pendingManualIngredient.unit})</div>
-                            <div className="flex items-center justify-center gap-2">
-                                <input
-                                    type="number"
-                                    value={quantityToAdd}
-                                    onChange={e => setQuantityToAdd(Number(e.target.value))}
-                                    min={1}
-                                    className="w-24 bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 text-center"
-                                />
-                                <span>{pendingManualIngredient.unit}</span>
-                            </div>
-                        </div>
-                        <ActionButton
-                            onClick={() => {
-                                setPendingManualIngredient(null);
-                                setQuantityToAdd(100);
-                            }}
-                            label="Annuler"
-                            variant="secondary"
+                {!pendingManualIngredient && !showManualForm && (
+                    <>
+                        <SearchBar
+                            value={search}
+                            onChange={handleSearch}
                         />
-                    </div>
+
+                        <SearchResults
+                            results={searchResults}
+                            selectedFood={selectedFood}
+                            onFoodSelect={(food) => {
+                                if (selectedFood?.foodId === food.foodId) {
+                                    setSelectedFood(null);
+                                } else {
+                                    setSelectedFood(food);
+                                }
+                            }}
+                            onSearch={() => handleSearch(search)}
+                        />
+
+                        {selectedFood && !('recipeId' in selectedFood) && (
+                            <QuantityForm
+                                selectedFood={selectedFood}
+                                quantity={quantity}
+                                onQuantityChange={setQuantity}
+                                onAdd={handleAddSelectedFood}
+                            />
+                        )}
+
+                        {selectedFood && 'recipeId' in selectedFood && (
+                            <div className="mt-4">
+                                <ActionButton
+                                    onClick={handleAddSelectedFood}
+                                    label="Ajouter la recette"
+                                    icon={IoAddOutline}
+                                    fullWidth
+                                />
+                            </div>
+                        )}
+
+                        <ActionButton
+                            onClick={() => setShowManualForm(true)}
+                            label="Ajouter un aliment"
+                            icon={IoAddOutline}
+                            fullWidth
+                            className="mb-4 mt-5 cursor-pointer"
+                        />
+                    </>
                 )}
 
                 {!pendingManualIngredient && showManualForm && (
@@ -169,39 +201,6 @@ export default function AddFoodPage() {
                         onCancel={() => setShowManualForm(false)}
                         submitLabel={selectedMeal ? "Ajouter au Journal" : "Enregistrer dans la base"}
                     />
-                )}
-
-                {!pendingManualIngredient && !showManualForm && (
-                    <>
-                        <ActionButton
-                            onClick={() => setShowManualForm(true)}
-                            label="Ajouter un aliment"
-                            icon={IoAddOutline}
-                            fullWidth
-                            className="mb-4"
-                        />
-
-                        <SearchBar
-                            value={search}
-                            onChange={handleSearch}
-                        />
-
-                        <SearchResults
-                            results={searchResults}
-                            selectedFood={selectedFood}
-                            onFoodSelect={setSelectedFood}
-                            onSearch={() => handleSearch(search)}
-                        />
-
-                        {selectedFood && (
-                            <QuantityForm
-                                selectedFood={selectedFood}
-                                quantity={quantity}
-                                onQuantityChange={setQuantity}
-                                onAdd={handleAddSelectedFood}
-                            />
-                        )}
-                    </>
                 )}
             </div>
         </div>

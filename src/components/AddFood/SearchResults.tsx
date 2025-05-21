@@ -1,51 +1,47 @@
 import React from 'react';
 import type { FoodItem } from '../../data/baseIngredients';
-import { getCustomIngredients, removeCustomIngredient } from '../../data/customIngredients';
+import type { SearchableRecipe } from '../../types/Recipe';
+import { IoRestaurantOutline } from 'react-icons/io5';
+import { getFoodCategoryIcon } from '../../utils/foodCategoryIcon';
 
 interface SearchResultsProps {
-    results: FoodItem[];
-    selectedFood: FoodItem | null;
-    onFoodSelect: (food: FoodItem) => void;
+    results: (FoodItem | SearchableRecipe)[];
+    selectedFood: (FoodItem | SearchableRecipe) | null;
+    onFoodSelect: (food: FoodItem | SearchableRecipe) => void;
     onSearch: () => void;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({ 
-    results, 
-    selectedFood, 
-    onFoodSelect,
-    onSearch 
-}) => {
+const SearchResults: React.FC<SearchResultsProps> = ({ results, selectedFood, onFoodSelect }) => {
+    if (!results || !Array.isArray(results) || results.length === 0) {
+        return null;
+    }
+
     return (
-        <div className="space-y-2">
-            {results.map(food => (
+        <div className="mt-2 space-y-2">
+            {results.map((item) => (
                 <div
-                    key={food.foodId}
-                    className={`flex items-center justify-between bg-white border border-gray-100 rounded-xl p-4 transition-all duration-200 ${selectedFood?.foodId === food.foodId ? 'ring-2 ring-green-500' : ''}`}
-                    onClick={() => onFoodSelect(food)}
-                    style={{ cursor: 'pointer' }}
+                    key={item.foodId}
+                    className={`p-2 rounded-lg cursor-pointer ${
+                        selectedFood?.foodId === item.foodId
+                            ? 'border-2 border-[#4D9078] bg-[#CFE6CC]'
+                            : 'hover:bg-gray-100'
+                    }`}
+                    onClick={() => onFoodSelect(item)}
                 >
-                    <div className="flex items-center gap-3">
-                        <input
-                            type="radio"
-                            checked={selectedFood?.foodId === food.foodId}
-                            readOnly
-                            className="form-radio text-green-400 focus:ring-green-500"
-                        />
-                        <span className="text-gray-900 text-sm font-medium">{food.label}</span>
+                    <div className="flex items-center gap-2">
+                        {item.category === 'recipe' ? (
+                            <IoRestaurantOutline className="text-lg" />
+                        ) : (
+                            getFoodCategoryIcon(item.category)
+                        )}
+                        <span className="font-medium">{item.label}</span>
                     </div>
-                    {Boolean(getCustomIngredients().find(i => i.foodId === food.foodId)) && (
-                        <button
-                            type="button"
-                            className="ml-2 text-red-400 hover:text-red-600 text-xs border border-red-400 rounded px-2 py-1 transition-all duration-200"
-                            onClick={e => {
-                                e.stopPropagation();
-                                removeCustomIngredient(food.foodId);
-                                onSearch();
-                            }}
-                        >
-                            Supprimer
-                        </button>
-                    )}
+                    <div className="text-sm text-gray-500 mt-1">
+                        {item.nutrients.calories} kcal &middot;{' '}
+                        <span className="text-[#B4436C]">P {item.nutrients.protein}g</span> &middot;{' '}
+                        <span className="text-[#F2C14E]">C {item.nutrients.carbs}g</span> &middot;{' '}
+                        <span className="text-[#F78154]">L {item.nutrients.fat}g</span>
+                    </div>
                 </div>
             ))}
         </div>

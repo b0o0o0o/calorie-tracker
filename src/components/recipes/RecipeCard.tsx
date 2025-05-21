@@ -18,10 +18,11 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onDelete }) => {
             <span>•</span>
             <span>👥 {recipe.servings} pers.</span>
           </div>
-          <div className="grid grid-cols-3 text-center text-xs text-gray-400 mt-2">
-            <span className="text-[#4D9078]">{recipe.totalCalories} cal</span>
-            <span className="text-[#B4436C]">{recipe.ingredients.reduce((sum, ing) => sum + ing.calories, 0)} cal</span>
-            <span className="text-[#F2C14E]">{recipe.ingredients.length} ing.</span>
+          <div className="grid grid-cols-4 text-center text-xs text-gray-400 mt-2">
+            <span className="text-[#4D9078]">{recipe.totalCalories.toFixed(1)} cal</span>
+            <span className="text-[#B4436C]">P {recipe.totalProtein.toFixed(1)}g</span>
+            <span className="text-[#F2C14E]">C {recipe.totalCarbs.toFixed(1)}g</span>
+            <span className="text-[#F78154]">L {recipe.totalFat.toFixed(1)}g</span>
           </div>
         </div>
       </Link>

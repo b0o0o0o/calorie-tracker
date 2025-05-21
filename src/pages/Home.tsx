@@ -6,7 +6,7 @@ import { db } from '../firebase';
 import { PALETTE } from '../config/theme';
 import ProgressCircle from '../components/Home/ProgressCircle';
 import MacroGauge from '../components/Home/MacroGauge';
-import WaterProgress from '../components/Home/WaterProgress';
+import WaterTracker from '../components/Diary/WaterTracker';
 import DateSelector from '../components/Diary/DateSelector';
 import {
     calculateMacroTotals,
@@ -55,34 +55,38 @@ export default function Home() {
                 CALORIES COUNTER
             </h1>
 
-            <DateSelector />
+            <div className="max-w-3xl w-full p-2">
+                <DateSelector />
 
-        <div className="flex flex-col items-center w-full max-w-xs gap-10">
-          {/* Cercle principal */}
-                <ProgressCircle value={totals.calories} max={caloricGoal}>
-                    <div className="text-3xl sm:text-5xl font-extrabold text-[#B4436C] mb-0.5 tracking-widest drop-shadow-lg">
-                        {percent}%
-            </div>
-                    <div className="text-base sm:text-xl font-bold" style={{color: PALETTE.yellow}}>
-                        {calLeft > 0 ? `${calLeft} cal left` : `${-calLeft} cal over`}
-          </div>
-                </ProgressCircle>
+                <div className="flex flex-col items-center w-full gap-10">
+                  {/* Cercle principal */}
+                        <ProgressCircle value={totals.calories} max={caloricGoal}>
+                            <div className="text-3xl sm:text-5xl font-extrabold text-[#B4436C] mb-0.5 tracking-widest drop-shadow-lg">
+                                {percent}%
+                    </div>
+                            <div className="text-base sm:text-xl font-bold" style={{color: PALETTE.yellow}}>
+                                {calLeft > 0 ? `${calLeft} cal left` : `${-calLeft} cal over`}
+                  </div>
+                        </ProgressCircle>
 
-          {/* Jauges macros */}
-          <div className="flex w-full justify-between gap-2 mb-4">
-                    {(['protein', 'carbs', 'fat'] as const).map(macro => (
-                        <MacroGauge
-                            key={macro}
-                            value={totals[macro]}
-                            goal={macroGoals[macro]}
-                            label={macro}
-                        />
-                    ))}
+                  {/* Jauges macros */}
+                  <div className="flex w-full justify-between gap-2 mb-4 px-4">
+                            {(['protein', 'carbs', 'fat'] as const).map(macro => (
+                                <MacroGauge
+                                    key={macro}
+                                    value={totals[macro]}
+                                    goal={macroGoals[macro]}
+                                    label={macro}
+                                />
+                            ))}
+                        </div>
+
+                  {/* Eau */}
+                        <div className="w-full px-4">
+                          <WaterTracker />
+                        </div>
                 </div>
-
-          {/* Eau */}
-                <WaterProgress current={waterIntake} goal={waterGoal} />
-        </div>
+            </div>
       </div>
   );
 }

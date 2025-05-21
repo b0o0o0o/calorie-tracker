@@ -23,7 +23,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
 }) => {
     return (
         <div className="mb-4">
-            <label className="block text-sm mb-2 text-gray-300">
+            <label className="block text-sm mb-2 text-gray-800">
                 {label}
             </label>
             <input

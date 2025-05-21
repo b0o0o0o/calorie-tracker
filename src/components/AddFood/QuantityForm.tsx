@@ -26,7 +26,7 @@ const QuantityForm: React.FC<QuantityFormProps> = ({
     ) : null;
 
     return (
-        <div className="mt-4 bg-gray-800 rounded-xl p-6">
+        <div className="mt-4 bg-[#F9FAFB] border border-gray-200 shadow-md rounded-xl p-6">
             <QuantityInput
                 value={quantity}
                 onChange={onQuantityChange}

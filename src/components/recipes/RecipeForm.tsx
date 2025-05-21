@@ -83,9 +83,10 @@ export const RecipeForm = () => {
     }
   }, [search]);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setSearch(query);
-    setSearchResults(searchFood(query));
+    const results = await searchFood(query, true);
+    setSearchResults(results);
   };
 
   const handleAddIngredient = () => {
@@ -96,15 +97,18 @@ export const RecipeForm = () => {
       label: selectedFood.label,
       quantity,
       unit: selectedFood.unit,
-      ...nutritionValues,
+      calories: Number(nutritionValues.calories.toFixed(1)),
+      protein: Number(nutritionValues.protein.toFixed(1)),
+      carbs: Number(nutritionValues.carbs.toFixed(1)),
+      fat: Number(nutritionValues.fat.toFixed(1)),
     };
     setFormData(prev => ({
       ...prev,
       ingredients: [...prev.ingredients, newIngredient],
-      totalCalories: prev.totalCalories + nutritionValues.calories,
-      totalProtein: prev.totalProtein + nutritionValues.protein,
-      totalCarbs: prev.totalCarbs + nutritionValues.carbs,
-      totalFat: prev.totalFat + nutritionValues.fat,
+      totalCalories: Number((prev.totalCalories + newIngredient.calories).toFixed(1)),
+      totalProtein: Number((prev.totalProtein + newIngredient.protein).toFixed(1)),
+      totalCarbs: Number((prev.totalCarbs + newIngredient.carbs).toFixed(1)),
+      totalFat: Number((prev.totalFat + newIngredient.fat).toFixed(1)),
     }));
     setSelectedFood(null);
     setQuantity(100);
@@ -117,10 +121,10 @@ export const RecipeForm = () => {
     setFormData(prev => ({
       ...prev,
       ingredients: prev.ingredients.filter((_, i) => i !== index),
-      totalCalories: prev.totalCalories - ingredient.calories,
-      totalProtein: prev.totalProtein - ingredient.protein,
-      totalCarbs: prev.totalCarbs - ingredient.carbs,
-      totalFat: prev.totalFat - ingredient.fat,
+      totalCalories: Number((prev.totalCalories - ingredient.calories).toFixed(1)),
+      totalProtein: Number((prev.totalProtein - ingredient.protein).toFixed(1)),
+      totalCarbs: Number((prev.totalCarbs - ingredient.carbs).toFixed(1)),
+      totalFat: Number((prev.totalFat - ingredient.fat).toFixed(1)),
     }));
   };
 
@@ -313,10 +317,10 @@ export const RecipeForm = () => {
                   setFormData(prev => ({
                     ...prev,
                     ingredients: [...prev.ingredients, newIngredient],
-                    totalCalories: prev.totalCalories + newIngredient.calories,
-                    totalProtein: prev.totalProtein + newIngredient.protein,
-                    totalCarbs: prev.totalCarbs + newIngredient.carbs,
-                    totalFat: prev.totalFat + newIngredient.fat,
+                    totalCalories: Number((prev.totalCalories + newIngredient.calories).toFixed(1)),
+                    totalProtein: Number((prev.totalProtein + newIngredient.protein).toFixed(1)),
+                    totalCarbs: Number((prev.totalCarbs + newIngredient.carbs).toFixed(1)),
+                    totalFat: Number((prev.totalFat + newIngredient.fat).toFixed(1)),
                   }));
                   setShowManualForm(false);
                   setManualEntry({

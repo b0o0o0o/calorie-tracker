@@ -17,6 +17,11 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ amount: propAmount, onAdd, 
     const displayAmount = propAmount !== undefined ? propAmount : amount;
     const addHandler = onAdd || handleAdd;
 
+    const handleAddSafe = (qty: number) => {
+        if (qty < 0 && displayAmount + qty < 0) return;
+        addHandler(qty);
+    };
+
     if (loading && propAmount === undefined) {
         return (
             <div className="bg-white border border-gray-100 rounded-xl p-4 shadow animate-pulse">
@@ -48,38 +53,32 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ amount: propAmount, onAdd, 
             </div>
             <div className="flex justify-between mt-4 gap-2">
                 <button
-                    onClick={() => addHandler(-500)}
-                    className="flex-1 px-2 py-1.5 bg-white border border-[#B4436C] text-[#B4436C] rounded-lg hover:bg-[#ffebeb] transition-colors text-xs font-medium shadow-sm hover:shadow-md cursor-pointer"
+                    onClick={() => handleAddSafe(-500)}
+                    disabled={displayAmount < 500}
+                    className="flex-1 px-2 py-1.5 bg-white border border-[#B4436C] text-[#B4436C] rounded-lg hover:bg-[#ffebeb] transition-colors text-xs font-medium shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     -500ml
                 </button>
                 <button
-                    onClick={() => addHandler(-250)}
-                    className="flex-1 px-2 py-1.5 bg-white border border-[#B4436C] text-[#B4436C] rounded-lg hover:bg-[#ffebeb] transition-colors text-xs font-medium shadow-sm hover:shadow-md cursor-pointer"
+                    onClick={() => handleAddSafe(-250)}
+                    disabled={displayAmount < 250}
+                    className="flex-1 px-2 py-1.5 bg-white border border-[#B4436C] text-[#B4436C] rounded-lg hover:bg-[#ffebeb] transition-colors text-xs font-medium shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     -250ml
                 </button>
                 <button
-                    onClick={() => addHandler(250)}
+                    onClick={() => handleAddSafe(250)}
                     className="flex-1 px-2 py-1.5 bg-white border border-[#4D9078] text-[#4D9078] rounded-lg hover:bg-[#e7f2e5] transition-colors text-xs font-medium shadow-sm hover:shadow-md cursor-pointer"
                 >
                     +250ml
                 </button>
                 <button
-                    onClick={() => addHandler(500)}
+                    onClick={() => handleAddSafe(500)}
                     className="flex-1 px-2 py-1.5 bg-white border border-[#4D9078] text-[#4D9078] rounded-lg hover:bg-[#e7f2e5] transition-colors text-xs font-medium shadow-sm hover:shadow-md cursor-pointer"
                 >
                     +500ml
                 </button>
             </div>
-            {onReset && (
-                <button
-                    onClick={onReset}
-                    className="mt-3 w-full px-2 py-1.5 bg-gray-100 border border-gray-300 text-gray-500 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium shadow-sm hover:shadow-md cursor-pointer"
-                >
-                    Réinitialiser
-                </button>
-            )}
         </div>
     );
 };
