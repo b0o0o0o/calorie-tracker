@@ -2,12 +2,46 @@ import { useUserProfileState } from '../hooks/useUserProfileState';
 import { signout } from '../services/auth';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { FaChartLine } from 'react-icons/fa';
-import type { User } from '../types/user';
+import { FaUserEdit } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
+import InfoCard from '../components/InfoCard';
+import Button from '../components/Button';
+
+interface UserStats {
+    caloricGoal: number;
+    proteinGoal: number;
+    fatGoal: number;
+    bodyFat: number;
+}
 
 export default function Settings() {
     const navigate = useNavigate();
-    const {loading, setError, user } = useUserProfileState();       
+    const {loading, setError, user } = useUserProfileState();
+    const [stats, setStats] = useState<UserStats>({
+        caloricGoal: 2000,
+        proteinGoal: 0,
+        fatGoal: 0,
+        bodyFat: 0
+    });
+
+    useEffect(() => {
+        if (!user) return;
+        const userDoc = doc(db, 'users', user.uid);
+        const unsub = onSnapshot(userDoc, (snap) => {
+            if (snap.exists()) {
+                const data = snap.data();
+                setStats({
+                    caloricGoal: data.caloricGoal ?? 2000,
+                    proteinGoal: data.proteinGoal ?? 0,
+                    fatGoal: data.fatGoal ?? 0,
+                    bodyFat: data.currentBodyfat ?? 0
+                });
+            }
+        });
+        return () => unsub();
+    }, [user]);
 
     const handleSignOut = async () => {
         try {
@@ -28,44 +62,61 @@ export default function Settings() {
     }
 
     return (
-        <>
-            <div className="w-full max-w-md mx-auto bg-gray-800 p-8 rounded-2xl shadow-lg">
+        <div className="flex flex-col justify-center items-center mt-5">
+            <div className="w-full max-w-md mx-auto bg-[#F9FAFB] p-8 rounded-4xl border border-gray-100 shadow-lg">
                 {/* Section des informations utilisateur */}
                 <div className="mb-8">
-                    <h2 className="text-xl font-semibold text-white mb-4">Profil</h2>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-3">Profil</h2>
                     <div className="space-y-3">
-                        <div className="bg-gray-700 p-4 rounded-lg">
-                            <p className="text-gray-300 text-sm">Email</p>
-                            <p className="text-white font-medium">{user?.email}</p>
-                        </div>
-                        <div className="bg-gray-700 p-4 rounded-lg">
-                            <p className="text-gray-300 text-sm">Objectif calorique</p>
-                            <p className="text-white font-medium">{(user as User)?.caloricGoal || 2000} calories</p>
+                        <InfoCard 
+                            label="Email"
+                            value={user?.email || ''}
+                        />
+                        <div className="grid grid-cols-2 gap-3">
+                            <InfoCard 
+                                label="Calories"
+                                value={stats.caloricGoal}
+                                unit=" kcal"
+                            />
+                            <InfoCard 
+                                label="Protéines"
+                                value={stats.proteinGoal}
+                                unit="g"
+                            />
+                            <InfoCard 
+                                label="Lipides"
+                                value={stats.fatGoal}
+                                unit="g"
+                            />
+                            <InfoCard 
+                                label="Masse grasse"
+                                value={stats.bodyFat.toFixed(1)}
+                                unit="%"
+                            />
                         </div>
                     </div>
                 </div>
 
                 {/* Section des actions */}
                 <div className="space-y-4">
-                    <button
-                        onClick={() => navigate('/results')}
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-                        aria-label="Voir les résultats"
+                    <Button
+                        onClick={() => navigate('/edit-profile')}
+                        icon={FaUserEdit}
+                        ariaLabel="Modifier le profil"
                     >
-                        <FaChartLine size={20} />
-                        <span>Voir les résultats</span>
-                    </button>
+                        Modifier le profil
+                    </Button>
 
-                    <button
+                    <Button
                         onClick={handleSignOut}
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
-                        aria-label="Se déconnecter"
+                        icon={IoLogOutOutline}
+                        variant="danger"
+                        ariaLabel="Se déconnecter"
                     >
-                        <IoLogOutOutline size={20} />
-                        <span>Se déconnecter</span>
-                    </button>
+                        Se déconnecter
+                    </Button>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

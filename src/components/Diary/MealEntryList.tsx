@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getFoodCategoryIcon } from '../../utils/foodCategoryIcon';
 import { BASE_INGREDIENTS } from '../../data/baseIngredients';
 import { getCustomIngredients } from '../../data/customIngredients';
+import NutritionValue from '../NutritionValue';
 
 // on définit le type de repas
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
@@ -90,7 +91,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
             {entries.map(entry => (
                 <li
                     key={entry.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between border border-gray-100 rounded-xl p-3 bg-white shadow"
+                    className="flex flex-row sm:items-center justify-between border border-gray-100 rounded-xl px-3 py-2 bg-white shadow"
                 >
                     {editingEntry?.id === entry.id ? (
                         // Mode édition
@@ -111,7 +112,7 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                     value={quantity}
                                     onChange={e => setQuantity(Number(e.target.value))}
                                     min={1}
-                                    className="w-full border border-gray-200 rounded px-2 py-1 bg-[#F9FAFB] focus:border-[#4D9078] focus:ring-1 focus:ring-[#4D9078]"
+                                    className="w-full text-gray-600 text-sm border border-gray-200 rounded px-2 py-1 bg-[#F9FAFB] focus:border-[#4D9078] focus:ring-1 focus:ring-[#4D9078]"
                                     onFocus={e => { if (e.target.value === '0') e.target.value = ''; }}
                                 />
                             </div>
@@ -120,48 +121,44 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                                 <p className="text-sm text-[#4D9078] mb-2">Aperçu des modifications :</p>
                                 <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div>
-                                        <span className="text-gray-600">Calories :</span>
-                                        <span className={`ml-2 ${previewValues.calories !== entry.calories ? 'text-[#4D9078] font-medium' : ''}`}>
-                                            {previewValues.calories} kcal
-                                            {previewValues.calories !== entry.calories && (
-                                                <span className="text-xs text-gray-500 ml-1">
-                                                    ({previewValues.calories > entry.calories ? '+' : ''}{previewValues.calories - entry.calories})
-                                                </span>
-                                            )}
-                                        </span>
+                                        <NutritionValue
+                                            label="Calories"
+                                            value={previewValues.calories}
+                                            unit=" kcal"
+                                            color="text-[#4D9078]"
+                                            previousValue={entry.calories}
+                                            showDiff={true}
+                                        />
                                     </div>
                                     <div>
-                                        <span className="text-gray-600">Protéines :</span>
-                                        <span className={`ml-2 ${previewValues.protein !== entry.protein ? 'text-[#B4436C] font-medium' : ''}`}>
-                                            {previewValues.protein}g
-                                            {previewValues.protein !== entry.protein && (
-                                                <span className="text-xs text-gray-500 ml-1">
-                                                    ({previewValues.protein > entry.protein ? '+' : ''}{previewValues.protein - entry.protein})
-                                                </span>
-                                            )}
-                                        </span>
+                                        <NutritionValue
+                                            label="Protéines"
+                                            value={previewValues.protein}
+                                            unit="g"
+                                            color="text-[#B4436C]"
+                                            previousValue={entry.protein}
+                                            showDiff={true}
+                                        />
                                     </div>
                                     <div>
-                                        <span className="text-gray-600">Glucides :</span>
-                                        <span className={`ml-2 ${previewValues.carbs !== entry.carbs ? 'text-[#F2C14E] font-medium' : ''}`}>
-                                            {previewValues.carbs}g
-                                            {previewValues.carbs !== entry.carbs && (
-                                                <span className="text-xs text-gray-500 ml-1">
-                                                    ({previewValues.carbs > entry.carbs ? '+' : ''}{previewValues.carbs - entry.carbs})
-                                                </span>
-                                            )}
-                                        </span>
+                                        <NutritionValue
+                                            label="Glucides"
+                                            value={previewValues.carbs}
+                                            unit="g"
+                                            color="text-[#F2C14E]"
+                                            previousValue={entry.carbs}
+                                            showDiff={true}
+                                        />
                                     </div>
                                     <div>
-                                        <span className="text-gray-600">Lipides :</span>
-                                        <span className={`ml-2 ${previewValues.fat !== entry.fat ? 'text-[#F78154] font-medium' : ''}`}>
-                                            {previewValues.fat}g
-                                            {previewValues.fat !== entry.fat && (
-                                                <span className="text-xs text-gray-500 ml-1">
-                                                    ({previewValues.fat > entry.fat ? '+' : ''}{previewValues.fat - entry.fat})
-                                                </span>
-                                            )}
-                                        </span>
+                                        <NutritionValue
+                                            label="Lipides"
+                                            value={previewValues.fat}
+                                            unit="g"
+                                            color="text-[#F78154]"
+                                            previousValue={entry.fat}
+                                            showDiff={true}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -185,28 +182,28 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                         // Mode affichage
                         <>
                             <div>
-                                <p className="font-medium text-lg flex items-center gap-2 text-[#4D9078]">
+                                <p className="font-normal text-base flex items-center gap-3 text-gray-600">
                                     {getFoodCategoryIcon(
                                         [...BASE_INGREDIENTS, ...getCustomIngredients()]
                                             .find(i => i.label === entry.name)?.category || 'autre',
-                                        22
+                                        16
                                     )}
                                     {entry.name}
                                 </p>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-xs text-gray-600">
                                     {entry.calories} kcal &middot; <span className="text-[#B4436C]">P {entry.protein} g</span> &middot; <span className="text-[#F2C14E]">C {entry.carbs} g</span> &middot; <span className="text-[#F78154]">L {entry.fat} g</span>
                                 </p>
                             </div>
                             <div className="mt-2 sm:mt-0 flex space-x-3">
                                 <button
                                     onClick={() => handleEdit(entry)}
-                                    className="text-[#4D9078] hover:underline text-sm font-semibold"
+                                    className="text-[#4D9078] hover:underline text-xs cursor-pointer"
                                 >
                                     Modifier
                                 </button>
                                 <button
                                     onClick={() => onDelete(entry.id)}
-                                    className="text-[#B4436C] hover:underline text-sm font-semibold"
+                                    className="text-[#B4436C] hover:underline text-xs cursor-pointer"
                                 >
                                     Supprimer
                                 </button>

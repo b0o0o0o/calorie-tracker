@@ -13,16 +13,15 @@ interface ProfileFormProps {
 }
 
 export default function ProfileForm({
-                                        inputFields,
-                                        selectFields,
-                                        error,
-                                        onSubmit,
-                                    }: ProfileFormProps) {
+    inputFields,
+    selectFields,
+    error,
+    onSubmit,
+}: ProfileFormProps) {
     // Extraction des champs pour un placement précis
     const ageField = inputFields.find(f => f.id === 'age');
     const heightField = inputFields.find(f => f.id === 'height');
     const weightField = inputFields.find(f => f.id === 'weight');
-    const waistField = inputFields.find(f => f.id === 'waist');
     const sexField = selectFields.find(f => f.id === 'sex');
     const activityField = selectFields.find(f => f.id === 'activity');
     const goalField = selectFields.find(f => f.id === 'goal');
@@ -57,16 +56,11 @@ export default function ProfileForm({
                 </div>
             )}
 
-            {/* Age et taille sur deux colonnes */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Age, Taille et Poids sur une seule ligne */}
+            <div className="grid grid-cols-3 gap-4">
                 {ageField && <FormField {...ageField} />}
                 {heightField && <FormField {...heightField} />}
-            </div>
-
-            {/* Poids et tour de taille sur deux colonnes */}
-            <div className="grid grid-cols-2 gap-4">
                 {weightField && <FormField {...weightField} />}
-                {waistField && <FormField {...waistField} />}
             </div>
 
             {/* Niveau d'activité */}

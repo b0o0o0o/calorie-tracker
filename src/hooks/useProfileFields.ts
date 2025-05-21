@@ -25,9 +25,7 @@ export function useProfileFields(
     age: number,       setAge: Dispatch<SetStateAction<number>>,
     sex: 'male'|'female', setSex: Dispatch<SetStateAction<'male'|'female'>>,
     activity: number,  setActivity: Dispatch<SetStateAction<number>>,
-    goal: GoalType,    setGoal: Dispatch<SetStateAction<GoalType>>,
-    waist: number | null, setWaist: Dispatch<SetStateAction<number | null>>
-): { inputFields: InputField[]; selectFields: SelectField[] } {
+    goal: GoalType,    setGoal: Dispatch<SetStateAction<GoalType>>): { inputFields: InputField[]; selectFields: SelectField[] } {
     const inputFields: InputField[] = [
         {
             id: 'weight', label: 'Poids (kg)', type: 'number',
@@ -43,11 +41,6 @@ export function useProfileFields(
             id: 'age', label: 'Âge (ans)', type: 'number',
             value: age, placeholder: 'Ex. 30',
             onChange: v => setAge(parseInt(v, 10) || 0),
-        },
-        {
-            id: 'waist', label: 'Tour de taille (cm)', type: 'number',
-            value: waist !== null ? waist : '', placeholder: 'Optionnel',
-            onChange: v => setWaist(v === '' ? null : parseFloat(v)),
         },
     ];
 

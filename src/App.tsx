@@ -17,6 +17,7 @@ import AddFoodPage from './pages/AddFood';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 import Home from './pages/Home';
 import Diary from './pages/Diary';
 import Settings from './pages/Settings';
@@ -87,6 +88,14 @@ export default function App() {
                             element={
                                 <PrivateRoute>
                                     <Profile />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/edit-profile"
+                            element={
+                                <PrivateRoute>
+                                    <EditProfile />
                                 </PrivateRoute>
                             }
                         />

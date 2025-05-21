@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import NutritionValue from '../components/NutritionValue';
 
 export default function Results() {
   const user = useAuth();
@@ -29,26 +30,36 @@ export default function Results() {
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-xs flex flex-col items-center">
         <div className="space-y-7 w-full">
-          <div className="flex flex-col items-start w-full">
-            <span className="text-black text-base font-normal">Bodyfat actuel %</span>
-            <span className="text-2xl font-semibold text-red-400 mt-1">{data.currentBodyfat}</span>
-          </div>
-          <div className="flex flex-col items-start w-full">
-            <span className="text-black text-base font-normal">Calories max/jour</span>
-            <span className="text-2xl font-semibold text-green-500 mt-1">{data.caloricGoal}</span>
-          </div>
-          <div className="flex flex-col items-start w-full">
-            <span className="text-black text-base font-normal">Protéines/jour (g)</span>
-            <span className="text-2xl font-semibold text-purple-400 mt-1">{data.proteinGoal}</span>
-          </div>
-          <div className="flex flex-col items-start w-full">
-            <span className="text-black text-base font-normal">Glucides/jour (g)</span>
-            <span className="text-2xl font-semibold text-blue-400 mt-1">{data.carbGoal}</span>
-          </div>
-          <div className="flex flex-col items-start w-full">
-            <span className="text-black text-base font-normal">Lipides/jour (g)</span>
-            <span className="text-2xl font-semibold text-pink-400 mt-1">{data.fatGoal}</span>
-          </div>
+          <NutritionValue
+            label="Bodyfat actuel"
+            value={data.currentBodyfat}
+            unit="%"
+            color="text-red-400"
+          />
+          <NutritionValue
+            label="Calories max/jour"
+            value={data.caloricGoal}
+            unit=""
+            color="text-green-500"
+          />
+          <NutritionValue
+            label="Protéines/jour"
+            value={data.proteinGoal}
+            unit="g"
+            color="text-purple-400"
+          />
+          <NutritionValue
+            label="Glucides/jour"
+            value={data.carbGoal}
+            unit="g"
+            color="text-blue-400"
+          />
+          <NutritionValue
+            label="Lipides/jour"
+            value={data.fatGoal}
+            unit="g"
+            color="text-pink-400"
+          />
         </div>
         <div className="flex items-center mt-8 text-red-400 text-sm font-normal">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
