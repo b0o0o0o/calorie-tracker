@@ -43,7 +43,7 @@ const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onManualAdd, on
                             onClick={() => setIsMealsExpanded(!isMealsExpanded)}
                             className="w-full p-4 bg-[#e7f2e5] text-[#4D9078] font-medium flex items-center justify-between"
                         >
-                            <span>Choisir un repas</span>
+                            <span>Ajouter au Journal</span>
                             {isMealsExpanded ? (
                                 <IoChevronUpOutline size={20} />
                             ) : (
@@ -77,7 +77,7 @@ const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onManualAdd, on
                         }}
                         className="w-full p-4 bg-white border-2 border-[#4D9078] text-[#4D9078] rounded-xl font-medium hover:bg-[#e7f2e5] transition-all duration-200"
                     >
-                        Ajouter un aliment personnalisé
+                        + Créer un Aliment
                     </button>
                 </div>
             </div>

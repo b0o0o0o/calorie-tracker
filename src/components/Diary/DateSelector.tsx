@@ -20,7 +20,7 @@ const DateSelector: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center mt-4 mb-6 space-x-4">
+        <div className="flex items-center justify-center mb-6 space-x-4">
             <button onClick={goPrev} aria-label="Jour précédent">
                 <IoChevronBackOutline size={24} className="text-gray-500 cursor-pointer"/>
             </button>

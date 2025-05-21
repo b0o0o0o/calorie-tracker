@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaBook, FaPlus, FaCog } from 'react-icons/fa';
+import { FaHome, FaBook, FaPlus, FaCog, FaUtensils } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { PALETTE } from '../config/theme';
 import AddFoodMenu from './AddFood/AddFoodMenu';
@@ -7,6 +7,7 @@ import AddFoodMenu from './AddFood/AddFoodMenu';
 const navItems = [
     { to: '/', label: 'Accueil', icon: FaHome },
     { to: '/diary', label: 'Journal', icon: FaBook },
+    { to: '/recipes', label: 'Recettes', icon: FaUtensils },
     { to: '/add-food', label: '+ Aliment', icon: FaPlus, green: true },
     { to: '/settings', label: 'Réglages', icon: FaCog },
 ];

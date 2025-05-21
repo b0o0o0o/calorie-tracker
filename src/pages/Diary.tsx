@@ -45,6 +45,9 @@ const Diary: React.FC = () => {
 
     return (
         <div className="flex flex-col items-center w-full min-h-screen">
+            <h1 className="text-xl sm:text-2xl tracking-widest text-[#4D9078] text-center mt-3 font-bold opacity-90 drop-shadow" style={{letterSpacing:'0.15em'}}>
+                JOURNAL
+            </h1>
             <div className="max-w-3xl w-full p-2">
                 {loading && <p className="text-center">Chargement...</p>}
                 {error && <p className="text-center text-red-500">{error}</p>}
