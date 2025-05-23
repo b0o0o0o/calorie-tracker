@@ -36,7 +36,7 @@ const QuantityForm: React.FC<QuantityFormProps> = ({
             />
             <ActionButton
                 onClick={onAdd}
-                label="Ajouter à la recette"
+                label="Ajouter"
                 fullWidth
                 className="cursor-pointer"
             />

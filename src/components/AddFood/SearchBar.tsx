@@ -4,19 +4,31 @@ import { IoSearchOutline } from 'react-icons/io5';
 interface SearchBarProps {
     value: string;
     onChange: (value: string) => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onFocus, onBlur }) => {
+    console.log('SearchBar render:', { value, onFocus, onBlur });
+
     return (
-        <div className="relative mb-4">
+        <div className="relative">
             <input
                 type="text"
-                placeholder="Rechercher un aliment..."
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-300 text-gray-900 rounded-lg px-4 py-2 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 px-10"
+                onFocus={() => {
+                    console.log('SearchBar input focused');
+                    onFocus?.();
+                }}
+                onBlur={() => {
+                    console.log('SearchBar input blurred');
+                    onBlur?.();
+                }}
+                placeholder="Rechercher un aliment..."
+                className="w-full bg-gray-50 border border-gray-400 rounded-xl px-4 py-3 pl-12 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4D9078] focus:border-transparent"
             />
-            <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <IoSearchOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xl" />
         </div>
     );
 };

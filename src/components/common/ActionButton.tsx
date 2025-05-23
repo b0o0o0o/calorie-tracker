@@ -20,7 +20,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 }) => {
     const baseClasses = "flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200";
     const variantClasses = {
-        primary: "bg-green-600 hover:bg-green-500 text-white",
+        primary: "bg-white border-2 border-[#4D9078] text-[#4D9078] rounded-xl font-medium hover:bg-[#e7f2e5] transition-all duration-200 cursor-pointer",
         secondary: "bg-gray-700 hover:bg-gray-600 text-white",
         gradient: "bg-gradient-to-r from-[#5FAD56] via-[#F2C14E] to-[#B4436C] text-white border-2 border-[#5FAD56] hover:from-[#4D9078] hover:to-[#B4436C]"
     };
@@ -31,7 +31,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             onClick={onClick}
             className={`${baseClasses} ${variantClasses[variant]} ${widthClass} ${className}`}
         >
-            {Icon && <Icon size={20} className="text-white drop-shadow-lg" />}
+            {Icon && <Icon size={20} className="text-[#4D9078] drop-shadow-lg" />}
             <span className="tracking-wide">{label}</span>
         </button>
     );

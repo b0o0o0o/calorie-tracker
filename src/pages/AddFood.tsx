@@ -18,10 +18,12 @@ import SearchResults from '../components/AddFood/SearchResults';
 import QuantityForm from '../components/AddFood/QuantityForm';
 import ManualFoodForm from '../components/AddFood/ManualFoodForm';
 import ActionButton from '../components/common/ActionButton';
+import RecentItems from '../components/AddFood/RecentItems';
+import { getRecentItems, addRecentItem } from '../services/recentItemsService';
 
 export default function AddFoodPage() {
     const navigate = useNavigate();
-    const [params, setParams] = useSearchParams();
+    const [params] = useSearchParams();
     let mealType = params.get('meal') as MealType | null;
     let dateParam = params.get('date');
     const [selectedMeal, setSelectedMeal] = useState<MealType | null>(mealType);
@@ -33,9 +35,8 @@ export default function AddFoodPage() {
     const [selectedFood, setSelectedFood] = useState<(FoodItem | SearchableRecipe) | null>(null);
     const [quantity, setQuantity] = useState<number>(100);
     const [showManualForm, setShowManualForm] = useState(false);
-    const [pendingManualIngredient, setPendingManualIngredient] = useState<FoodItem | null>(null);
-    const [quantityToAdd, setQuantityToAdd] = useState<number>(100);
-
+    const [pendingManualIngredient] = useState<FoodItem | null>(null);
+    const [] = useState<number>(100);
     const [manualEntry, setManualEntry] = useState<FoodFormData>({
         name: '',
         calories: '',
@@ -45,6 +46,12 @@ export default function AddFoodPage() {
         unit: 'g',
         category: 'autre',
     });
+    const [recentItems, setRecentItems] = useState<(FoodItem | SearchableRecipe)[]>([]);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+    useEffect(() => {
+        setRecentItems(getRecentItems());
+    }, []);
 
     const handleSearch = async (query: string) => {
         setSearch(query);
@@ -54,7 +61,8 @@ export default function AddFoodPage() {
 
     const handleAddSelectedFood = async () => {
         if (!selectedFood) return;
-        
+        addRecentItem(selectedFood);
+        setRecentItems(getRecentItems());
         if ('recipeId' in selectedFood) {
             // C'est une recette
             const nutritionValues = {
@@ -125,8 +133,21 @@ export default function AddFoodPage() {
                         <SearchBar
                             value={search}
                             onChange={handleSearch}
+                            onFocus={() => setIsSearchFocused(true)}
+                            onBlur={() => setIsSearchFocused(false)}
                         />
-
+                        <RecentItems
+                            items={recentItems}
+                            selectedFood={selectedFood}
+                            onFoodSelect={(item) => {
+                                if (selectedFood?.foodId === item.foodId) {
+                                    setSelectedFood(null);
+                                } else {
+                                    setSelectedFood(item);
+                                }
+                            }}
+                            isVisible={!isSearchFocused && search === ''}
+                        />
                         <SearchResults
                             results={searchResults}
                             selectedFood={selectedFood}
@@ -153,7 +174,7 @@ export default function AddFoodPage() {
                             <div className="mt-4">
                                 <ActionButton
                                     onClick={handleAddSelectedFood}
-                                    label="Ajouter la recette"
+                                    label="Ajouter au journal"
                                     icon={IoAddOutline}
                                     fullWidth
                                 />
@@ -162,7 +183,7 @@ export default function AddFoodPage() {
 
                         <ActionButton
                             onClick={() => setShowManualForm(true)}
-                            label="Ajouter un aliment"
+                            label="Créer un Aliment"
                             icon={IoAddOutline}
                             fullWidth
                             className="mb-4 mt-5 cursor-pointer"
@@ -199,7 +220,7 @@ export default function AddFoodPage() {
                             setShowManualForm(false);
                         }}
                         onCancel={() => setShowManualForm(false)}
-                        submitLabel={selectedMeal ? "Ajouter au Journal" : "Enregistrer dans la base"}
+                        submitLabel="Ajouter au journal"
                     />
                 )}
             </div>

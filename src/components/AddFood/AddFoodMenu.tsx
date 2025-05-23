@@ -17,7 +17,7 @@ const MEALS: { type: MealType; label: string }[] = [
     { type: 'snack', label: 'Collation' },
 ];
 
-const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onManualAdd, onClose }) => {
+const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onClose }) => {
     const navigate = useNavigate();
     const { selectedDate } = useDate();
     const [isMealsExpanded, setIsMealsExpanded] = useState(false);
@@ -43,7 +43,7 @@ const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onManualAdd, on
                             onClick={() => setIsMealsExpanded(!isMealsExpanded)}
                             className="w-full p-4 bg-[#e7f2e5] text-[#4D9078] font-medium flex items-center justify-between"
                         >
-                            <span>Ajouter au Journal</span>
+                            <span>Choisis le repas...</span>
                             {isMealsExpanded ? (
                                 <IoChevronUpOutline size={20} />
                             ) : (
@@ -69,16 +69,7 @@ const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onManualAdd, on
                         )}
                     </div>
 
-                    {/* Bouton aliment personnalisé */}
-                    <button
-                        onClick={() => {
-                            onManualAdd();
-                            navigate('/add-food');
-                        }}
-                        className="w-full p-4 bg-white border-2 border-[#4D9078] text-[#4D9078] rounded-xl font-medium hover:bg-[#e7f2e5] transition-all duration-200"
-                    >
-                        + Créer un Aliment
-                    </button>
+                    
                 </div>
             </div>
         </div>

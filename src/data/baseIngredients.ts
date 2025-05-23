@@ -7,7 +7,6 @@ export interface FoodItem {
         carbs: number;
         fat: number;
     };
-    servingSize: number;
     unit: 'g' | 'ml';
     category: string;
 }
@@ -17,8 +16,8 @@ import { FRUITS } from './fruits';
 import { VIANDES } from './viandes';
 import { POISSONS } from './poissons';
 import { PRODUITS_LAITIERS } from './produitsLaitiers';
-import { OLEAGINEUX } from './oleagineux';
 import { AUTRES } from './autres';
+import { BOULANGERIE } from './boulangerie';
 
 export const BASE_INGREDIENTS: FoodItem[] = [
     ...LEGUMES,
@@ -26,6 +25,6 @@ export const BASE_INGREDIENTS: FoodItem[] = [
     ...VIANDES,
     ...POISSONS,
     ...PRODUITS_LAITIERS,
-    ...OLEAGINEUX,
-    ...AUTRES
+    ...AUTRES,
+    ...BOULANGERIE
 ]; 
