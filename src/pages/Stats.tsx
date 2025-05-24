@@ -11,6 +11,7 @@ const PERIODS = [
 ];
 
 export default function StatsPage() {
+  console.log('StatsPage component mounted');
   const [period, setPeriod] = useState(7);
   const { history: nutritionHistory, getHistory, getStats: getNutritionStats } = useNutritionHistory();
   const { history: waterHistory, getStats: getWaterStats } = useWaterHistory();
@@ -27,6 +28,11 @@ export default function StatsPage() {
   const nutritionStats = getNutritionStats(startDate, endDate);
   // Stats eau
   const waterStats = getWaterStats ? getWaterStats(new Date(startDate), new Date(endDate)) : null;
+
+  // Logs de débogage
+  console.log('Période:', { startDate, endDate });
+  console.log('Données nutrition:', { nutritionHistory, nutritionStats });
+  console.log('Données eau:', { waterHistory, waterStats });
 
   // Préparation des données pour les graphiques
   const nutritionData = nutritionHistory

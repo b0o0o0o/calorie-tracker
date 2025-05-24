@@ -25,6 +25,7 @@ import Results from './pages/Results';
 import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
 import { RecipeForm } from './components/recipes/RecipeForm';
+import Stats from './pages/Stats';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
     const user = useAuth();  // User | null | undefined
@@ -122,6 +123,7 @@ export default function App() {
                                         <Route path="diary" element={<PrivateRoute><Diary/></PrivateRoute>} />
                                         <Route path="add-food" element={<PrivateRoute><AddFoodPage/></PrivateRoute>} />
                                         <Route path="settings" element={<PrivateRoute><Settings/></PrivateRoute>} />
+                                        <Route path="stats" element={<PrivateRoute><Stats/></PrivateRoute>} />
                                         <Route path="recipes" element={<PrivateRoute><Recipes/></PrivateRoute>} />
                                         <Route path="recipes/new" element={<PrivateRoute><RecipeForm/></PrivateRoute>} />
                                         <Route path="recipes/:id" element={<PrivateRoute><RecipeDetail/></PrivateRoute>} />
