@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { FoodItem } from '../../data/baseIngredients';
 import type { SearchableRecipe } from '../../types/Recipe';
 import { searchFood } from '../../utils/foodSearch';
-import { getRecentItems, addRecentItem } from '../../services/recentItemsService';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
-import RecentItems from './RecentItems';
-import QuantityForm from './QuantityForm';
 import ManualFoodForm from './ManualFoodForm';
 import ActionButton from '../common/ActionButton';
 import { IoAddOutline } from 'react-icons/io5';
@@ -21,14 +18,6 @@ const AddFood: React.FC = () => {
     const [selectedFood, setSelectedFood] = useState<(FoodItem | SearchableRecipe) | null>(null);
     const [quantity, setQuantity] = useState<number>(100);
     const [showManualForm, setShowManualForm] = useState(false);
-    const [recentItems, setRecentItems] = useState<(FoodItem | SearchableRecipe)[]>([]);
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
-
-    useEffect(() => {
-        const items = getRecentItems();
-        console.log('Recent items loaded:', items);
-        setRecentItems(items);
-    }, []);
 
     const handleSearch = async (query: string) => {
         setSearch(query);
@@ -36,21 +25,8 @@ const AddFood: React.FC = () => {
         setSearchResults(results);
     };
 
-    const handleFoodSelect = (food: FoodItem | SearchableRecipe) => {
-        if (selectedFood?.foodId === food.foodId) {
-            setSelectedFood(null);
-        } else {
-            setSelectedFood(food);
-        }
-    };
-
     const handleAddFood = () => {
         if (!selectedFood) return;
-        console.log('Adding food to recent items:', selectedFood);
-        addRecentItem(selectedFood);
-        const updatedItems = getRecentItems();
-        console.log('Updated recent items:', updatedItems);
-        setRecentItems(updatedItems);
         // TODO: Add food to journal
         setSelectedFood(null);
         setQuantity(100);
@@ -71,38 +47,16 @@ const AddFood: React.FC = () => {
                         <SearchBar
                             value={search}
                             onChange={handleSearch}
-                            onFocus={() => {
-                                console.log('Search focused');
-                                setIsSearchFocused(true);
-                            }}
-                            onBlur={() => {
-                                console.log('Search blurred');
-                                setIsSearchFocused(false);
-                            }}
-                        />
-
-                        <RecentItems
-                            items={recentItems}
-                            selectedFood={selectedFood}
-                            onFoodSelect={handleFoodSelect}
-                            isVisible={!isSearchFocused && search === ''}
                         />
 
                         <SearchResults
                             results={searchResults}
                             selectedFood={selectedFood}
-                            onFoodSelect={handleFoodSelect}
-                            onSearch={() => handleSearch(search)}
+                            onFoodSelect={setSelectedFood}
+                            quantity={quantity}
+                            onQuantityChange={setQuantity}
+                            onAdd={handleAddFood}
                         />
-
-                        {selectedFood && (
-                            <QuantityForm
-                                selectedFood={selectedFood}
-                                quantity={quantity}
-                                onQuantityChange={setQuantity}
-                                onAdd={handleAddFood}
-                            />
-                        )}
 
                         <ActionButton
                             onClick={() => setShowManualForm(true)}

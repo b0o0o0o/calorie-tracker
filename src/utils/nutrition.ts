@@ -113,3 +113,19 @@ export function calcCarbGoal({
     // Conversion en grammes (4 calories par gramme de glucides)
     return Math.round(carbCalories / 4);
 }
+
+/**
+ * Calcule l'objectif d'eau quotidien en ml
+ * Base: 30ml par kg de poids corporel
+ * Ajusté selon le niveau d'activité physique
+ */
+export function calcWaterGoal(weight: number, activity: number): number {
+    // Base: 30ml par kg de poids corporel
+    const baseAmount = weight * 30;
+    
+    // Ajustement selon l'activité physique
+    // 1.2 = sédentaire, 1.375 = légèrement actif, 1.55 = modérément actif, etc.
+    const activityMultiplier = 1 + (activity - 1.2) * 0.2;
+    
+    return Math.round(baseAmount * activityMultiplier);
+}

@@ -8,12 +8,15 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import InfoCard from '../components/InfoCard';
 import Button from '../components/Button';
+import WaterGoalSettings from '../components/Settings/WaterGoalSettings';
 
 interface UserStats {
     caloricGoal: number;
     proteinGoal: number;
     fatGoal: number;
     bodyFat: number;
+    weight: number;
+    activity: number;
 }
 
 export default function Settings() {
@@ -23,7 +26,9 @@ export default function Settings() {
         caloricGoal: 2000,
         proteinGoal: 0,
         fatGoal: 0,
-        bodyFat: 0
+        bodyFat: 0,
+        weight: 70,
+        activity: 1.2
     });
 
     useEffect(() => {
@@ -36,7 +41,9 @@ export default function Settings() {
                     caloricGoal: data.caloricGoal ?? 2000,
                     proteinGoal: data.proteinGoal ?? 0,
                     fatGoal: data.fatGoal ?? 0,
-                    bodyFat: data.currentBodyfat ?? 0
+                    bodyFat: data.currentBodyfat ?? 0,
+                    weight: data.weight ?? 70,
+                    activity: data.activity ?? 1.2
                 });
             }
         });
@@ -95,6 +102,14 @@ export default function Settings() {
                             />
                         </div>
                     </div>
+                </div>
+
+                {/* Section des paramètres d'eau */}
+                <div className="mb-8">
+                    <WaterGoalSettings 
+                        weight={stats.weight}
+                        activity={stats.activity}
+                    />
                 </div>
 
                 {/* Section des actions */}

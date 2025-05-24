@@ -1,6 +1,14 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { calcTDEE, calcCaloricGoal, calcBodyFatPercent, calcProteinGoal, calcFatGoal, calcCarbGoal } from '../utils/nutrition';
+import { 
+    calcTDEE, 
+    calcCaloricGoal, 
+    calcBodyFatPercent, 
+    calcProteinGoal, 
+    calcFatGoal, 
+    calcCarbGoal,
+    calcWaterGoal 
+} from '../utils/nutrition';
 import type { GoalType } from '../utils/nutrition';
 
 interface ProfileData {
@@ -15,39 +23,30 @@ interface ProfileData {
 
 interface SubmitOptions {
     onSuccess?: () => void;
-    onError?: (error: string) => void;
+    onError?: (error: any) => void;
 }
 
 export function useProfileSubmit() {
     const handleSubmit = async (data: ProfileData, options: SubmitOptions = {}) => {
-        const { user, weight, height, age, sex, activity, goal } = data;
         const { onSuccess, onError } = options;
-
-        if (!user) return;
+        const { user, weight, height, age, sex, activity, goal } = data;
 
         try {
-            // Calcul du TDEE
+            // Calculs des objectifs
             const tdee = calcTDEE(weight, height, age, sex, activity);
-            
-            // Calcul de l'objectif calorique
             const caloricGoal = calcCaloricGoal(tdee, goal);
-            
-            // Calcul du pourcentage de masse grasse
             const currentBodyfat = calcBodyFatPercent({ sex, age, height, weight });
-            
-            // Calcul du poids cible
-            const targetWeight = goal === 'loss' ? weight - 5 : 
-                               goal === 'gain' ? weight + 5 : 
-                               weight;
-            
-            // Calcul des macronutriments
-            const proteinGoal = calcProteinGoal(targetWeight);
-            const fatGoal = calcFatGoal(targetWeight);
+            const targetWeight = goal === 'maintain' ? weight : 
+                               goal === 'loss' ? weight * 0.95 : 
+                               weight * 1.05;
+            const proteinGoal = calcProteinGoal(weight);
+            const fatGoal = calcFatGoal(weight);
             const carbGoal = calcCarbGoal({ 
                 caloricGoal, 
                 proteinGrams: proteinGoal, 
                 fatGrams: fatGoal 
             });
+            const waterGoal = calcWaterGoal(weight, activity);
 
             // Mise à jour du profil utilisateur
             await setDoc(doc(db, 'users', user.uid), {
@@ -68,6 +67,13 @@ export function useProfileSubmit() {
                 proteinGoal,
                 fatGoal,
                 carbGoal,
+                waterGoal,
+                
+                // Préférences d'eau
+                waterPreferences: {
+                    useCustomGoal: false,
+                    customGoal: null
+                },
                 
                 // Métadonnées
                 updatedAt: new Date(),
@@ -75,9 +81,9 @@ export function useProfileSubmit() {
             });
 
             onSuccess?.();
-        } catch (err) {
-            console.error('[useProfileSubmit] setDoc error', err);
-            onError?.('Une erreur est survenue, veuillez réessayer.');
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            onError?.(error);
         }
     };
 

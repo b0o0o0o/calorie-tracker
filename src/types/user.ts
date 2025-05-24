@@ -13,6 +13,11 @@ export interface User {
     proteinGoal: number;
     fatGoal: number;
     carbGoal: number;
+    waterGoal: number;
+    waterPreferences?: {
+        customGoal?: number;
+        useCustomGoal: boolean;
+    };
     email: string;
     updatedAt: Date;
     lastProfileUpdate: Date;

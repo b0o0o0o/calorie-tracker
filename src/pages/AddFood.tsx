@@ -1,25 +1,20 @@
 // src/pages/AddFood.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useUserProfileState } from '../hooks/useUserProfileState';
 import { useDate } from '../context/DateContext';
 import { IoCloseSharp, IoAddOutline } from 'react-icons/io5';
 import type { FoodItem } from '../data/baseIngredients';
 import type { SearchableRecipe } from '../types/Recipe';
-import { addCustomIngredient } from '../data/customIngredients';
 import type { MealType } from '../config/theme';
 import type { FoodFormData } from '../types/food';
-import { calculateNutritionValues, createNewIngredient } from '../utils/nutritionCalculations';
 import { searchFood as searchFoodUtil, getDefaultQuantity } from '../utils/foodSearch';
+import { useAddMealEntry } from '../hooks/useAddMealEntry';
 
 import MealSelector from '../components/AddFood/MealSelector';
 import SearchBar from '../components/AddFood/SearchBar';
 import SearchResults from '../components/AddFood/SearchResults';
-import QuantityForm from '../components/AddFood/QuantityForm';
 import ManualFoodForm from '../components/AddFood/ManualFoodForm';
 import ActionButton from '../components/common/ActionButton';
-import RecentItems from '../components/AddFood/RecentItems';
-import { getRecentItems, addRecentItem } from '../services/recentItemsService';
 
 export default function AddFoodPage() {
     const navigate = useNavigate();
@@ -27,8 +22,8 @@ export default function AddFoodPage() {
     let mealType = params.get('meal') as MealType | null;
     let dateParam = params.get('date');
     const [selectedMeal, setSelectedMeal] = useState<MealType | null>(mealType);
-    const { addEntry } = useUserProfileState();
     const { selectedDate, setSelectedDate } = useDate();
+    const addMealEntry = useAddMealEntry();
 
     const [search, setSearch] = useState<string>('');
     const [searchResults, setSearchResults] = useState<(FoodItem | SearchableRecipe)[]>([]);
@@ -36,7 +31,6 @@ export default function AddFoodPage() {
     const [quantity, setQuantity] = useState<number>(100);
     const [showManualForm, setShowManualForm] = useState(false);
     const [pendingManualIngredient] = useState<FoodItem | null>(null);
-    const [] = useState<number>(100);
     const [manualEntry, setManualEntry] = useState<FoodFormData>({
         name: '',
         calories: '',
@@ -46,12 +40,6 @@ export default function AddFoodPage() {
         unit: 'g',
         category: 'autre',
     });
-    const [recentItems, setRecentItems] = useState<(FoodItem | SearchableRecipe)[]>([]);
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
-
-    useEffect(() => {
-        setRecentItems(getRecentItems());
-    }, []);
 
     const handleSearch = async (query: string) => {
         setSearch(query);
@@ -60,9 +48,7 @@ export default function AddFoodPage() {
     };
 
     const handleAddSelectedFood = async () => {
-        if (!selectedFood) return;
-        addRecentItem(selectedFood);
-        setRecentItems(getRecentItems());
+        if (!selectedFood || !selectedMeal) return;
         if ('recipeId' in selectedFood) {
             // C'est une recette
             const nutritionValues = {
@@ -71,18 +57,34 @@ export default function AddFoodPage() {
                 carbs: selectedFood.nutrients.carbs,
                 fat: selectedFood.nutrients.fat
             };
-            await addEntry({
-                mealType: selectedMeal!,
-                name: selectedFood.label,
-                ...nutritionValues
+            await addMealEntry({
+                food: {
+                    name: selectedFood.label,
+                    calories: String(nutritionValues.calories),
+                    protein: String(nutritionValues.protein),
+                    carbs: String(nutritionValues.carbs),
+                    fat: String(nutritionValues.fat),
+                    unit: 'g',
+                    category: 'autre',
+                },
+                quantity: 100,
+                mealType: selectedMeal
             });
         } else {
             // C'est un aliment normal
-            const nutritionValues = calculateNutritionValues(selectedFood, quantity);
-            await addEntry({
-                mealType: selectedMeal!,
-                name: selectedFood.label,
-                ...nutritionValues
+            const foodItem = selectedFood as FoodItem;
+            await addMealEntry({
+                food: {
+                    name: foodItem.label,
+                    calories: String(foodItem.nutrients.calories),
+                    protein: String(foodItem.nutrients.protein),
+                    carbs: String(foodItem.nutrients.carbs),
+                    fat: String(foodItem.nutrients.fat),
+                    unit: foodItem.unit || 'g',
+                    category: foodItem.category as any, // cast pour FoodCategoryValue
+                },
+                quantity,
+                mealType: selectedMeal
             });
         }
         navigate('/diary');
@@ -133,42 +135,17 @@ export default function AddFoodPage() {
                         <SearchBar
                             value={search}
                             onChange={handleSearch}
-                            onFocus={() => setIsSearchFocused(true)}
-                            onBlur={() => setIsSearchFocused(false)}
-                        />
-                        <RecentItems
-                            items={recentItems}
-                            selectedFood={selectedFood}
-                            onFoodSelect={(item) => {
-                                if (selectedFood?.foodId === item.foodId) {
-                                    setSelectedFood(null);
-                                } else {
-                                    setSelectedFood(item);
-                                }
-                            }}
-                            isVisible={!isSearchFocused && search === ''}
                         />
                         <SearchResults
                             results={searchResults}
                             selectedFood={selectedFood}
-                            onFoodSelect={(food) => {
-                                if (selectedFood?.foodId === food.foodId) {
-                                    setSelectedFood(null);
-                                } else {
-                                    setSelectedFood(food);
-                                }
-                            }}
-                            onSearch={() => handleSearch(search)}
+                            onFoodSelect={setSelectedFood}
+                            quantity={quantity}
+                            onQuantityChange={setQuantity}
+                            onAdd={handleAddSelectedFood}
                         />
 
-                        {selectedFood && !('recipeId' in selectedFood) && (
-                            <QuantityForm
-                                selectedFood={selectedFood}
-                                quantity={quantity}
-                                onQuantityChange={setQuantity}
-                                onAdd={handleAddSelectedFood}
-                            />
-                        )}
+                        
 
                         {selectedFood && 'recipeId' in selectedFood && (
                             <div className="mt-4">
@@ -183,42 +160,21 @@ export default function AddFoodPage() {
 
                         <ActionButton
                             onClick={() => setShowManualForm(true)}
-                            label="Créer un Aliment"
+                            label="Ajouter un aliment manuellement"
                             icon={IoAddOutline}
                             fullWidth
-                            className="mb-4 mt-5 cursor-pointer"
+                            className="mt-4"
                         />
                     </>
                 )}
 
-                {!pendingManualIngredient && showManualForm && (
+                {showManualForm && (
                     <ManualFoodForm
                         manualEntry={manualEntry}
                         onManualEntryChange={(field, value) => 
                             setManualEntry(prev => ({ ...prev, [field]: value }))
                         }
-                        onSubmit={() => {
-                            if (!manualEntry.name) return;
-                            const newIngredient = createNewIngredient(
-                                manualEntry.name,
-                                manualEntry.calories,
-                                manualEntry.protein,
-                                manualEntry.carbs,
-                                manualEntry.fat,
-                                manualEntry.unit,
-                                manualEntry.category
-                            );
-                            addCustomIngredient(newIngredient);
-                            if (selectedMeal) {
-                                addEntry({
-                                    mealType: selectedMeal,
-                                    name: manualEntry.name,
-                                    ...calculateNutritionValues(newIngredient, 100)
-                                });
-                                navigate('/diary');
-                            }
-                            setShowManualForm(false);
-                        }}
+                        onSubmit={handleAddSelectedFood}
                         onCancel={() => setShowManualForm(false)}
                         submitLabel="Ajouter au journal"
                     />

@@ -27,10 +27,8 @@ const Diary: React.FC = () => {
         error,
         selectedDate,
         diaryEntries,
-        waterIntake,
         updateEntry,
         deleteEntry,
-        addWater,
     } = useUserProfileState();
 
     const [expanded, setExpanded] = useState<Record<MealType, boolean>>({
@@ -87,11 +85,7 @@ const Diary: React.FC = () => {
                             })}
 
                             {/* WaterTracker */}
-                            <WaterTracker
-                                amount={waterIntake}
-                                onAdd={addWater}
-                                onReset={() => addWater(-waterIntake)}
-                            />
+                            <WaterTracker />
                         </div>
                     </>
                 )}

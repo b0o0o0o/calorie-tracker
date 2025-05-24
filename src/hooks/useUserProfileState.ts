@@ -15,11 +15,14 @@ import {
 } from 'firebase/firestore';
 import type { MealEntry } from '../components/Diary/MealEntryList';
 import type { GoalType } from '../utils/nutrition';
+import { useNutritionHistory } from './useNutritionHistory';
+import { calculateDailyTotals } from '../utils/mealCalculations';
 
 export function useUserProfileState(initialLoading = false) {
     const user = useAuth();
     const navigate = useNavigate();
     const { selectedDate } = useDate();
+    const { addOrUpdateEntry } = useNutritionHistory();
 
     // Profil
     const [weight, setWeight]     = useState<number>(0);
@@ -33,7 +36,6 @@ export function useUserProfileState(initialLoading = false) {
 
     // Journal
     const [diaryEntries, setDiaryEntries] = useState<MealEntry[]>([]);
-    const [waterIntake, setWaterIntake]   = useState<number>(0);
 
     // — chargé / guard profile —
     useEffect(() => {
@@ -67,11 +69,10 @@ export function useUserProfileState(initialLoading = false) {
         );
     }, [user, navigate]);
 
-    // — sync diary & water —
+    // — sync diary —
     useEffect(() => {
         if (!user) return;
 
-        const diaryDocRef = doc(db, 'users', user.uid, 'diary', selectedDate);
         const entriesColRef = collection(
             db,
             'users',
@@ -89,13 +90,8 @@ export function useUserProfileState(initialLoading = false) {
             setDiaryEntries(entries);
         });
 
-        const unsubWater = onSnapshot(diaryDocRef, snap => {
-            setWaterIntake(snap.exists() ? snap.data().waterIntake ?? 0 : 0);
-        });
-
         return () => {
             unsubEntries();
-            unsubWater();
         };
     }, [user, selectedDate]);
 
@@ -110,9 +106,20 @@ export function useUserProfileState(initialLoading = false) {
         );
     };
 
+    // Fonction utilitaire pour mettre à jour l'historique nutritionnel
+    const updateNutritionHistory = async (entries: MealEntry[], date: string) => {
+        const totals = calculateDailyTotals(entries);
+        await addOrUpdateEntry({
+            date,
+            calories: totals.calories,
+            protein: totals.protein,
+            carbs: totals.carbs,
+            fat: totals.fat,
+        });
+    };
+
     // — diary actions —
     const addEntry = async (entry: Omit<MealEntry, 'id'>) => {
-        // entry doit contenir mealType
         if (!user) return;
         const entriesColRef = collection(
             db,
@@ -123,6 +130,8 @@ export function useUserProfileState(initialLoading = false) {
             'entries'
         );
         await addDoc(entriesColRef, entry);
+        // Mettre à jour l'historique nutritionnel après ajout
+        await updateNutritionHistory([...diaryEntries, { ...entry, id: 'temp' }], selectedDate);
     };
 
     const updateEntry = async (entry: MealEntry) => {
@@ -144,6 +153,9 @@ export function useUserProfileState(initialLoading = false) {
             fat: entry.fat,
             // mealType inchangé
         });
+        // Mettre à jour l'historique nutritionnel après modification
+        const updatedEntries = diaryEntries.map(e => e.id === entry.id ? entry : e);
+        await updateNutritionHistory(updatedEntries, selectedDate);
     };
 
     const deleteEntry = async (id: string) => {
@@ -158,16 +170,9 @@ export function useUserProfileState(initialLoading = false) {
             id
         );
         await deleteDoc(entryRef);
-    };
-
-    const addWater = async (qty: number) => {
-        if (!user) return;
-        const diaryDocRef = doc(db, 'users', user.uid, 'diary', selectedDate);
-        await setDoc(
-            diaryDocRef,
-            { waterIntake: waterIntake + qty },
-            { merge: true }
-        );
+        // Mettre à jour l'historique nutritionnel après suppression
+        const updatedEntries = diaryEntries.filter(e => e.id !== id);
+        await updateNutritionHistory(updatedEntries, selectedDate);
     };
 
     return {
@@ -182,7 +187,7 @@ export function useUserProfileState(initialLoading = false) {
         loading, setLoading,
         updateProfile,
         selectedDate,
-        diaryEntries, waterIntake,
-        addEntry, updateEntry, deleteEntry, addWater,
+        diaryEntries,
+        addEntry, updateEntry, deleteEntry,
     };
 }

@@ -10,23 +10,26 @@ import {
     getDocs, 
     setDoc, 
     updateDoc,
-    serverTimestamp 
-} from 'firebase/firestore';
-import type { WaterEntry } from '../types/water';
+    getDoc} from 'firebase/firestore';
+import { calcWaterGoal } from '../utils/nutrition';
+import { useWaterHistory } from './useWaterHistory';
 
 export function useWaterTracker() {
     const user = useAuth();
     const { selectedDate } = useDate();
     const [amount, setAmount] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [waterGoal, setWaterGoal] = useState(2000); // Valeur par défaut
+    const { addEntry } = useWaterHistory();
 
-    // Charger les données d'eau pour la date sélectionnée
+    // Charger les données d'eau et l'objectif pour la date sélectionnée
     useEffect(() => {
         if (!user) return;
 
         const fetchWaterData = async () => {
             setLoading(true);
             try {
+                // Charger les données d'eau
                 const waterRef = collection(db, 'water');
                 const q = query(
                     waterRef,
@@ -40,6 +43,21 @@ export function useWaterTracker() {
                     setAmount(doc.data().amount);
                 } else {
                     setAmount(0);
+                }
+
+                // Charger l'objectif d'eau depuis le profil utilisateur
+                const userDocRef = doc(db, 'users', user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+                
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    if (userData.waterPreferences?.useCustomGoal && userData.waterPreferences?.customGoal) {
+                        setWaterGoal(userData.waterPreferences.customGoal);
+                    } else {
+                        // Calculer l'objectif basé sur le poids et l'activité
+                        const calculatedGoal = calcWaterGoal(userData.weight, userData.activity);
+                        setWaterGoal(calculatedGoal);
+                    }
                 }
             } catch (err) {
                 console.error('[useWaterTracker] Error fetching water data:', err);
@@ -85,6 +103,22 @@ export function useWaterTracker() {
                 });
             }
 
+            // Enregistrer dans l'historique
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            if (userDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                await addEntry({
+                    goal: waterGoal,
+                    consumed: newAmount,
+                    goalType: userData.waterPreferences?.useCustomGoal ? 'custom' : 'calculated',
+                    preferences: userData.waterPreferences || {
+                        useCustomGoal: false,
+                        customGoal: null
+                    }
+                });
+            }
+
             setAmount(newAmount);
         } catch (err) {
             console.error('[useWaterTracker] Error updating water data:', err);
@@ -101,6 +135,7 @@ export function useWaterTracker() {
     return {
         amount,
         loading,
-        handleAdd
+        handleAdd,
+        waterGoal
     };
 } 

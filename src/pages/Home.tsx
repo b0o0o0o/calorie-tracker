@@ -18,7 +18,6 @@ import {
 export default function Home() {
   const {
     diaryEntries,
-    waterIntake,
     user,
   } = useUserProfileState();
 
@@ -45,9 +44,6 @@ export default function Home() {
 
     // Objectifs macros
     const macroGoals = calculateMacroGoals(caloricGoal);
-
-  // Eau (objectif 2000ml par défaut)
-  const waterGoal = 2000;
 
   return (
       <div className="flex flex-col items-center w-full min-h-screen">
