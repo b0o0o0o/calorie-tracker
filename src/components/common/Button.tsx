@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
     
     const variantStyles = {
         primary: "bg-white border-2 border-[#4D9078] text-[#4D9078] hover:bg-[#e7f2e5]",
-        secondary: "bg-gray-700 hover:bg-gray-600 text-white",
+        secondary: "bg-white border-2 border-gray-600 hover:bg-gray-200 text-gray-600",
         gradient: "bg-gradient-to-r from-[#5FAD56] via-[#F2C14E] to-[#B4436C] text-white border-2 border-[#5FAD56] hover:from-[#4D9078] hover:to-[#B4436C]",
         danger: "bg-white border-2 border-red-500 text-red-500 hover:bg-red-50",
         auth: "bg-[#4D9078] text-white hover:bg-[#3D7A63]"
@@ -45,7 +45,7 @@ const Button: React.FC<ButtonProps> = ({
             disabled={disabled}
             aria-label={ariaLabel}
         >
-            {Icon && <Icon size={20} className="text-[#4D9078] drop-shadow-lg" />}
+            {Icon && <Icon size={20} className="drop-shadow-lg" />}
             <span>{children}</span>
         </button>
     );

@@ -115,17 +115,18 @@ const AddFood: React.FC = () => {
                         <div className="flex gap-4 mt-6">
                             <ActionButton
                                 onClick={() => setShowManualForm(true)}
-                                label="Ajouter un aliment"
+                                label="Créer un aliment"
                                 icon={IoAddOutline}
+                                variant="secondary"
                                 fullWidth
                                 className="cursor-pointer"
                             />
                             {selectedItems.length > 0 && (
                                 <ActionButton
                                     onClick={handleSubmitAll}
-                                    label={isSubmitting ? "Ajout en cours..." : "Valider et ajouter"}
+                                    label={isSubmitting ? "Ajout en cours..." : "Ajouter"}
                                     fullWidth
-                                    className="bg-[#4D9078] hover:bg-[#3D7A68] text-white cursor-pointer disabled:opacity-50"
+                                    className="bg-[#4D9078] hover:bg-[#3D7A68] cursor-pointer disabled:opacity-50"
                                     disabled={isSubmitting}
                                 />
                             )}
