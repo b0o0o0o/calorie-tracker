@@ -9,6 +9,7 @@ interface ActionButtonProps {
     variant?: 'primary' | 'secondary' | 'gradient';
     fullWidth?: boolean;
     className?: string;
+    disabled?: boolean;
 }
 
 const ActionButton: React.FC<ActionButtonProps> = ({
@@ -17,7 +18,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     icon: Icon,
     variant = 'primary',
     fullWidth = false,
-    className = ''
+    className = '',
+    disabled = false
 }) => {
     return (
         <Button
@@ -26,6 +28,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             variant={variant}
             fullWidth={fullWidth}
             className={className}
+            disabled={disabled}
         >
             {label}
         </Button>

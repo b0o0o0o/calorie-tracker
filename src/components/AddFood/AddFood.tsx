@@ -1,24 +1,37 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { FoodItem } from '../../data/baseIngredients';
 import type { SearchableRecipe } from '../../types/Recipe';
 import { searchFood } from '../../utils/foodSearch';
+import { useAddMealEntry } from '../../hooks/data/useAddMealEntry';
+import type { MealType } from '../../config/theme';
+import type { FoodCategoryValue } from '../../types/food';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
 import ManualFoodForm from './ManualFoodForm';
+import FoodList from './FoodList';
 import ActionButton from '../common/ActionButton';
 import { IoAddOutline } from 'react-icons/io5';
 import { FoodUnit } from '../../types/common';
 
+interface FoodListItem {
+    food: FoodItem | SearchableRecipe;
+    quantity: number;
+}
+
 const AddFood: React.FC = () => {
     const [searchParams] = useSearchParams();
-    const meal = searchParams.get('meal') as string;
+    const navigate = useNavigate();
+    const meal = searchParams.get('meal') as MealType;
+    const addMealEntry = useAddMealEntry();
 
     const [search, setSearch] = useState<string>('');
     const [searchResults, setSearchResults] = useState<(FoodItem | SearchableRecipe)[]>([]);
     const [selectedFood, setSelectedFood] = useState<(FoodItem | SearchableRecipe) | null>(null);
     const [quantity, setQuantity] = useState<number>(100);
     const [showManualForm, setShowManualForm] = useState(false);
+    const [selectedItems, setSelectedItems] = useState<FoodListItem[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSearch = async (query: string) => {
         setSearch(query);
@@ -26,13 +39,48 @@ const AddFood: React.FC = () => {
         setSearchResults(results);
     };
 
-    const handleAddFood = () => {
+    const handleAddToList = () => {
         if (!selectedFood) return;
-        // TODO: Add food to journal
+        
+        setSelectedItems(prev => [...prev, { food: selectedFood, quantity }]);
         setSelectedFood(null);
         setQuantity(100);
         setSearch('');
         setSearchResults([]);
+    };
+
+    const handleRemoveItem = (index: number) => {
+        setSelectedItems(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const handleSubmitAll = async () => {
+        if (selectedItems.length === 0 || !meal) return;
+        
+        setIsSubmitting(true);
+        try {
+            for (const item of selectedItems) {
+                await addMealEntry({
+                    food: {
+                        name: item.food.label,
+                        calories: item.food.nutrients.calories,
+                        protein: item.food.nutrients.protein,
+                        carbs: item.food.nutrients.carbs,
+                        fat: item.food.nutrients.fat,
+                        unit: FoodUnit.GRAM,
+                        category: 'autre' as FoodCategoryValue
+                    },
+                    quantity: item.quantity,
+                    mealType: meal
+                });
+            }
+            // Rediriger vers la page du journal après l'ajout
+            navigate('/diary');
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout des aliments:', error);
+            // TODO: Afficher un message d'erreur à l'utilisateur
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -56,16 +104,32 @@ const AddFood: React.FC = () => {
                             onFoodSelect={setSelectedFood}
                             quantity={quantity}
                             onQuantityChange={setQuantity}
-                            onAdd={handleAddFood}
+                            onAdd={handleAddToList}
                         />
 
-                        <ActionButton
-                            onClick={() => setShowManualForm(true)}
-                            label="Ajouter un aliment"
-                            icon={IoAddOutline}
-                            fullWidth
-                            className="mb-4 mt-5 cursor-pointer"
+                        <FoodList
+                            items={selectedItems}
+                            onRemoveItem={handleRemoveItem}
                         />
+
+                        <div className="flex gap-4 mt-6">
+                            <ActionButton
+                                onClick={() => setShowManualForm(true)}
+                                label="Ajouter un aliment"
+                                icon={IoAddOutline}
+                                fullWidth
+                                className="cursor-pointer"
+                            />
+                            {selectedItems.length > 0 && (
+                                <ActionButton
+                                    onClick={handleSubmitAll}
+                                    label={isSubmitting ? "Ajout en cours..." : "Valider et ajouter"}
+                                    fullWidth
+                                    className="bg-[#4D9078] hover:bg-[#3D7A68] text-white cursor-pointer disabled:opacity-50"
+                                    disabled={isSubmitting}
+                                />
+                            )}
+                        </div>
                     </>
                 )}
 
