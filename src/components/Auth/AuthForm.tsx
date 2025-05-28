@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PALETTE, BACKGROUND_COLORS, TEXT_COLORS } from '../../config/theme';
 
 interface AuthFormProps {
     title: string;

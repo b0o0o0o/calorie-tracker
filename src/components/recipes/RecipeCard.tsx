@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Recipe } from '../../types/Recipe';
 import { IoRestaurantOutline } from 'react-icons/io5';
+import Card from '../common/Card';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -10,7 +11,7 @@ interface RecipeCardProps {
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onDelete }) => {
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-all duration-200">
+    <Card variant="recipe" className="p-4">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <IoRestaurantOutline className="text-lg text-[#4D9078]" />
@@ -42,6 +43,6 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onDelete }) => {
           Supprimer
         </button>
       </div>
-    </div>
+    </Card>
   );
 }; 

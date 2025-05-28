@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNutritionHistory } from '../hooks/useNutritionHistory';
-import { useWaterHistory } from '../hooks/useWaterHistory';
+import { useNutritionHistory, useWaterHistory } from '../hooks/data';
 import { format, subDays } from 'date-fns';
 import { StatLineChart } from '../components/Stats/StatLineChart';
 import { StatComparison } from '../components/Stats/StatComparison';

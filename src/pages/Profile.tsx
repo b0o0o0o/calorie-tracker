@@ -1,9 +1,7 @@
 // src/pages/Profile.tsx
 import React from 'react';
-import { useProfileFields } from '../hooks/useProfileFields';
+import { useProfileFields, useUserProfileState, useProfileSubmit } from '../hooks/auth';
 import ProfileForm from '../components/ProfileForm';
-import { useUserProfileState } from '../hooks/useUserProfileState';
-import { useProfileSubmit } from '../hooks/useProfileSubmit';
 
 export default function Profile() {
     const {

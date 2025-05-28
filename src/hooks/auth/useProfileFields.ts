@@ -1,6 +1,7 @@
 // src/hooks/useProfileFields.ts
 import type { Dispatch, SetStateAction } from 'react';
-import type { GoalType } from '../utils/nutrition';
+import { useState } from 'react';
+import type { GoalType } from '../../utils/nutrition';
 
 export type InputField = {
     id: string;

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { doc, updateDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { calcWaterGoal } from '../../utils/nutrition';
-import { useWaterHistory } from '../../hooks/useWaterHistory';
+import { useWaterHistory } from '../../hooks/data';
+import Input from '../common/Input';
 
 interface WaterGoalSettingsProps {
     weight: number;
@@ -115,13 +116,13 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
 
                 {useCustomGoal && (
                     <div className="flex items-center space-x-2">
-                        <input
+                        <Input
+                            id="customGoal"
                             type="number"
                             value={customGoal}
-                            onChange={(e) => setCustomGoal(Number(e.target.value))}
-                            min="0"
-                            step="100"
-                            className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#4D9078] focus:border-[#4D9078]"
+                            onChange={value => setCustomGoal(Number(value))}
+                            min={0}
+                            step={100}
                         />
                         <span className="text-gray-700">ml</span>
                     </div>

@@ -1,4 +1,4 @@
-import { useUserProfileState } from '../hooks/useUserProfileState';
+import { useUserProfileState } from '../hooks/auth';
 import EditProfileForm from '../components/EditProfileForm';
 
 export default function EditProfile() {

@@ -8,8 +8,8 @@ import {
     useLocation,
 } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { DateProvider } from './context/DateContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { DateProvider } from './contexts/DateContext';
 import { db } from './firebase';
 
 import Layout from './components/Layout';

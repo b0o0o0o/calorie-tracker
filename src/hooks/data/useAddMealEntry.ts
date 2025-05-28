@@ -1,7 +1,7 @@
-import { useUserProfileState } from './useUserProfileState';
-import { createMealEntry } from '../utils/mealEntry';
-import type { FoodFormData } from '../types/food';
-import type { MealType } from '../config/theme';
+import { useUserProfileState } from '../auth';
+import { createMealEntry } from '../../utils/mealEntry';
+import type { FoodFormData } from '../../types/food';
+import type { MealType } from '../../config/theme';
 
 export function useAddMealEntry() {
   const { addEntry } = useUserProfileState();

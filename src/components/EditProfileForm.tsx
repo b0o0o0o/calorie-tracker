@@ -1,10 +1,9 @@
 import React from 'react';
-import { useProfileFields } from '../hooks/useProfileFields';
+import { useProfileFields, useProfileSubmit } from '../hooks/auth';
 import ProfileForm from './ProfileForm';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { useProfileSubmit } from '../hooks/useProfileSubmit';
 import type { GoalType } from '../utils/nutrition';
 
 interface EditProfileFormProps {

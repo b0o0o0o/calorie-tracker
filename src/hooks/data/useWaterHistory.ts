@@ -9,9 +9,9 @@ import {
     setDoc,
     Timestamp 
 } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useAuth } from '../context/AuthContext';
-import { useDate } from '../context/DateContext';
+import { db } from '../../firebase';
+import { useAuth } from '../../contexts/AuthContext';
+import { useDate } from '../../contexts/DateContext';
 
 export interface WaterHistoryEntry {
     date: Date;

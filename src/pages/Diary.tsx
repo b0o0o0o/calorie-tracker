@@ -1,6 +1,6 @@
 // src/pages/Diary.tsx
 import React, { useState } from 'react';
-import { useUserProfileState } from '../hooks/useUserProfileState';
+import { useUserProfileState } from '../hooks/auth';
 import {
     IoFastFoodOutline,
     IoRestaurantOutline,

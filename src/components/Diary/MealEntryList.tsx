@@ -4,6 +4,7 @@ import { getFoodCategoryIcon } from '../../utils/foodCategoryIcon';
 import { BASE_INGREDIENTS } from '../../data/baseIngredients';
 import { getCustomIngredients } from '../../data/customIngredients';
 import NutritionValue from '../NutritionValue';
+import Input from '../common/Input';
 
 // on définit le type de repas
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
@@ -106,14 +107,13 @@ const MealEntryList: React.FC<MealEntryListProps> = ({ entries, onUpdate, onDele
                             </div>
                             
                             <div className="mb-4">
-                                <label className="block text-sm text-gray-600 mb-2">Quantité (g)</label>
-                                <input
+                                <Input
+                                    id="quantity"
                                     type="number"
                                     value={quantity}
-                                    onChange={e => setQuantity(Number(e.target.value))}
+                                    onChange={value => setQuantity(Number(value))}
                                     min={1}
-                                    className="w-full text-gray-600 text-sm border border-gray-200 rounded px-2 py-1 bg-[#F9FAFB] focus:border-[#4D9078] focus:ring-1 focus:ring-[#4D9078]"
-                                    onFocus={e => { if (e.target.value === '0') e.target.value = ''; }}
+                                    label="Quantité (g)"
                                 />
                             </div>
 

@@ -1,22 +1,33 @@
 // src/hooks/useUserProfileState.ts
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useDate } from '../context/DateContext';
-import { db } from '../firebase';
+import { useAuth } from '../../contexts/AuthContext';
+import { useDate } from '../../contexts/DateContext';
+import { db } from '../../firebase';
 import {
     doc,
     collection,
-    onSnapshot,
+    query,
+    where,
+    getDocs,
     setDoc,
-    addDoc,
     updateDoc,
     deleteDoc,
+    onSnapshot,
+    addDoc,
+    Timestamp
 } from 'firebase/firestore';
-import type { MealEntry } from '../components/Diary/MealEntryList';
-import type { GoalType } from '../utils/nutrition';
-import { useNutritionHistory } from './useNutritionHistory';
-import { calculateDailyTotals } from '../utils/mealCalculations';
+import type { MealEntry } from '../../components/Diary/MealEntryList';
+import {
+    calcTDEE,
+    calcCaloricGoal,
+    calcProteinGoal,
+    calcFatGoal,
+    calcCarbGoal,
+    type GoalType
+} from '../../utils/nutrition';
+import { useNutritionHistory } from '../data/useNutritionHistory';
+import { calculateDailyTotals } from '../../utils/mealCalculations';
 
 export function useUserProfileState(initialLoading = false) {
     const user = useAuth();

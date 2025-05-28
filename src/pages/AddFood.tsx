@@ -1,14 +1,14 @@
 // src/pages/AddFood.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDate } from '../context/DateContext';
+import { useDate } from '../contexts/DateContext';
 import { IoCloseSharp, IoAddOutline } from 'react-icons/io5';
 import type { FoodItem } from '../data/baseIngredients';
 import type { SearchableRecipe } from '../types/Recipe';
 import type { MealType } from '../config/theme';
 import type { FoodFormData } from '../types/food';
 import { searchFood as searchFoodUtil, getDefaultQuantity } from '../utils/foodSearch';
-import { useAddMealEntry } from '../hooks/useAddMealEntry';
+import { useAddMealEntry } from '../hooks/data';
 
 import MealSelector from '../components/AddFood/MealSelector';
 import SearchBar from '../components/AddFood/SearchBar';

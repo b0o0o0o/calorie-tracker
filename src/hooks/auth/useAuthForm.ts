@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signin, signup } from '../services/auth';
+import { signin, signup } from '../../services/auth';
 
 interface UseAuthFormProps {
     mode: 'signin' | 'signup';

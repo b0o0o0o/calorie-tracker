@@ -1,4 +1,5 @@
 import React from 'react';
+import Input from '../common/Input';
 
 interface AuthInputProps {
     id: string;
@@ -18,30 +19,16 @@ const AuthInput: React.FC<AuthInputProps> = ({
     label
 }) => {
     return (
-        <div>
-            <label htmlFor={id} className="block mb-2 font-medium text-gray-200">
-                {label}
-            </label>
-            <input
-                id={id}
-                type={type}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                required
-                className="
-                    w-full
-                    px-4 py-3
-                    bg-gray-700
-                    border border-gray-600
-                    rounded-lg
-                    text-white
-                    placeholder-gray-400
-                    focus:outline-none focus:ring-2 focus:ring-yellow-400
-                    transition
-                "
-            />
-        </div>
+        <Input
+            id={id}
+            type={type}
+            value={value}
+            onChange={(value) => onChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+            placeholder={placeholder}
+            label={label}
+            required={true}
+            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-yellow-400"
+        />
     );
 };
 

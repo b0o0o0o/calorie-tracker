@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useDate } from '../context/DateContext';
-import { db } from '../firebase';
+import { useAuth } from '../../contexts/AuthContext';
+import { useDate } from '../../contexts/DateContext';
+import { db } from '../../firebase';
 import { 
     doc, 
     collection, 
@@ -11,7 +11,7 @@ import {
     setDoc, 
     updateDoc,
     getDoc} from 'firebase/firestore';
-import { calcWaterGoal } from '../utils/nutrition';
+import { calcWaterGoal } from '../../utils/nutrition';
 import { useWaterHistory } from './useWaterHistory';
 
 export function useWaterTracker() {

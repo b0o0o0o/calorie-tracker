@@ -1,6 +1,6 @@
 // src/components/Diary/WaterTracker.tsx
 import React from 'react';
-import { useWaterTracker } from '../../hooks/useWaterTracker';
+import { useWaterTracker } from '../../hooks/data';
 
 const WaterTracker: React.FC = () => {
     const { amount, loading, handleAdd, waterGoal } = useWaterTracker();

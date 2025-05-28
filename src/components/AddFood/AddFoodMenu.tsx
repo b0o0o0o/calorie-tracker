@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDate } from '../../context/DateContext';
+import { useDate } from '../../contexts/DateContext';
 import { IoCloseSharp, IoChevronDownOutline, IoChevronUpOutline } from 'react-icons/io5';
 import type { MealType } from '../../config/theme';
 
@@ -22,8 +22,18 @@ const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onClose }) => {
     const { selectedDate } = useDate();
     const [isMealsExpanded, setIsMealsExpanded] = useState(false);
 
+    const handleBackdropClick = (e: React.MouseEvent) => {
+        // Vérifie si le clic est sur le backdrop (et non sur le contenu)
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div 
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={handleBackdropClick}
+        >
             <div className="bg-white rounded-2xl p-6 w-[90vw] max-w-md">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-semibold text-[#4D9078]">Ajouter un aliment</h2>
@@ -68,8 +78,6 @@ const AddFoodMenu: React.FC<AddFoodMenuProps> = ({ onMealSelect, onClose }) => {
                             </div>
                         )}
                     </div>
-
-                    
                 </div>
             </div>
         </div>

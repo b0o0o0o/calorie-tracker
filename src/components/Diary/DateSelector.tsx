@@ -3,7 +3,7 @@ import { format, parseISO, addDays, subDays } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
-import { useDate } from '../../context/DateContext';
+import { useDate } from '../../contexts/DateContext';
 
 const DateSelector: React.FC = () => {
     const { selectedDate, setSelectedDate } = useDate();

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { collection, query, where, orderBy, getDocs, doc, setDoc, limit, startAfter } from 'firebase/firestore';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export interface NutritionHistoryEntry {
   userId: string;

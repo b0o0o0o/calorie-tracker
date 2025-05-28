@@ -1,4 +1,4 @@
-import { useUserProfileState } from '../hooks/useUserProfileState';
+import { useUserProfileState } from '../hooks/auth';
 import { signout } from '../services/auth';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import InfoCard from '../components/InfoCard';
-import Button from '../components/Button';
+import Button from '../components/common/Button';
 import WaterGoalSettings from '../components/Settings/WaterGoalSettings';
 
 interface UserStats {
@@ -117,7 +117,9 @@ export default function Settings() {
                     <Button
                         onClick={() => navigate('/edit-profile')}
                         icon={FaUserEdit}
+                        variant="primary"
                         ariaLabel="Modifier le profil"
+                        fullWidth
                     >
                         Modifier le profil
                     </Button>
@@ -127,6 +129,7 @@ export default function Settings() {
                         icon={IoLogOutOutline}
                         variant="danger"
                         ariaLabel="Se déconnecter"
+                        fullWidth
                     >
                         Se déconnecter
                     </Button>

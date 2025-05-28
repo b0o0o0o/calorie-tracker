@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Ingredient } from '../../types/Recipe';
+import Input from '../common/Input';
 
 interface IngredientFormProps {
   ingredients: Ingredient[];
@@ -8,7 +9,7 @@ interface IngredientFormProps {
 
 export const IngredientForm: React.FC<IngredientFormProps> = ({ ingredients, onChange }) => {
   const handleAdd = () => {
-    onChange([...ingredients, { name: '', quantity: 0, unit: 'g', calories: 0 }]);
+    onChange([...ingredients, { foodId: '', label: '', quantity: 0, unit: 'g', calories: 0, protein: 0, carbs: 0, fat: 0 }]);
   };
 
   const handleRemove = (index: number) => {
@@ -27,40 +28,40 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({ ingredients, onC
         <div key={index} className="flex gap-2 items-start">
           <div className="flex-1 grid grid-cols-2 gap-2">
             <div>
-              <input
+              <Input
+                id={`ingredient-${index}-label`}
                 type="text"
-                value={ingredient.name}
-                onChange={(e) => handleChange(index, 'name', e.target.value)}
+                value={ingredient.label}
+                onChange={value => handleChange(index, 'label', value)}
                 placeholder="Nom de l'ingrédient"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4D9078] focus:border-[#4D9078] outline-none transition-colors"
               />
             </div>
             <div className="flex gap-2">
-              <input
+              <Input
+                id={`ingredient-${index}-quantity`}
                 type="number"
                 value={ingredient.quantity}
-                onChange={(e) => handleChange(index, 'quantity', Number(e.target.value))}
+                onChange={value => handleChange(index, 'quantity', Number(value))}
                 placeholder="Quantité"
-                min="0"
-                step="0.1"
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4D9078] focus:border-[#4D9078] outline-none transition-colors"
+                min={0}
+                step={0.1}
               />
-              <select
+              <Input
+                id={`ingredient-${index}-unit`}
                 value={ingredient.unit}
-                onChange={(e) => handleChange(index, 'unit', e.target.value)}
-                className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4D9078] focus:border-[#4D9078] outline-none transition-colors"
-              >
-                <option value="g">g</option>
-                <option value="ml">ml</option>
-                <option value="pcs">pcs</option>
-              </select>
-              <input
+                onChange={value => handleChange(index, 'unit', value)}
+                options={[
+                  { value: 'g', label: 'g' },
+                  { value: 'ml', label: 'ml' }
+                ]}
+              />
+              <Input
+                id={`ingredient-${index}-calories`}
                 type="number"
                 value={ingredient.calories}
-                onChange={(e) => handleChange(index, 'calories', Number(e.target.value))}
+                onChange={value => handleChange(index, 'calories', Number(value))}
                 placeholder="Calories"
-                min="0"
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4D9078] focus:border-[#4D9078] outline-none transition-colors"
+                min={0}
               />
             </div>
           </div>

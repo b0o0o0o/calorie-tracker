@@ -1,6 +1,6 @@
 // src/pages/Home.tsx
 import { useMemo, useState, useEffect } from 'react';
-import { useUserProfileState } from '../hooks/useUserProfileState';
+import { useUserProfileState } from '../hooks/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { PALETTE } from '../config/theme';

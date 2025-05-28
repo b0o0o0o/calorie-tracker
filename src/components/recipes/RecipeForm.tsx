@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { RecipeFormData, Ingredient } from '../../types/Recipe';
 import type { FoodItem } from '../../data/baseIngredients';
@@ -12,6 +12,7 @@ import QuantityForm from '../AddFood/QuantityForm';
 import ManualFoodForm from '../AddFood/ManualFoodForm';
 import ActionButton from '../common/ActionButton';
 import { IoAddOutline } from 'react-icons/io5';
+import Input from '../common/Input';
 
 const initialFormData: RecipeFormData = {
   name: '',
@@ -179,45 +180,34 @@ export const RecipeForm = () => {
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Nom de la recette
-              </label>
-              <input
-                type="text"
+              <Input
                 id="name"
+                type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={value => setFormData({ ...formData, name: value })}
+                label="Nom de la recette"
                 required
-                className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-xl focus:ring-2 focus:ring-[#4D9078] focus:border-[#4D9078] outline-none transition-colors"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="preparationTime" className="block text-sm font-medium text-gray-700 mb-1">
-                  Temps de préparation (min)
-                </label>
-                <input
-                  type="number"
+                <Input
                   id="preparationTime"
+                  type="number"
                   value={formData.preparationTime}
-                  onChange={(e) => setFormData({ ...formData, preparationTime: Number(e.target.value) })}
+                  onChange={value => setFormData({ ...formData, preparationTime: Number(value) })}
                   min={0}
-                  onFocus={e => e.target.value = ''}
-                  className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-xl focus:ring-2 focus:ring-[#4D9078] focus:border-[#4D9078] outline-none transition-colors"
+                  label="Temps de préparation (min)"
                 />
               </div>
               <div>
-                <label htmlFor="servings" className="block text-sm font-medium text-gray-700 mb-1">
-                  Nombre de personnes
-                </label>
-                <input
-                  type="number"
+                <Input
                   id="servings"
+                  type="number"
                   value={formData.servings}
-                  onChange={(e) => setFormData({ ...formData, servings: Number(e.target.value) })}
+                  onChange={value => setFormData({ ...formData, servings: Number(value) })}
                   min={1}
-                  onFocus={e => e.target.value = ''}
-                  className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-xl focus:ring-2 focus:ring-[#4D9078] focus:border-[#4D9078] outline-none transition-colors"
+                  label="Nombre de personnes"
                 />
               </div>
             </div>
@@ -267,18 +257,20 @@ export const RecipeForm = () => {
                   results={searchResults}
                   selectedFood={selectedFood}
                   onFoodSelect={(food) => {
-                    if (selectedFood?.foodId === food.foodId) {
+                    if (selectedFood?.foodId === food?.foodId) {
                       setSelectedFood(null);
                     } else {
                       setSelectedFood(food);
                     }
                   }}
-                  onSearch={() => handleSearch(search)}
+                  quantity={quantity}
+                  onQuantityChange={setQuantity}
+                  onAdd={handleAddIngredient}
                 />
 
                 {selectedFood && (
                   <QuantityForm
-                    selectedFood={selectedFood}
+                    selectedFood={{ name: selectedFood.label, unit: selectedFood.unit || 'g' }}
                     quantity={quantity}
                     onQuantityChange={setQuantity}
                     onAdd={handleAddIngredient}

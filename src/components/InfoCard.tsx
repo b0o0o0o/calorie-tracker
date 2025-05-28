@@ -1,3 +1,5 @@
+import Card from './common/Card';
+
 interface InfoCardProps {
     label: string;
     value: string | number;
@@ -7,11 +9,11 @@ interface InfoCardProps {
 
 export default function InfoCard({ label, value, unit = '', className = '' }: InfoCardProps) {
     return (
-        <div className={`bg-gray-100 border border-gray-300 rounded-xl px-4 py-2 ${className}`}>
+        <Card variant="info" className={`px-4 py-2 ${className}`}>
             <p className="text-gray-900 text-sm">{label}</p>
             <p className="text-gray-600 font-medium text-xs">
                 {value}{unit}
             </p>
-        </div>
+        </Card>
     );
 } 

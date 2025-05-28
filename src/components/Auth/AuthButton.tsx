@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '../../components/common/Button';
 
 interface AuthButtonProps {
     type?: 'submit' | 'button';
@@ -12,22 +13,14 @@ const AuthButton: React.FC<AuthButtonProps> = ({
     children
 }) => {
     return (
-        <button
+        <Button
             type={type}
             onClick={onClick}
-            className="
-                w-full
-                py-3
-                bg-yellow-400
-                text-gray-900
-                font-semibold
-                rounded-lg
-                hover:bg-yellow-500
-                transition-colors
-            "
+            variant="auth"
+            fullWidth
         >
             {children}
-        </button>
+        </Button>
     );
 };
 

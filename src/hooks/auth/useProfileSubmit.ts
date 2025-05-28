@@ -1,15 +1,15 @@
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { 
     calcTDEE, 
-    calcCaloricGoal, 
-    calcBodyFatPercent, 
-    calcProteinGoal, 
-    calcFatGoal, 
+    calcCaloricGoal,
+    calcProteinGoal,
+    calcFatGoal,
     calcCarbGoal,
-    calcWaterGoal 
-} from '../utils/nutrition';
-import type { GoalType } from '../utils/nutrition';
+    calcWaterGoal,
+    calcBodyFatPercent,
+    type GoalType 
+} from '../../utils/nutrition';
 
 interface ProfileData {
     weight: number;
