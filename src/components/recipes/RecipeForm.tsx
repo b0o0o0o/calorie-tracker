@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { RecipeFormData, Ingredient } from '../../types/Recipe';
 import type { FoodItem } from '../../data/baseIngredients';
 import type { FoodCategoryValue } from '../../types/food';
+import { FoodUnit } from '../../types/common';
 import { recipeService } from '../../services/recipeService';
 import { searchFood, getDefaultQuantity } from '../../utils/foodSearch';
 import { calculateNutritionValues } from '../../utils/nutritionCalculations';
@@ -23,6 +24,10 @@ const initialFormData: RecipeFormData = {
   totalFat: 0,
   preparationTime: 0,
   servings: 1,
+  calories: 0,
+  protein: 0,
+  carbs: 0,
+  fat: 0
 };
 
 export const RecipeForm = () => {
@@ -38,11 +43,11 @@ export const RecipeForm = () => {
   const [showManualForm, setShowManualForm] = useState(false);
   const [manualEntry, setManualEntry] = useState({
     name: '',
-    calories: '',
-    protein: '',
-    carbs: '',
-    fat: '',
-    unit: 'g' as const,
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+    unit: FoodUnit.GRAM,
     category: 'autre' as FoodCategoryValue,
   });
 
@@ -61,6 +66,10 @@ export const RecipeForm = () => {
               totalFat: recipe.totalFat,
               preparationTime: recipe.preparationTime ?? 0,
               servings: recipe.servings ?? 1,
+              calories: recipe.calories,
+              protein: recipe.protein,
+              carbs: recipe.carbs,
+              fat: recipe.fat
             });
           }
         } catch (err) {
@@ -97,7 +106,7 @@ export const RecipeForm = () => {
       foodId: selectedFood.foodId,
       label: selectedFood.label,
       quantity,
-      unit: selectedFood.unit,
+      unit: selectedFood.unit as FoodUnit,
       calories: Number(nutritionValues.calories.toFixed(1)),
       protein: Number(nutritionValues.protein.toFixed(1)),
       carbs: Number(nutritionValues.carbs.toFixed(1)),
@@ -110,6 +119,10 @@ export const RecipeForm = () => {
       totalProtein: Number((prev.totalProtein + newIngredient.protein).toFixed(1)),
       totalCarbs: Number((prev.totalCarbs + newIngredient.carbs).toFixed(1)),
       totalFat: Number((prev.totalFat + newIngredient.fat).toFixed(1)),
+      calories: Number((prev.calories + newIngredient.calories).toFixed(1)),
+      protein: Number((prev.protein + newIngredient.protein).toFixed(1)),
+      carbs: Number((prev.carbs + newIngredient.carbs).toFixed(1)),
+      fat: Number((prev.fat + newIngredient.fat).toFixed(1))
     }));
     setSelectedFood(null);
     setQuantity(100);
@@ -126,6 +139,10 @@ export const RecipeForm = () => {
       totalProtein: Number((prev.totalProtein - ingredient.protein).toFixed(1)),
       totalCarbs: Number((prev.totalCarbs - ingredient.carbs).toFixed(1)),
       totalFat: Number((prev.totalFat - ingredient.fat).toFixed(1)),
+      calories: Number((prev.calories - ingredient.calories).toFixed(1)),
+      protein: Number((prev.protein - ingredient.protein).toFixed(1)),
+      carbs: Number((prev.carbs - ingredient.carbs).toFixed(1)),
+      fat: Number((prev.fat - ingredient.fat).toFixed(1))
     }));
   };
 
@@ -247,7 +264,6 @@ export const RecipeForm = () => {
 
             {!showManualForm && (
               <>
-                
                 <SearchBar
                   value={search}
                   onChange={handleSearch}
@@ -270,7 +286,7 @@ export const RecipeForm = () => {
 
                 {selectedFood && (
                   <QuantityForm
-                    selectedFood={{ name: selectedFood.label, unit: selectedFood.unit || 'g' }}
+                    selectedFood={{ name: selectedFood.label, unit: selectedFood.unit || FoodUnit.GRAM }}
                     quantity={quantity}
                     onQuantityChange={setQuantity}
                     onAdd={handleAddIngredient}
@@ -284,7 +300,6 @@ export const RecipeForm = () => {
                   fullWidth
                   className="mb-4 mt-5 cursor-pointer"
                 />
-
               </>
             )}
 
@@ -296,7 +311,7 @@ export const RecipeForm = () => {
                 }
                 onSubmit={() => {
                   if (!manualEntry.name) return;
-                  const newIngredient = {
+                  const newIngredient: Ingredient = {
                     foodId: manualEntry.name.toLowerCase().replace(/\s+/g, '_'),
                     label: manualEntry.name,
                     quantity: 100,
@@ -313,15 +328,19 @@ export const RecipeForm = () => {
                     totalProtein: Number((prev.totalProtein + newIngredient.protein).toFixed(1)),
                     totalCarbs: Number((prev.totalCarbs + newIngredient.carbs).toFixed(1)),
                     totalFat: Number((prev.totalFat + newIngredient.fat).toFixed(1)),
+                    calories: Number((prev.calories + newIngredient.calories).toFixed(1)),
+                    protein: Number((prev.protein + newIngredient.protein).toFixed(1)),
+                    carbs: Number((prev.carbs + newIngredient.carbs).toFixed(1)),
+                    fat: Number((prev.fat + newIngredient.fat).toFixed(1))
                   }));
                   setShowManualForm(false);
                   setManualEntry({
                     name: '',
-                    calories: '',
-                    protein: '',
-                    carbs: '',
-                    fat: '',
-                    unit: 'g',
+                    calories: 0,
+                    protein: 0,
+                    carbs: 0,
+                    fat: 0,
+                    unit: FoodUnit.GRAM,
                     category: 'autre',
                   });
                 }}

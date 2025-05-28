@@ -15,7 +15,7 @@ export const calculateNutritionValues = (
     quantity: number
 ): NutritionValues => {
     const isEgg = food.foodId.startsWith('oeuf');
-    const ratio = isEgg ? quantity : quantity / food.servingSize;
+    const ratio = isEgg ? quantity : quantity ;
 
     return {
         calories: Math.round(food.nutrients.calories * ratio),
@@ -46,7 +46,6 @@ export const createNewIngredient = (
             carbs: Number(carbs) || 0,
             fat: Number(fat) || 0
         },
-        servingSize: 100,
         unit,
         category,
     };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Recipe } from '../../types/Recipe';
-import { IoRestaurantOutline } from 'react-icons/io5';
+import { IoTimeOutline, IoPeopleOutline } from 'react-icons/io5';
 import Card from '../common/Card';
 
 interface RecipeCardProps {
@@ -14,19 +14,35 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onDelete }) => {
     <Card variant="recipe" className="p-4">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <IoRestaurantOutline className="text-lg text-[#4D9078]" />
           <h3 className="text-lg font-semibold text-[#4D9078]">{recipe.name}</h3>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span>⏱️ {recipe.preparationTime} min</span>
-          <span>•</span>
-          <span>👥 {recipe.servings} pers.</span>
+        <div className="flex items-center gap-4 text-gray-600 mb-4">
+          <div className="flex items-center gap-1">
+            <IoTimeOutline className="text-[#4D9078]" />
+            <span>{recipe.preparationTime} min</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <IoPeopleOutline className="text-[#4D9078]" />
+            <span>{recipe.servings} portions</span>
+          </div>
         </div>
-        <div className="grid grid-cols-4 text-center text-xs text-gray-400 mt-2">
-          <span className="text-[#4D9078]">{recipe.totalCalories.toFixed(1)} cal</span>
-          <span className="text-[#B4436C]">P {recipe.totalProtein.toFixed(1)}g</span>
-          <span className="text-[#F2C14E]">C {recipe.totalCarbs.toFixed(1)}g</span>
-          <span className="text-[#F78154]">L {recipe.totalFat.toFixed(1)}g</span>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Calories</label>
+            <p className="mt-1 text-lg font-semibold text-[#4D9078]">{recipe.calories} kcal</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Protéines</label>
+            <p className="mt-1 text-lg font-semibold text-[#4D9078]">{recipe.protein}g</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Glucides</label>
+            <p className="mt-1 text-lg font-semibold text-[#4D9078]">{recipe.carbs}g</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Lipides</label>
+            <p className="mt-1 text-lg font-semibold text-[#4D9078]">{recipe.fat}g</p>
+          </div>
         </div>
       </div>
       <div className="flex gap-2 mt-4">

@@ -1,89 +1,96 @@
 import React from 'react';
 import type { Ingredient } from '../../types/Recipe';
+import { FoodUnit } from '../../types/common';
 import Input from '../common/Input';
 
 interface IngredientFormProps {
-  ingredients: Ingredient[];
-  onChange: (ingredients: Ingredient[]) => void;
+  onAdd: (ingredient: Ingredient) => void;
 }
 
-export const IngredientForm: React.FC<IngredientFormProps> = ({ ingredients, onChange }) => {
-  const handleAdd = () => {
-    onChange([...ingredients, { foodId: '', label: '', quantity: 0, unit: 'g', calories: 0, protein: 0, carbs: 0, fat: 0 }]);
+const IngredientForm: React.FC<IngredientFormProps> = ({ onAdd }) => {
+  const [ingredient, setIngredient] = React.useState<Ingredient>({
+    foodId: '',
+    label: '',
+    quantity: 0,
+    unit: FoodUnit.GRAM,
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0
+  });
+
+  const handleChange = (field: keyof Ingredient, value: string | number) => {
+    setIngredient(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleRemove = (index: number) => {
-    onChange(ingredients.filter((_, i) => i !== index));
-  };
-
-  const handleChange = (index: number, field: keyof Ingredient, value: string | number) => {
-    const newIngredients = [...ingredients];
-    newIngredients[index] = { ...newIngredients[index], [field]: value };
-    onChange(newIngredients);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onAdd(ingredient);
+    setIngredient({
+      foodId: '',
+      label: '',
+      quantity: 0,
+      unit: FoodUnit.GRAM,
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0
+    });
   };
 
   return (
-    <div className="space-y-4">
-      {ingredients.map((ingredient, index) => (
-        <div key={index} className="flex gap-2 items-start">
-          <div className="flex-1 grid grid-cols-2 gap-2">
-            <div>
-              <Input
-                id={`ingredient-${index}-label`}
-                type="text"
-                value={ingredient.label}
-                onChange={value => handleChange(index, 'label', value)}
-                placeholder="Nom de l'ingrédient"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Input
-                id={`ingredient-${index}-quantity`}
-                type="number"
-                value={ingredient.quantity}
-                onChange={value => handleChange(index, 'quantity', Number(value))}
-                placeholder="Quantité"
-                min={0}
-                step={0.1}
-              />
-              <Input
-                id={`ingredient-${index}-unit`}
-                value={ingredient.unit}
-                onChange={value => handleChange(index, 'unit', value)}
-                options={[
-                  { value: 'g', label: 'g' },
-                  { value: 'ml', label: 'ml' }
-                ]}
-              />
-              <Input
-                id={`ingredient-${index}-calories`}
-                type="number"
-                value={ingredient.calories}
-                onChange={value => handleChange(index, 'calories', Number(value))}
-                placeholder="Calories"
-                min={0}
-              />
-            </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex gap-2 items-start">
+        <div className="flex-1 grid grid-cols-2 gap-2">
+          <div>
+            <Input
+              id="ingredient-label"
+              type="text"
+              value={ingredient.label}
+              onChange={value => handleChange('label', value)}
+              placeholder="Nom de l'ingrédient"
+            />
           </div>
-          <button
-            type="button"
-            onClick={() => handleRemove(index)}
-            className="p-2 text-[#B4436C] hover:bg-[#ffebeb] rounded-lg transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </button>
+          <div className="flex gap-2">
+            <Input
+              id="ingredient-quantity"
+              type="number"
+              value={ingredient.quantity}
+              onChange={value => handleChange('quantity', Number(value))}
+              placeholder="Quantité"
+              min={0}
+              step={0.1}
+            />
+            <Input
+              id="ingredient-unit"
+              value={ingredient.unit}
+              onChange={value => handleChange('unit', value as FoodUnit)}
+              options={[
+                { value: FoodUnit.GRAM, label: 'g' },
+                { value: FoodUnit.MILLILITER, label: 'ml' }
+              ]}
+            />
+            <Input
+              id="ingredient-calories"
+              type="number"
+              value={ingredient.calories}
+              onChange={value => handleChange('calories', Number(value))}
+              placeholder="Calories"
+              min={0}
+            />
+          </div>
         </div>
-      ))}
-
-      <button
-        type="button"
-        onClick={handleAdd}
-        className="w-full px-4 py-2 bg-white border border-[#4D9078] text-[#4D9078] rounded-lg hover:bg-[#e7f2e5] transition-colors shadow-sm hover:shadow-md"
-      >
-        + Ajouter un ingrédient
-      </button>
-    </div>
+        <button
+          type="submit"
+          className="p-2 text-[#4D9078] hover:bg-[#e7f2e5] rounded-lg transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </form>
   );
-}; 
+};
+
+export default IngredientForm; 

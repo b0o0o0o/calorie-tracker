@@ -1,5 +1,4 @@
 // src/pages/Profile.tsx
-import React from 'react';
 import { useProfileFields, useUserProfileState, useProfileSubmit } from '../hooks/auth';
 import ProfileForm from '../components/ProfileForm';
 

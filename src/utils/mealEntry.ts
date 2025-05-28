@@ -14,10 +14,10 @@ export function createMealEntry({
   return {
     mealType,
     name: food.name,
-    calories: Math.round((parseFloat(food.calories) || 0) * qty / 100),
-    protein: Math.round((parseFloat(food.protein) || 0) * qty / 100),
-    carbs: Math.round((parseFloat(food.carbs) || 0) * qty / 100),
-    fat: Math.round((parseFloat(food.fat) || 0) * qty / 100),
+    calories: Math.round((food.calories || 0) * qty / 100),
+    protein: Math.round((food.protein || 0) * qty / 100),
+    carbs: Math.round((food.carbs || 0) * qty / 100),
+    fat: Math.round((food.fat || 0) * qty / 100),
     // autres champs si besoin
   };
 } 

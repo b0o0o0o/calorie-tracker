@@ -4,7 +4,6 @@ import { MdGrain, MdLocalDrink, MdRestaurant, MdCake } from 'react-icons/md';
 import { IoMdIceCream } from 'react-icons/io';
 import { BiLeaf } from 'react-icons/bi';
 import { RiPlantLine } from 'react-icons/ri';
-import React from 'react';
 
 export function getFoodCategoryIcon(category: string, size = 22) {
     // Catégories principales

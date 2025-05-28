@@ -1,48 +1,39 @@
-export interface Ingredient {
+import type { NutritionValues, BaseEntity } from './common';
+import { FoodUnit } from './common';
+
+export interface Ingredient extends NutritionValues {
   foodId: string;
   label: string;
   quantity: number;
-  unit: 'g' | 'ml';
+  unit: FoodUnit;
+}
+
+export interface Recipe extends BaseEntity, NutritionValues {
+  name: string;
+  description: string;
+  ingredients: Ingredient[];
+  instructions: string[];
+  preparationTime: number;
+  servings: number;
+  totalCalories: number;
+  totalProtein: number;
+  totalCarbs: number;
+  totalFat: number;
+}
+
+export type RecipeFormData = Omit<Recipe, 'id' | 'createdAt' | 'updatedAt'> & {
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
-}
-
-export interface Recipe {
-  id: string;
-  name: string;
-  ingredients: Ingredient[];
-  totalCalories: number;
-  totalProtein: number;
-  totalCarbs: number;
-  totalFat: number;
-  preparationTime: number;
-  servings: number;
-}
-
-export interface RecipeFormData {
-  name: string;
-  ingredients: Ingredient[];
-  totalCalories: number;
-  totalProtein: number;
-  totalCarbs: number;
-  totalFat: number;
-  preparationTime: number;
-  servings: number;
-}
+};
 
 export interface SearchableRecipe {
   foodId: string;
   label: string;
-  nutrients: {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-  };
+  nutrients: NutritionValues;
   servingSize: number;
-  unit: 'g';
+  unit: FoodUnit;
   category: 'recipe';
   recipeId: string;
   servings: number;

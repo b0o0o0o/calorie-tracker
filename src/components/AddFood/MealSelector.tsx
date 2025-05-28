@@ -5,7 +5,7 @@ import type { MealType } from '../../config/theme';
 
 interface MealSelectorProps {
     onMealSelect: (meal: MealType) => void;
-    onManualAdd: () => void;
+    onManualAdd?: () => void;
 }
 
 const MealSelector: React.FC<MealSelectorProps> = ({ onMealSelect, onManualAdd }) => {
@@ -23,13 +23,15 @@ const MealSelector: React.FC<MealSelectorProps> = ({ onMealSelect, onManualAdd }
                             <span className="tracking-wide text-xl">{opt.label}</span>
                         </button>
                     ))}
-                    <button
-                        className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-gradient-to-r from-[#5FAD56] via-[#F2C14E] to-[#B4436C] text-white font-bold text-lg shadow-xl border-2 border-[#5FAD56] hover:from-[#4D9078] hover:to-[#B4436C] transition-all duration-200 mt-2"
-                        onClick={onManualAdd}
-                    >
-                        <FaLeaf size={28} className="text-white drop-shadow-lg" />
-                        <span className="tracking-wide text-xl">+ Ingrédient</span>
-                    </button>
+                    {onManualAdd && (
+                        <button
+                            className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-gradient-to-r from-[#5FAD56] via-[#F2C14E] to-[#B4436C] text-white font-bold text-lg shadow-xl border-2 border-[#5FAD56] hover:from-[#4D9078] hover:to-[#B4436C] transition-all duration-200 mt-2"
+                            onClick={onManualAdd}
+                        >
+                            <FaLeaf size={28} className="text-white drop-shadow-lg" />
+                            <span className="tracking-wide text-xl">+ Ingrédient</span>
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

@@ -7,27 +7,16 @@ import { db } from '../../firebase';
 import {
     doc,
     collection,
-    query,
-    where,
-    getDocs,
     setDoc,
     updateDoc,
     deleteDoc,
     onSnapshot,
-    addDoc,
-    Timestamp
+    addDoc
 } from 'firebase/firestore';
 import type { MealEntry } from '../../components/Diary/MealEntryList';
-import {
-    calcTDEE,
-    calcCaloricGoal,
-    calcProteinGoal,
-    calcFatGoal,
-    calcCarbGoal,
-    type GoalType
-} from '../../utils/nutrition';
 import { useNutritionHistory } from '../data/useNutritionHistory';
 import { calculateDailyTotals } from '../../utils/mealCalculations';
+import { GoalType, Sex, ActivityLevel } from '../../types/common';
 
 export function useUserProfileState(initialLoading = false) {
     const user = useAuth();
@@ -39,9 +28,9 @@ export function useUserProfileState(initialLoading = false) {
     const [weight, setWeight]     = useState<number>(0);
     const [height, setHeight]     = useState<number>(0);
     const [age, setAge]           = useState<number>(0);
-    const [sex, setSex]           = useState<'male' | 'female'>('male');
-    const [activity, setActivity] = useState<number>(1.2);
-    const [goal, setGoal]         = useState<GoalType>('maintain');
+    const [sex, setSex]           = useState<Sex>(Sex.MALE);
+    const [activity, setActivity] = useState<ActivityLevel>(ActivityLevel.SEDENTARY);
+    const [goal, setGoal]         = useState<GoalType>(GoalType.MAINTAIN);
     const [error, setError]       = useState<string | null>(null);
     const [loading, setLoading]   = useState<boolean>(initialLoading);
 
@@ -65,9 +54,9 @@ export function useUserProfileState(initialLoading = false) {
                     setWeight(data.weight ?? 0);
                     setHeight(data.height ?? 0);
                     setAge(data.age ?? 0);
-                    setSex(data.sex ?? 'male');
-                    setActivity(data.activity ?? 1.2);
-                    setGoal(data.goal ?? 'maintain');
+                    setSex(data.sex ?? Sex.MALE);
+                    setActivity(data.activity ?? ActivityLevel.SEDENTARY);
+                    setGoal(data.goal ?? GoalType.MAINTAIN);
                 } else {
                     navigate('/profile');
                 }

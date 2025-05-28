@@ -1,7 +1,6 @@
 // src/hooks/useProfileFields.ts
 import type { Dispatch, SetStateAction } from 'react';
-import { useState } from 'react';
-import type { GoalType } from '../../utils/nutrition';
+import { GoalType, Sex, ActivityLevel } from '../../types/common';
 
 export type InputField = {
     id: string;
@@ -16,7 +15,7 @@ export type SelectField = {
     id: string;
     label: string;
     value: string | number;
-    options: { value: string; label: string }[];
+    options: { value: string | number; label: string }[];
     onChange: (val: string) => void;
 };
 
@@ -24,8 +23,8 @@ export function useProfileFields(
     weight: number,    setWeight: Dispatch<SetStateAction<number>>,
     height: number,    setHeight: Dispatch<SetStateAction<number>>,
     age: number,       setAge: Dispatch<SetStateAction<number>>,
-    sex: 'male'|'female', setSex: Dispatch<SetStateAction<'male'|'female'>>,
-    activity: number,  setActivity: Dispatch<SetStateAction<number>>,
+    sex: Sex,          setSex: Dispatch<SetStateAction<Sex>>,
+    activity: ActivityLevel, setActivity: Dispatch<SetStateAction<ActivityLevel>>,
     goal: GoalType,    setGoal: Dispatch<SetStateAction<GoalType>>): { inputFields: InputField[]; selectFields: SelectField[] } {
     const inputFields: InputField[] = [
         {
@@ -49,28 +48,28 @@ export function useProfileFields(
         {
             id: 'sex', label: 'Sexe', value: sex,
             options: [
-                { value: 'male',   label: 'Homme' },
-                { value: 'female', label: 'Femme' },
+                { value: Sex.MALE,   label: 'Homme' },
+                { value: Sex.FEMALE, label: 'Femme' },
             ],
-            onChange: v => setSex(v as 'male'|'female'),
+            onChange: v => setSex(v as Sex),
         },
         {
             id: 'activity', label: "Niveau d'activité", value: activity,
             options: [
-                { value: '1.2',   label: 'Sédentaire' },
-                { value: '1.375', label: 'Légèrement actif' },
-                { value: '1.55',  label: 'Modérément actif' },
-                { value: '1.725', label: 'Très actif' },
-                { value: '1.9',   label: 'Extrêmement actif' },
+                { value: ActivityLevel.SEDENTARY,      label: 'Sédentaire' },
+                { value: ActivityLevel.LIGHTLY_ACTIVE, label: 'Légèrement actif' },
+                { value: ActivityLevel.MODERATELY_ACTIVE, label: 'Modérément actif' },
+                { value: ActivityLevel.VERY_ACTIVE,    label: 'Très actif' },
+                { value: ActivityLevel.EXTREMELY_ACTIVE, label: 'Extrêmement actif' },
             ],
-            onChange: v => setActivity(parseFloat(v) || 1.2),
+            onChange: v => setActivity(parseFloat(v) as ActivityLevel),
         },
         {
             id: 'goal', label: 'Objectif', value: goal,
             options: [
-                { value: 'loss',     label: 'Perte de poids' },
-                { value: 'maintain', label: 'Maintien' },
-                { value: 'gain',     label: 'Prise de masse' },
+                { value: GoalType.LOSS,     label: 'Perte de poids' },
+                { value: GoalType.MAINTAIN, label: 'Maintien' },
+                { value: GoalType.GAIN,     label: 'Prise de masse' },
             ],
             onChange: v => setGoal(v as GoalType),
         },

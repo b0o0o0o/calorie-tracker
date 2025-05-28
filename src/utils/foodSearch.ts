@@ -3,6 +3,7 @@ import { getCustomIngredients } from '../data/customIngredients';
 import type { FoodItem } from '../data/baseIngredients';
 import type { SearchableRecipe } from '../types/Recipe';
 import { recipeService } from '../services/recipeService';
+import { FoodUnit } from '../types/common';
 
 export const searchFood = async (query: string, excludeRecipes: boolean = false): Promise<(FoodItem | SearchableRecipe)[]> => {
     if (!query.trim()) {
@@ -20,13 +21,13 @@ export const searchFood = async (query: string, excludeRecipes: boolean = false)
             foodId: `recipe_${recipe.id}`,
             label: recipe.name,
             nutrients: {
-                calories: recipe.totalCalories,
-                protein: recipe.totalProtein,
-                carbs: recipe.totalCarbs,
-                fat: recipe.totalFat
+                calories: recipe.calories,
+                protein: recipe.protein,
+                carbs: recipe.carbs,
+                fat: recipe.fat
             },
             servingSize: 1,
-            unit: 'g',
+            unit: FoodUnit.GRAM,
             category: 'recipe',
             recipeId: recipe.id,
             servings: recipe.servings

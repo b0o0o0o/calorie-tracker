@@ -6,10 +6,11 @@ const RECIPES_COLLECTION = 'recipes';
 
 export const recipeService = {
   async createRecipe(recipeData: RecipeFormData): Promise<string> {
+    const now = new Date();
     const docRef = await addDoc(collection(db, RECIPES_COLLECTION), {
       ...recipeData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
     });
     return docRef.id;
   },
@@ -19,17 +20,28 @@ export const recipeService = {
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() } as Recipe;
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        ...data,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
+      } as Recipe;
     }
     return null;
   },
 
   async getAllRecipes(): Promise<Recipe[]> {
     const querySnapshot = await getDocs(collection(db, RECIPES_COLLECTION));
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Recipe[];
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
+      } as Recipe;
+    });
   },
 
   async updateRecipe(id: string, recipeData: Partial<RecipeFormData>): Promise<void> {

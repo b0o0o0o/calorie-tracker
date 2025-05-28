@@ -8,6 +8,7 @@ import SearchResults from './SearchResults';
 import ManualFoodForm from './ManualFoodForm';
 import ActionButton from '../common/ActionButton';
 import { IoAddOutline } from 'react-icons/io5';
+import { FoodUnit } from '../../types/common';
 
 const AddFood: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -72,11 +73,11 @@ const AddFood: React.FC = () => {
                     <ManualFoodForm
                         manualEntry={{
                             name: '',
-                            calories: '',
-                            protein: '',
-                            carbs: '',
-                            fat: '',
-                            unit: 'g',
+                            calories: 0,
+                            protein: 0,
+                            carbs: 0,
+                            fat: 0,
+                            unit: FoodUnit.GRAM,
                             category: 'autre',
                         }}
                         onManualEntryChange={(_field) => {

@@ -1,5 +1,4 @@
 // src/pages/SignUp.tsx
-import React from 'react';
 import AuthForm from '../components/Auth/AuthForm';
 import AuthInput from '../components/Auth/AuthInput';
 import AuthButton from '../components/Auth/AuthButton';

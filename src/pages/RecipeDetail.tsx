@@ -110,11 +110,11 @@ export default function RecipeDetail() {
           <div>
             <h2 className="text-lg font-semibold text-[#4D9078] mb-4">Ingrédients</h2>
             <ul className="space-y-2">
-              {recipe.ingredients.map((ingredient, index) => (
+              {recipe.ingredients.map((ingredient, index: number) => (
                 <li key={index} className="flex items-center gap-2 text-gray-600">
                   <span className="w-2 h-2 bg-[#4D9078] rounded-full"></span>
                   <span>
-                    {ingredient.quantity} {ingredient.unit} de {ingredient.name}
+                    {ingredient.quantity} {ingredient.unit} de {ingredient.label}
                     <span className="text-gray-400 text-sm ml-2">
                       ({ingredient.calories} cal)
                     </span>
@@ -127,7 +127,7 @@ export default function RecipeDetail() {
           <div>
             <h2 className="text-lg font-semibold text-[#4D9078] mb-4">Instructions</h2>
             <ol className="space-y-4">
-              {recipe.instructions.map((instruction, index) => (
+              {recipe.instructions.map((instruction: string, index: number) => (
                 <li key={index} className="flex gap-3 text-gray-600">
                   <span className="flex-shrink-0 w-6 h-6 bg-[#4D9078] text-white rounded-full flex items-center justify-center text-sm font-medium">
                     {index + 1}

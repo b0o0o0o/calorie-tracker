@@ -1,3 +1,6 @@
+import type { NutritionValues } from './common';
+import { FoodUnit } from './common';
+
 export type FoodCategoryValue = 
     | 'legume'
     | 'fruit'
@@ -15,14 +18,8 @@ export interface FoodCategory {
     readonly label: string;
 }
 
-export type FoodUnit = 'g' | 'ml';
-
-export interface FoodFormData {
+export interface FoodFormData extends NutritionValues {
     name: string;
-    calories: string;
-    protein: string;
-    carbs: string;
-    fat: string;
     unit: FoodUnit;
     category: FoodCategoryValue;
 } 

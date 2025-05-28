@@ -7,16 +7,16 @@ import {
     calcFatGoal,
     calcCarbGoal,
     calcWaterGoal,
-    calcBodyFatPercent,
-    type GoalType 
+    calcBodyFatPercent
 } from '../../utils/nutrition';
+import { GoalType, Sex, ActivityLevel } from '../../types/common';
 
 interface ProfileData {
     weight: number;
     height: number;
     age: number;
-    sex: 'male' | 'female';
-    activity: number;
+    sex: Sex;
+    activity: ActivityLevel;
     goal: GoalType;
     user: any;
 }
@@ -36,8 +36,8 @@ export function useProfileSubmit() {
             const tdee = calcTDEE(weight, height, age, sex, activity);
             const caloricGoal = calcCaloricGoal(tdee, goal);
             const currentBodyfat = calcBodyFatPercent({ sex, age, height, weight });
-            const targetWeight = goal === 'maintain' ? weight : 
-                               goal === 'loss' ? weight * 0.95 : 
+            const targetWeight = goal === GoalType.MAINTAIN ? weight : 
+                               goal === GoalType.LOSS ? weight * 0.95 : 
                                weight * 1.05;
             const proteinGoal = calcProteinGoal(weight);
             const fatGoal = calcFatGoal(weight);

@@ -8,7 +8,7 @@ interface InputProps {
     label?: string;
     placeholder?: string;
     required?: boolean;
-    options?: { value: string; label: string }[];
+    options?: readonly { readonly value: string; readonly label: string }[];
     className?: string;
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;

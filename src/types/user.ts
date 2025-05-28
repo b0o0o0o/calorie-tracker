@@ -1,23 +1,16 @@
-import type { User as FirebaseUser } from 'firebase/auth';
+import type { NutritionGoals, WaterPreferences } from './common';
+import { GoalType, ActivityLevel, Sex } from './common';
 
-export interface User {
+export interface User extends NutritionGoals {
     weight: number;
     height: number;
     age: number;
-    sex: 'male' | 'female';
-    activity: number;
-    goal: 'loss' | 'maintain' | 'gain';
+    sex: Sex;
+    activity: ActivityLevel;
+    goal: GoalType;
     tdee: number;
-    caloricGoal: number;
     targetWeight: number;
-    proteinGoal: number;
-    fatGoal: number;
-    carbGoal: number;
-    waterGoal: number;
-    waterPreferences?: {
-        customGoal?: number;
-        useCustomGoal: boolean;
-    };
+    waterPreferences?: WaterPreferences;
     email: string;
     updatedAt: Date;
     lastProfileUpdate: Date;

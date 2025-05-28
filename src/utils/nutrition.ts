@@ -1,5 +1,5 @@
 // src/utils/nutrition.ts
-export type GoalType = 'loss' | 'maintain' | 'gain';
+import { GoalType, Sex, ActivityLevel } from '../types/common';
 
 /**
  * Calcule le TDEE (Total Daily Energy Expenditure) à partir des paramètres utilisateur.
@@ -8,11 +8,11 @@ export function calcTDEE(
     weight: number,
     height: number,
     age: number,
-    sex: 'male' | 'female',
-    activity: number
+    sex: Sex,
+    activity: ActivityLevel
 ): number {
     // Calcul du BMR (Basal Metabolic Rate) avec la formule de Mifflin-St Jeor
-    const bmr = 10 * weight + 6.25 * height - 5 * age + (sex === 'male' ? 5 : -161);
+    const bmr = 10 * weight + 6.25 * height - 5 * age + (sex === Sex.MALE ? 5 : -161);
     
     // Application du multiplicateur d'activité
     return Math.round(bmr * activity);
@@ -26,6 +26,7 @@ export function calcTDEE(
  */
 export function calcCaloricGoal(tdee: number, goal: GoalType): number {
     switch (goal) {
+        case GoalType.LOSS:
         case 'loss':
             return Math.round(tdee - 500); // Déficit de 500 calories
         case 'gain':

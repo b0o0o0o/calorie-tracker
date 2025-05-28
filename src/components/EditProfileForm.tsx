@@ -1,10 +1,11 @@
 import React from 'react';
-import { useProfileFields, useProfileSubmit } from '../hooks/auth';
+import { useProfileFields } from '../hooks/auth/useProfileFields';
+import { useProfileSubmit } from '../hooks/auth/useProfileSubmit';
+import { GoalType, Sex, ActivityLevel } from '../types/common';
 import ProfileForm from './ProfileForm';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import type { GoalType } from '../utils/nutrition';
 
 interface EditProfileFormProps {
     user: any;
@@ -16,9 +17,9 @@ export default function EditProfileForm({ user, onError }: EditProfileFormProps)
     const [weight, setWeight] = React.useState(70);
     const [height, setHeight] = React.useState(170);
     const [age, setAge] = React.useState(30);
-    const [sex, setSex] = React.useState<'male' | 'female'>('male');
-    const [activity, setActivity] = React.useState(1.2);
-    const [goal, setGoal] = React.useState<GoalType>('maintain');
+    const [sex, setSex] = React.useState<Sex>(Sex.MALE);
+    const [activity, setActivity] = React.useState<ActivityLevel>(ActivityLevel.SEDENTARY);
+    const [goal, setGoal] = React.useState<GoalType>(GoalType.MAINTAIN);
     const [error, setError] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(true);
 
@@ -35,9 +36,9 @@ export default function EditProfileForm({ user, onError }: EditProfileFormProps)
                     setWeight(data.weight || 70);
                     setHeight(data.height || 170);
                     setAge(data.age || 30);
-                    setSex(data.sex || 'male');
-                    setActivity(data.activity || 1.2);
-                    setGoal(data.goal || 'maintain');
+                    setSex(data.sex || Sex.MALE);
+                    setActivity(data.activity || ActivityLevel.SEDENTARY);
+                    setGoal(data.goal || GoalType.MAINTAIN);
                 }
             } catch (err) {
                 console.error('[EditProfileForm] getDoc error', err);
