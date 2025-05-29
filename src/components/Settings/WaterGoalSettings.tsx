@@ -5,6 +5,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { calcWaterGoal } from '../../utils/nutrition';
 import { useWaterHistory } from '../../hooks/data';
 import Input from '../common/Input';
+import Card from '../common/Card';
+
 
 interface WaterGoalSettingsProps {
     weight: number;
@@ -92,7 +94,7 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
     }
 
     return (
-        <div className="bg-white rounded-xl p-4 shadow">
+        <Card className="p-4">
             <h3 className="text-lg font-semibold text-[#4D9078] mb-4">Objectif d'eau quotidien</h3>
             
             <div className="space-y-4">
@@ -135,7 +137,7 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
                     Enregistrer
                 </button>
             </div>
-        </div>
+        </Card>
     );
 };
 

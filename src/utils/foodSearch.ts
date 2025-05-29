@@ -36,26 +36,25 @@ export const searchFood = async (query: string, excludeRecipes: boolean = false)
 
     // Combiner et trier les résultats
     const allResults = [...allIngredients, ...searchableRecipes];
-    const sorted = allResults
-        .filter(item => item.label.toLowerCase().includes(lowerQuery))
-        .sort((a, b) => {
-            const aIsEgg = a.label.toLowerCase().includes('oeuf');
-            const bIsEgg = b.label.toLowerCase().includes('oeuf');
-            const aIsBeef = a.label.toLowerCase().includes('boeuf');
-            const bIsBeef = b.label.toLowerCase().includes('boeuf');
-            const aIsRecipe = a.category === 'recipe';
-            const bIsRecipe = b.category === 'recipe';
-            
-            // Priorité : recettes > oeuf > boeuf > autres
-            if (aIsRecipe && !bIsRecipe) return -1;
-            if (!aIsRecipe && bIsRecipe) return 1;
-            if (aIsEgg && !bIsEgg) return -1;
-            if (!aIsEgg && bIsEgg) return 1;
-            if (aIsBeef && !bIsBeef) return 1;
-            if (!aIsBeef && bIsBeef) return -1;
-            return a.label.localeCompare(b.label);
-        });
-    return sorted.slice(0, 6);
+    // Fonction de normalisation pour gérer 'oe' et 'œ'
+    function normalize(str: string) {
+        return str.toLowerCase().replace(/œ/g, 'oe');
+    }
+    // Algorithme de scoring avancé
+    function getScore(label: string, query: string) {
+        const l = normalize(label);
+        const q = normalize(query);
+        if (l === q) return 300;
+        if (l.startsWith(q)) return 200;
+        const index = l.indexOf(q);
+        if (index > 0) return 100 - index; // plus c'est loin, moins c'est pertinent
+        return 0;
+    }
+    const filtered = allResults.filter(item => normalize(item.label).includes(normalize(query)));
+    const scored = filtered.map(item => ({ item, score: getScore(item.label, query) }));
+    scored.sort((a, b) => b.score - a.score || a.item.label.localeCompare(b.item.label));
+    const sorted = scored.map(s => s.item);
+    return sorted.slice(0, 20);
 };
 
 export const getDefaultQuantity = (food: FoodItem): number => {

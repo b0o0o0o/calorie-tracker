@@ -1,6 +1,3 @@
-import { FaPiggyBank, FaDrumstickBite, FaHorse, FaBrain, FaUtensils } from 'react-icons/fa';
-import { GiRabbit, GiCow, GiSheep, GiMeat, GiMeatCleaver } from 'react-icons/gi';
-
 export interface Viande {
     foodId: string;
     label: string;
@@ -687,16 +684,16 @@ export const VIANDES: Viande[] = [
 ];
 
 export const VIANDE_CATEGORIES = {
-    viande_boeuf: { label: 'Viande de bœuf', icon: GiCow },
-    viande_veau: { label: 'Viande de veau', icon: GiCow },
-    viande_porc: { label: 'Viande de porc', icon: FaPiggyBank },
-    viande_agneau: { label: 'Viande d\'agneau / mouton', icon: GiSheep },
-    viande_cheval: { label: 'Viande de cheval', icon: FaHorse },
-    viande_chevre: { label: 'Viande de chèvre / bouc', icon: GiSheep },
-    viande_gibier: { label: 'Viande de gibier / sauvage', icon: GiRabbit },
-    viande_morceaux: { label: 'Morceaux de viande', icon: GiMeatCleaver },
-    viande_volaille: { label: 'Volailles et gibiers à plumes', icon: FaDrumstickBite },
-    viande_abats: { label: 'Abats et produits tripiers', icon: FaBrain },
-    viande_charcuterie_crue: { label: 'Charcuteries crues et sèches', icon: GiMeat },
-    viande_charcuterie_cuite: { label: 'Charcuteries cuites', icon: FaUtensils }
+    viande_boeuf: { label: 'Viande de bœuf'},
+    viande_veau: { label: 'Viande de veau'},
+    viande_porc: { label: 'Viande de porc' },
+    viande_agneau: { label: 'Viande d\'agneau / mouton' },
+    viande_cheval: { label: 'Viande de cheval' },
+    viande_chevre: { label: 'Viande de chèvre / bouc' },
+    viande_gibier: { label: 'Viande de gibier / sauvage' },
+    viande_morceaux: { label: 'Morceaux de viande'},
+    viande_volaille: { label: 'Volailles et gibiers à plumes' },
+    viande_abats: { label: 'Abats et produits tripiers' },
+    viande_charcuterie_crue: { label: 'Charcuteries crues et sèches' },
+    viande_charcuterie_cuite: { label: 'Charcuteries cuites' }
 }; 

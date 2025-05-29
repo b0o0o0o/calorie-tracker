@@ -9,8 +9,8 @@ interface SearchResultsProps {
     results: (FoodItem | SearchableRecipe)[];
     selectedFood: FoodItem | SearchableRecipe | null;
     onFoodSelect: (food: FoodItem | SearchableRecipe | null) => void;
-    quantity: number;
-    onQuantityChange: (quantity: number) => void;
+    quantity: number | '';
+    onQuantityChange: (quantity: number | '') => void;
     onAdd: () => void;
 }
 
@@ -27,7 +27,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     }
 
     return (
-        <div className="mt-2 space-y-2">
+        <div className="mt-2 space-y-2 max-h-80 overflow-y-auto">
             {results.map((item) => (
                 <div key={item.foodId || item.label}>
                     <div

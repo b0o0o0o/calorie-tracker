@@ -1,8 +1,3 @@
-import { FaLeaf, FaAppleAlt, FaCircle } from 'react-icons/fa';
-import { GiMushroom, GiCarrot, GiHerbsBundle } from 'react-icons/gi';
-import { BiLeaf } from 'react-icons/bi';
-import { RiPlantLine } from 'react-icons/ri';
-
 export interface Legume {
     foodId: string;
     label: string;
@@ -996,13 +991,13 @@ export const LEGUMES: Legume[] = [
 ];
 
 export const LEGUME_CATEGORIES = {
-    legume_feuille: { label: 'Légumes feuilles', icon: FaLeaf },
-    legume_racine: { label: 'Légumes racines', icon: GiCarrot },
-    legume_bulbe: { label: 'Légumes bulbes', icon: FaCircle },
-    legume_tubercule: { label: 'Légumes tubercules', icon: FaCircle },
-    legume_fruit: { label: 'Légumes fruits', icon: FaAppleAlt },
-    legume_legumineuse: { label: 'Légumineuses fraîches', icon: BiLeaf },
-    legume_tige: { label: 'Légumes tiges', icon: RiPlantLine },
-    legume_champignon: { label: 'Champignons', icon: GiMushroom },
-    legume_aromatique: { label: 'Légumes aromatiques & condiments', icon: GiHerbsBundle }
+    legume_feuille: { label: 'Légumes feuilles' },
+    legume_racine: { label: 'Légumes racines' },
+    legume_bulbe: { label: 'Légumes bulbes' },
+    legume_tubercule: { label: 'Légumes tubercules' },
+    legume_fruit: { label: 'Légumes fruits' },
+    legume_legumineuse: { label: 'Légumineuses fraîches' },
+    legume_tige: { label: 'Légumes tiges' },
+    legume_champignon: { label: 'Champignons' },
+    legume_aromatique: { label: 'Légumes aromatiques & condiments' }
 }; 

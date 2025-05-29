@@ -1,5 +1,3 @@
-import { FaBreadSlice, FaCookie, FaCookieBite, FaGlobe } from 'react-icons/fa';
-import { GiCroissant, GiCakeSlice } from 'react-icons/gi';
 
 export interface Boulangerie {
     foodId: string;
@@ -701,10 +699,10 @@ export const BOULANGERIE: Boulangerie[] = [
 ];
 
 export const BOULANGERIE_CATEGORIES = {
-    boulangerie_viennoiserie: { label: 'Viennoiseries françaises classiques', icon: GiCroissant },
-    boulangerie_patisserie: { label: 'Pâtisseries françaises traditionnelles', icon: GiCakeSlice },
-    boulangerie_biscuits: { label: 'Biscuits, petits gâteaux et mignardises', icon: FaCookie },
-    boulangerie_pain_traditionnel: { label: 'Pains traditionnels', icon: FaBreadSlice },
-    boulangerie_pain_special: { label: 'Pains spéciaux et pains du monde', icon: FaGlobe },
-    boulangerie_pain_sucre: { label: 'Brioches et pains sucrés du monde', icon: FaCookieBite }
+    boulangerie_viennoiserie: { label: 'Viennoiseries françaises classiques' },
+    boulangerie_patisserie: { label: 'Pâtisseries françaises traditionnelles' },
+    boulangerie_biscuits: { label: 'Biscuits, petits gâteaux et mignardises' },
+    boulangerie_pain_traditionnel: { label: 'Pains traditionnels' },
+    boulangerie_pain_special: { label: 'Pains spéciaux et pains du monde' },
+    boulangerie_pain_sucre: { label: 'Brioches et pains sucrés du monde' }
 }; 

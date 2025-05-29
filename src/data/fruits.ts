@@ -1,6 +1,3 @@
-import { FaApple, FaPeace, FaWineGlassAlt, FaSeedling, FaWater, FaLeaf } from 'react-icons/fa';
-import { GiOrange } from 'react-icons/gi';
-
 
 export interface Fruit {
     foodId: string;
@@ -923,12 +920,12 @@ export const FRUITS: Fruit[] = [
 ];
 
 export const FRUIT_CATEGORIES = {
-    fruits_pepins: { label: 'Fruits à pépins', icon: FaApple },
-    fruits_agrumes: { label: 'Agrumes', icon: GiOrange },
-    fruits_noyau: { label: 'Fruits à noyau', icon: FaPeace },
-    fruits_baies: { label: 'Fruits rouges & baies', icon: FaWineGlassAlt },
-    fruits_tropicaux: { label: 'Fruits tropicaux & exotiques', icon: FaSeedling },
-    fruits_melon: { label: 'Melons & pastèques', icon: FaWater },
-    fruits_secs: { label: 'Fruits secs à coque', icon: FaSeedling },
-    fruits_transformes: { label: 'Fruits transformés ou secs', icon: FaLeaf }
+    fruits_pepins: { label: 'Fruits à pépins' },
+    fruits_agrumes: { label: 'Agrumes' },
+    fruits_noyau: { label: 'Fruits à noyau' },
+    fruits_baies: { label: 'Fruits rouges & baies' },
+    fruits_tropicaux: { label: 'Fruits tropicaux & exotiques' },
+    fruits_melon: { label: 'Melons & pastèques' },
+    fruits_secs: { label: 'Fruits secs à coque' },
+    fruits_transformes: { label: 'Fruits transformés ou secs' }
 }; 

@@ -1,5 +1,3 @@
-import { FaFish } from 'react-icons/fa';
-import { GiFishBucket, GiFlatfish, GiTropicalFish, GiCannedFish, GiFishEggs, GiCrab, GiOctopus } from 'react-icons/gi';
 
 export interface Poisson {
     foodId: string;
@@ -859,13 +857,13 @@ export const POISSONS: Poisson[] = [
 ];
 
 export const POISSON_CATEGORIES = {
-    poisson_maigre: { label: 'Poissons maigres', icon: FaFish },
-    poisson_gras: { label: 'Poissons gras', icon: FaFish },
-    poisson_plat: { label: 'Poissons plats', icon: GiFlatfish },
-    poisson_eau_douce: { label: 'Poissons d\'eau douce', icon: GiFishBucket },
-    poisson_tropical: { label: 'Poissons tropicaux', icon: GiTropicalFish },
-    poisson_transforme: { label: 'Poissons transformés', icon: GiCannedFish },
-    oeufs_poisson: { label: 'Œufs et produits dérivés', icon: GiFishEggs },
-    crustace: { label: 'Crustacés', icon: GiCrab },
-    mollusque: { label: 'Mollusques', icon: GiOctopus }
+    poisson_maigre: { label: 'Poissons maigres' },
+    poisson_gras: { label: 'Poissons gras' },
+    poisson_plat: { label: 'Poissons plats' },
+    poisson_eau_douce: { label: 'Poissons d\'eau douce' },
+    poisson_tropical: { label: 'Poissons tropicaux' },
+    poisson_transforme: { label: 'Poissons transformés' },
+    oeufs_poisson: { label: 'Œufs et produits dérivés' },
+    crustace: { label: 'Crustacés' },
+    mollusque: { label: 'Mollusques' }
 }; 

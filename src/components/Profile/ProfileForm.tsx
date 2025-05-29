@@ -1,7 +1,7 @@
 // src/components/ProfileForm.tsx
 import React from 'react';
 import FormField from './FormField';
-import type { InputField, SelectField } from '../hooks/useProfileFields';
+import type { InputField, SelectField } from '../../hooks/auth/useProfileFields';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 interface ProfileFormProps {

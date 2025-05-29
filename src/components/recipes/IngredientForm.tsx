@@ -8,7 +8,7 @@ interface IngredientFormProps {
 }
 
 const IngredientForm: React.FC<IngredientFormProps> = ({ onAdd }) => {
-  const [ingredient, setIngredient] = React.useState<Ingredient>({
+  const [ingredient, setIngredient] = React.useState<Omit<Ingredient, 'quantity' | 'calories'> & { quantity: number | ''; calories: number | '' }>({
     foodId: '',
     label: '',
     quantity: 0,
@@ -19,13 +19,19 @@ const IngredientForm: React.FC<IngredientFormProps> = ({ onAdd }) => {
     fat: 0
   });
 
-  const handleChange = (field: keyof Ingredient, value: string | number) => {
+  const handleChange = (field: keyof typeof ingredient, value: string | number) => {
     setIngredient(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAdd(ingredient);
+    if (typeof ingredient.quantity === 'string' && ingredient.quantity === '') return;
+    if (typeof ingredient.calories === 'string' && ingredient.calories === '') return;
+    onAdd({
+      ...ingredient,
+      quantity: Number(ingredient.quantity),
+      calories: Number(ingredient.calories)
+    });
     setIngredient({
       foodId: '',
       label: '',
@@ -37,6 +43,8 @@ const IngredientForm: React.FC<IngredientFormProps> = ({ onAdd }) => {
       fat: 0
     });
   };
+
+  const isDisabled = (typeof ingredient.quantity === 'string' && ingredient.quantity === '') || (typeof ingredient.calories === 'string' && ingredient.calories === '');
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -56,7 +64,7 @@ const IngredientForm: React.FC<IngredientFormProps> = ({ onAdd }) => {
               id="ingredient-quantity"
               type="number"
               value={ingredient.quantity}
-              onChange={value => handleChange('quantity', Number(value))}
+              onChange={value => handleChange('quantity', value)}
               placeholder="Quantité"
               min={0}
               step={0.1}
@@ -74,7 +82,7 @@ const IngredientForm: React.FC<IngredientFormProps> = ({ onAdd }) => {
               id="ingredient-calories"
               type="number"
               value={ingredient.calories}
-              onChange={value => handleChange('calories', Number(value))}
+              onChange={value => handleChange('calories', value)}
               placeholder="Calories"
               min={0}
             />
@@ -83,6 +91,7 @@ const IngredientForm: React.FC<IngredientFormProps> = ({ onAdd }) => {
         <button
           type="submit"
           className="p-2 text-[#4D9078] hover:bg-[#e7f2e5] rounded-lg transition-colors"
+          disabled={isDisabled}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />

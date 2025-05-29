@@ -1,5 +1,3 @@
-import { FaCheese, FaIceCream, FaGlassWhiskey } from 'react-icons/fa';
-import { GiMilkCarton, GiButter } from 'react-icons/gi';
 
 export interface ProduitLaitier {
     foodId: string;
@@ -1202,12 +1200,12 @@ export const PRODUITS_LAITIERS: ProduitLaitier[] = [
 ];
 
 export const PRODUIT_LAITIER_CATEGORIES = {
-    lait_animal: { label: 'Laits animaux', icon: GiMilkCarton },
-    beurre: { label: 'Beurres', icon: GiButter },
-    fromage: { label: 'Fromages', icon: FaCheese },
-    yaourt: { label: 'Yaourts et produits fermentés', icon: FaGlassWhiskey },
-    creme: { label: 'Crèmes et desserts lactés', icon: GiMilkCarton },
-    glace: { label: 'Glaces et produits glacés au lait', icon: FaIceCream },
-    autre: { label: 'Autres produits laitiers & techniques', icon: GiMilkCarton },
-    lait_vegetal: { label: 'Laits végétaux', icon: GiMilkCarton }
+    lait_animal: { label: 'Laits animaux' },
+    beurre: { label: 'Beurres'},
+    fromage: { label: 'Fromages' },
+    yaourt: { label: 'Yaourts et produits fermentés'},
+    creme: { label: 'Crèmes et desserts lactés' },
+    glace: { label: 'Glaces et produits glacés au lait'},
+    autre: { label: 'Autres produits laitiers & techniques'},
+    lait_vegetal: { label: 'Laits végétaux' }
 }; 

@@ -28,7 +28,7 @@ const AddFood: React.FC = () => {
     const [search, setSearch] = useState<string>('');
     const [searchResults, setSearchResults] = useState<(FoodItem | SearchableRecipe)[]>([]);
     const [selectedFood, setSelectedFood] = useState<(FoodItem | SearchableRecipe) | null>(null);
-    const [quantity, setQuantity] = useState<number>(100);
+    const [quantity, setQuantity] = useState<number | ''>(100);
     const [showManualForm, setShowManualForm] = useState(false);
     const [selectedItems, setSelectedItems] = useState<FoodListItem[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,9 +40,8 @@ const AddFood: React.FC = () => {
     };
 
     const handleAddToList = () => {
-        if (!selectedFood) return;
-        
-        setSelectedItems(prev => [...prev, { food: selectedFood, quantity }]);
+        if (!selectedFood || quantity === '' || Number(quantity) < 1) return;
+        setSelectedItems(prev => [...prev, { food: selectedFood, quantity: Number(quantity) }]);
         setSelectedFood(null);
         setQuantity(100);
         setSearch('');

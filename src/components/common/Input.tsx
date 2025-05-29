@@ -42,6 +42,30 @@ const Input: React.FC<InputProps> = ({
         text-base
     `;
 
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        onFocus?.(e);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        onBlur?.(e);
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        if (type === 'number') {
+            if (newValue === '') {
+                onChange('');
+                return;
+            }
+            const numValue = Number(newValue);
+            if (numValue < 0) {
+                onChange('0');
+                return;
+            }
+        }
+        onChange(newValue);
+    };
+
     return (
         <div className={`mb-2 ${className}`}>
             {label && (
@@ -69,9 +93,9 @@ const Input: React.FC<InputProps> = ({
                     id={id}
                     type={type}
                     value={value}
-                    onChange={e => onChange(e.target.value)}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
                     placeholder={placeholder}
                     className={baseClasses}
                     required={required}

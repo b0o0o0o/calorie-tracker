@@ -1,5 +1,5 @@
 import { useUserProfileState } from '../hooks/auth';
-import EditProfileForm from '../components/EditProfileForm';
+import EditProfileForm from '../components/Profile/EditProfileForm';
 
 export default function EditProfile() {
     const { user, loading, setError } = useUserProfileState();

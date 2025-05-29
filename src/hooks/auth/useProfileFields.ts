@@ -14,8 +14,8 @@ export type InputField = {
 export type SelectField = {
     id: string;
     label: string;
-    value: string | number;
-    options: { value: string | number; label: string }[];
+    value: string;
+    options: { value: string; label: string }[];
     onChange: (val: string) => void;
 };
 
@@ -46,30 +46,30 @@ export function useProfileFields(
 
     const selectFields: SelectField[] = [
         {
-            id: 'sex', label: 'Sexe', value: sex,
+            id: 'sex', label: 'Sexe', value: String(sex),
             options: [
-                { value: Sex.MALE,   label: 'Homme' },
-                { value: Sex.FEMALE, label: 'Femme' },
+                { value: String(Sex.MALE),   label: 'Homme' },
+                { value: String(Sex.FEMALE), label: 'Femme' },
             ],
             onChange: v => setSex(v as Sex),
         },
         {
-            id: 'activity', label: "Niveau d'activité", value: activity,
+            id: 'activity', label: "Niveau d'activité", value: String(activity),
             options: [
-                { value: ActivityLevel.SEDENTARY,      label: 'Sédentaire' },
-                { value: ActivityLevel.LIGHTLY_ACTIVE, label: 'Légèrement actif' },
-                { value: ActivityLevel.MODERATELY_ACTIVE, label: 'Modérément actif' },
-                { value: ActivityLevel.VERY_ACTIVE,    label: 'Très actif' },
-                { value: ActivityLevel.EXTREMELY_ACTIVE, label: 'Extrêmement actif' },
+                { value: String(ActivityLevel.SEDENTARY),      label: 'Sédentaire' },
+                { value: String(ActivityLevel.LIGHTLY_ACTIVE), label: 'Légèrement actif' },
+                { value: String(ActivityLevel.MODERATELY_ACTIVE), label: 'Modérément actif' },
+                { value: String(ActivityLevel.VERY_ACTIVE),    label: 'Très actif' },
+                { value: String(ActivityLevel.EXTREMELY_ACTIVE), label: 'Extrêmement actif' },
             ],
-            onChange: v => setActivity(parseFloat(v) as ActivityLevel),
+            onChange: v => setActivity(v as unknown as ActivityLevel),
         },
         {
-            id: 'goal', label: 'Objectif', value: goal,
+            id: 'goal', label: 'Objectif', value: String(goal),
             options: [
-                { value: GoalType.LOSS,     label: 'Perte de poids' },
-                { value: GoalType.MAINTAIN, label: 'Maintien' },
-                { value: GoalType.GAIN,     label: 'Prise de masse' },
+                { value: String(GoalType.LOSS),     label: 'Perte de poids' },
+                { value: String(GoalType.MAINTAIN), label: 'Maintien' },
+                { value: String(GoalType.GAIN),     label: 'Prise de masse' },
             ],
             onChange: v => setGoal(v as GoalType),
         },

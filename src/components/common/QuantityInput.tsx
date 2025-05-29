@@ -3,9 +3,9 @@ import ActionButton from './ActionButton';
 
 interface QuantityInputProps {
     label: string;
-    value: number;
+    value: number | '';
     unit: string;
-    onChange: (value: number) => void;
+    onChange: (value: number | '') => void;
     onAdd?: () => void;
     min?: number;
     max?: number;
@@ -28,6 +28,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
     addButtonLabel = 'Ajouter',
     showAddButton = true
 }) => {
+    const isValid = value !== '' && Number(value) >= min;
     return (
         <div className={`flex items-center justify-center gap-4 bg-white border border-gray-200 rounded-xl px-4 py-2 shadow-sm ${className}`}>
             <span className="font-medium text-gray-700 whitespace-nowrap">{label}</span>
@@ -37,7 +38,11 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
                 max={max}
                 step={step}
                 value={value}
-                onChange={e => onChange(Number(e.target.value))}
+                onChange={e => {
+                    const v = e.target.value;
+                    if (v === '') onChange('');
+                    else onChange(Number(v));
+                }}
                 className="w-20 px-2 py-1 border border-gray-300 rounded-lg text-center focus:ring-[#4D9078] focus:border-[#4D9078] mx-2"
             />
             <span className="text-gray-500 whitespace-nowrap">{unit}</span>
@@ -46,6 +51,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
                     onClick={onAdd} 
                     label={addButtonLabel}
                     variant="primary"
+                    disabled={!isValid}
                 />
             )}
         </div>

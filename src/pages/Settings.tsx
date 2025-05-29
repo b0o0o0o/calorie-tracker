@@ -6,7 +6,7 @@ import { FaUserEdit } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
-import InfoCard from '../components/InfoCard';
+import InfoCard from '../components/Profile/InfoCard';
 import Button from '../components/common/Button';
 import WaterGoalSettings from '../components/Settings/WaterGoalSettings';
 

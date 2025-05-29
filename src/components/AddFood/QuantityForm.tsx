@@ -3,8 +3,8 @@ import QuantityInput from '../common/QuantityInput';
 
 interface QuantityFormProps {
   selectedFood: { name: string; unit: string };
-  quantity: number;
-  onQuantityChange: (quantity: number) => void;
+  quantity: number | '';
+  onQuantityChange: (quantity: number | '') => void;
   onAdd: () => void;
 }
 

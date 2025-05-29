@@ -9,6 +9,20 @@ body, * {
     display: none; /* Chrome, Safari, Opera */
   }
 
+/* Suppression des flèches sur les inputs type number (Chrome, Safari, Edge, Opera) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Suppression des flèches sur Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 .dp-highlight {
   background: #5FAD56 !important;
   color: #fff !important;

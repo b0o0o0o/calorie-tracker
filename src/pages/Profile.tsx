@@ -1,6 +1,6 @@
 // src/pages/Profile.tsx
 import { useProfileFields, useUserProfileState, useProfileSubmit } from '../hooks/auth';
-import ProfileForm from '../components/ProfileForm';
+import ProfileForm from '../components/Profile/ProfileForm';
 
 export default function Profile() {
     const {
