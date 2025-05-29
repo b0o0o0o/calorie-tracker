@@ -585,7 +585,7 @@ export const VIANDES: Viande[] = [
     },
     {
         foodId: 'VI081',
-        label: 'Knack',
+        label: 'Knacky',
         category: 'viande_charcuterie_cuite',
         unit: 'g',
         nutrients: { calories: 300, protein: 14.0, carbs: 2.1, fat: 27.0 }
@@ -680,7 +680,14 @@ export const VIANDES: Viande[] = [
         category: 'viande_charcuterie_cuite',
         unit: 'g',
         nutrients: { calories: 310, protein: 13.0, carbs: 10.0, fat: 24.0 }
-    }
+    },
+    {
+    foodId: 'VI095',
+    label: 'Lardons cuits',
+    category: 'viande_charcuterie_cuite',
+    unit: 'g',
+    nutrients: { calories: 330, protein: 20.0, carbs: 0.5, fat: 28.0 }
+}
 ];
 
 export const VIANDE_CATEGORIES = {

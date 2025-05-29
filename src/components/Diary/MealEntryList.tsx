@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getFoodCategoryIcon } from '../../utils/foodCategoryIcon';
 import { BASE_INGREDIENTS } from '../../data/baseIngredients';
 import { getCustomIngredients } from '../../data/customIngredients';
-import NutritionValue from '../NutritionValue';
+import NutritionValue from '../nutrition/NutritionValue';
 import QuantityInput from '../common/QuantityInput';
 
 // on définit le type de repas

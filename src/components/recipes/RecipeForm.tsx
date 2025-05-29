@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { RecipeFormData, Ingredient } from '../../types/Recipe';
-import type { FoodItem } from '../../data/baseIngredients';
-import type { FoodCategoryValue } from '../../types/food';
-import { FoodUnit } from '../../types/common';
 import { recipeService } from '../../services/recipeService';
-import { searchFood, getDefaultQuantity } from '../../utils/foodSearch';
-import { calculateNutritionValues } from '../../utils/nutritionCalculations';
-import SearchBar from '../AddFood/SearchBar';
-import SearchResults from '../AddFood/SearchResults';
-import QuantityForm from '../AddFood/QuantityForm';
-import ManualFoodForm from '../AddFood/ManualFoodForm';
-import ActionButton from '../common/ActionButton';
-import { IoAddOutline } from 'react-icons/io5';
-import Input from '../common/Input';
+import { RecipeBasicInfo } from './RecipeBasicInfo';
+import { RecipeNutritionSummary } from './RecipeNutritionSummary';
+import { RecipeIngredientsList } from './RecipeIngredientsList';
+import { InstructionForm } from './InstructionForm';
 
 const initialFormData: RecipeFormData = {
   name: '',
+  description: '',
   ingredients: [],
+  instructions: [],
   totalCalories: 0,
   totalProtein: 0,
   totalCarbs: 0,
@@ -36,20 +30,6 @@ export const RecipeForm = () => {
   const [formData, setFormData] = useState<RecipeFormData>(initialFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
-  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
-  const [quantity, setQuantity] = useState<number>(100);
-  const [showManualForm, setShowManualForm] = useState(false);
-  const [manualEntry, setManualEntry] = useState({
-    name: '',
-    calories: 0,
-    protein: 0,
-    carbs: 0,
-    fat: 0,
-    unit: FoodUnit.GRAM,
-    category: 'autre' as FoodCategoryValue,
-  });
 
   useEffect(() => {
     if (id) {
@@ -59,7 +39,9 @@ export const RecipeForm = () => {
           if (recipe) {
             setFormData({
               name: recipe.name,
+              description: recipe.description,
               ingredients: recipe.ingredients,
+              instructions: recipe.instructions,
               totalCalories: recipe.totalCalories,
               totalProtein: recipe.totalProtein,
               totalCarbs: recipe.totalCarbs,
@@ -81,53 +63,19 @@ export const RecipeForm = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    if (selectedFood) {
-      setQuantity(getDefaultQuantity(selectedFood));
-    }
-  }, [selectedFood]);
-
-  useEffect(() => {
-    if (search === '') {
-      setSelectedFood(null);
-    }
-  }, [search]);
-
-  const handleSearch = async (query: string) => {
-    setSearch(query);
-    const results = await searchFood(query, true);
-    setSearchResults(results);
-  };
-
-  const handleAddIngredient = () => {
-    if (!selectedFood) return;
-    const nutritionValues = calculateNutritionValues(selectedFood, quantity);
-    const newIngredient: Ingredient = {
-      foodId: selectedFood.foodId,
-      label: selectedFood.label,
-      quantity,
-      unit: selectedFood.unit as FoodUnit,
-      calories: Number(nutritionValues.calories.toFixed(1)),
-      protein: Number(nutritionValues.protein.toFixed(1)),
-      carbs: Number(nutritionValues.carbs.toFixed(1)),
-      fat: Number(nutritionValues.fat.toFixed(1)),
-    };
+  const handleAddIngredient = (ingredient: Ingredient) => {
     setFormData(prev => ({
       ...prev,
-      ingredients: [...prev.ingredients, newIngredient],
-      totalCalories: Number((prev.totalCalories + newIngredient.calories).toFixed(1)),
-      totalProtein: Number((prev.totalProtein + newIngredient.protein).toFixed(1)),
-      totalCarbs: Number((prev.totalCarbs + newIngredient.carbs).toFixed(1)),
-      totalFat: Number((prev.totalFat + newIngredient.fat).toFixed(1)),
-      calories: Number((prev.calories + newIngredient.calories).toFixed(1)),
-      protein: Number((prev.protein + newIngredient.protein).toFixed(1)),
-      carbs: Number((prev.carbs + newIngredient.carbs).toFixed(1)),
-      fat: Number((prev.fat + newIngredient.fat).toFixed(1))
+      ingredients: [...prev.ingredients, ingredient],
+      totalCalories: Number((prev.totalCalories + ingredient.calories).toFixed(1)),
+      totalProtein: Number((prev.totalProtein + ingredient.protein).toFixed(1)),
+      totalCarbs: Number((prev.totalCarbs + ingredient.carbs).toFixed(1)),
+      totalFat: Number((prev.totalFat + ingredient.fat).toFixed(1)),
+      calories: Number((prev.calories + ingredient.calories).toFixed(1)),
+      protein: Number((prev.protein + ingredient.protein).toFixed(1)),
+      carbs: Number((prev.carbs + ingredient.carbs).toFixed(1)),
+      fat: Number((prev.fat + ingredient.fat).toFixed(1))
     }));
-    setSelectedFood(null);
-    setQuantity(100);
-    setSearch('');
-    setSearchResults([]);
   };
 
   const handleRemoveIngredient = (index: number) => {
@@ -195,182 +143,35 @@ export const RecipeForm = () => {
         )}
 
         <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={value => setFormData({ ...formData, name: value })}
-                label="Nom de la recette"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Input
-                  id="preparationTime"
-                  type="number"
-                  value={formData.preparationTime}
-                  onChange={value => setFormData({ ...formData, preparationTime: Number(value) })}
-                  min={0}
-                  label="Temps de préparation (min)"
-                />
-              </div>
-              <div>
-                <Input
-                  id="servings"
-                  type="number"
-                  value={formData.servings}
-                  onChange={value => setFormData({ ...formData, servings: Number(value) })}
-                  min={1}
-                  label="Nombre de personnes"
-                />
-              </div>
-            </div>
-          </div>
+          <RecipeBasicInfo
+            name={formData.name}
+            preparationTime={formData.preparationTime}
+            servings={formData.servings}
+            onNameChange={value => setFormData({ ...formData, name: value })}
+            onPreparationTimeChange={value => setFormData({ ...formData, preparationTime: value })}
+            onServingsChange={value => setFormData({ ...formData, servings: value })}
+          />
+
+          <RecipeIngredientsList
+            ingredients={formData.ingredients}
+            onAddIngredient={handleAddIngredient}
+            onRemoveIngredient={handleRemoveIngredient}
+          />
 
           <div className="bg-gray-50 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-[#4D9078] mb-4">Ingrédients</h3>
-            
-            {formData.ingredients.length > 0 && (
-              <div className="mb-4 space-y-2">
-                {formData.ingredients.map((ingredient, index) => (
-                  <div key={index} className="flex items-center justify-between bg-white rounded-lg p-3 border border-gray-100">
-                    <div>
-                      <span className="font-medium text-gray-500">{ingredient.label}</span>
-                      <span className="text-sm text-gray-500 ml-2">
-                        {ingredient.quantity} {ingredient.unit}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm text-gray-500">
-                        {ingredient.calories} cal
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveIngredient(index)}
-                        className="text-[#B4436C] hover:bg-[#ffebeb] p-1 rounded-lg transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {!showManualForm && (
-              <>
-                <SearchBar
-                  value={search}
-                  onChange={handleSearch}
-                />
-
-                <SearchResults
-                  results={searchResults}
-                  selectedFood={selectedFood}
-                  onFoodSelect={(food) => {
-                    if (selectedFood?.foodId === food?.foodId) {
-                      setSelectedFood(null);
-                    } else {
-                      setSelectedFood(food);
-                    }
-                  }}
-                  quantity={quantity}
-                  onQuantityChange={setQuantity}
-                  onAdd={handleAddIngredient}
-                />
-
-                {selectedFood && (
-                  <QuantityForm
-                    selectedFood={{ name: selectedFood.label, unit: selectedFood.unit || FoodUnit.GRAM }}
-                    quantity={quantity}
-                    onQuantityChange={setQuantity}
-                    onAdd={handleAddIngredient}
-                  />
-                )}
-
-                <ActionButton
-                  onClick={() => setShowManualForm(true)}
-                  label="Ajouter un aliment"
-                  icon={IoAddOutline}
-                  fullWidth
-                  className="mb-4 mt-5 cursor-pointer"
-                />
-              </>
-            )}
-
-            {showManualForm && (
-              <ManualFoodForm
-                manualEntry={manualEntry}
-                onManualEntryChange={(field, value) => 
-                  setManualEntry(prev => ({ ...prev, [field]: value }))
-                }
-                onSubmit={() => {
-                  if (!manualEntry.name) return;
-                  const newIngredient: Ingredient = {
-                    foodId: manualEntry.name.toLowerCase().replace(/\s+/g, '_'),
-                    label: manualEntry.name,
-                    quantity: 100,
-                    unit: manualEntry.unit,
-                    calories: Number(manualEntry.calories),
-                    protein: Number(manualEntry.protein),
-                    carbs: Number(manualEntry.carbs),
-                    fat: Number(manualEntry.fat),
-                  };
-                  setFormData(prev => ({
-                    ...prev,
-                    ingredients: [...prev.ingredients, newIngredient],
-                    totalCalories: Number((prev.totalCalories + newIngredient.calories).toFixed(1)),
-                    totalProtein: Number((prev.totalProtein + newIngredient.protein).toFixed(1)),
-                    totalCarbs: Number((prev.totalCarbs + newIngredient.carbs).toFixed(1)),
-                    totalFat: Number((prev.totalFat + newIngredient.fat).toFixed(1)),
-                    calories: Number((prev.calories + newIngredient.calories).toFixed(1)),
-                    protein: Number((prev.protein + newIngredient.protein).toFixed(1)),
-                    carbs: Number((prev.carbs + newIngredient.carbs).toFixed(1)),
-                    fat: Number((prev.fat + newIngredient.fat).toFixed(1))
-                  }));
-                  setShowManualForm(false);
-                  setManualEntry({
-                    name: '',
-                    calories: 0,
-                    protein: 0,
-                    carbs: 0,
-                    fat: 0,
-                    unit: FoodUnit.GRAM,
-                    category: 'autre',
-                  });
-                }}
-                onCancel={() => setShowManualForm(false)}
-                submitLabel="Ajouter à la recette"
-              />
-            )}
+            <h3 className="text-lg font-semibold text-[#4D9078] mb-4">Instructions</h3>
+            <InstructionForm
+              instructions={formData.instructions}
+              onChange={instructions => setFormData({ ...formData, instructions })}
+            />
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-[#4D9078] mb-4">Résumé nutritionnel</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg p-3 border border-gray-100">
-                <div className="text-sm text-gray-500">Calories</div>
-                <div className="text-lg font-semibold text-[#4D9078]">{formData.totalCalories.toFixed(1)} cal</div>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-gray-100">
-                <div className="text-sm text-gray-500">Protéines</div>
-                <div className="text-lg font-semibold text-[#B4436C]">{formData.totalProtein.toFixed(1)}g</div>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-gray-100">
-                <div className="text-sm text-gray-500">Glucides</div>
-                <div className="text-lg font-semibold text-[#F2C14E]">{formData.totalCarbs.toFixed(1)}g</div>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-gray-100">
-                <div className="text-sm text-gray-500">Lipides</div>
-                <div className="text-lg font-semibold text-gray-600">{formData.totalFat.toFixed(1)}g</div>
-              </div>
-            </div>
-          </div>
+          <RecipeNutritionSummary
+            totalCalories={formData.totalCalories}
+            totalProtein={formData.totalProtein}
+            totalCarbs={formData.totalCarbs}
+            totalFat={formData.totalFat}
+          />
         </div>
 
         <div className="flex gap-4 mt-8">

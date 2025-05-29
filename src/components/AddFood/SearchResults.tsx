@@ -49,7 +49,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                             <span className="text-[#F78154]">L {item.nutrients.fat}g</span>
                         </div>
                     </div>
-                    {selectedFood === item && (
+                    {selectedFood?.foodId === item.foodId && (
                         <QuantityForm
                             selectedFood={{ name: item.label, unit: item.unit || 'g' }}
                             quantity={quantity}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import NutritionValue from '../components/NutritionValue';
+import NutritionValue from '../components/nutrition/NutritionValue';
 
 export default function Results() {
   const user = useAuth();

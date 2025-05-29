@@ -19,6 +19,8 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
     const [customGoal, setCustomGoal] = useState(2000);
     const [calculatedGoal, setCalculatedGoal] = useState(2000);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
     const { addEntry } = useWaterHistory();
 
     useEffect(() => {
@@ -48,8 +50,29 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
         fetchWaterPreferences();
     }, [user, weight, activity]);
 
+    const validateInputs = (): boolean => {
+        if (useCustomGoal) {
+            if (isNaN(customGoal) || customGoal <= 0) {
+                setError('Veuillez entrer une valeur valide (supérieure à 0)');
+                return false;
+            }
+            if (customGoal > 10000) {
+                setError('La valeur ne peut pas dépasser 10 000 ml');
+                return false;
+            }
+        }
+        return true;
+    };
+
     const handleSave = async () => {
         if (!user) return;
+        
+        setError(null);
+        setSuccess(false);
+        
+        if (!validateInputs()) {
+            return;
+        }
 
         try {
             const userDocRef = doc(db, 'users', user.uid);
@@ -61,6 +84,10 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
             await updateDoc(userDocRef, {
                 waterPreferences: newPreferences
             });
+            
+            setSuccess(true);
+            // Cacher le message de succès après 3 secondes
+            setTimeout(() => setSuccess(false), 3000);
 
             // Enregistrer le changement dans l'historique
             const waterRef = collection(db, 'water');
@@ -81,6 +108,7 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
             });
         } catch (error) {
             console.error('Error saving water preferences:', error);
+            setError('Une erreur est survenue lors de l\'enregistrement');
         }
     };
 
@@ -94,16 +122,16 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
     }
 
     return (
-        <Card className="p-4">
-            <h3 className="text-lg font-semibold text-[#4D9078] mb-4">Objectif d'eau quotidien</h3>
+        <Card variant="info" className="p-4">
+            <h3 className="text-lg font-semibold text-gray-500 mb-4">Objectif d'eau quotidien</h3>
             
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <span className="text-gray-700">Objectif calculé</span>
                     <span className="font-medium text-gray-900">{calculatedGoal} ml</span>
                 </div>
-
-                <div className="flex items-center space-x-2">
+<div className="flex flex-row space-x-2">
+                <div className="flex items-center space-x-4">
                     <input
                         type="checkbox"
                         id="useCustomGoal"
@@ -111,30 +139,49 @@ const WaterGoalSettings: React.FC<WaterGoalSettingsProps> = ({ weight, activity 
                         onChange={(e) => setUseCustomGoal(e.target.checked)}
                         className="rounded border-gray-300 text-[#4D9078] focus:ring-[#4D9078]"
                     />
-                    <label htmlFor="useCustomGoal" className="text-gray-700">
+                    <label htmlFor="useCustomGoal" className="text-gray-700 text-xs">
                         Utiliser un objectif personnalisé
                     </label>
                 </div>
 
                 {useCustomGoal && (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 ml-auto">
                         <Input
                             id="customGoal"
                             type="number"
-                            value={customGoal}
-                            onChange={value => setCustomGoal(Number(value))}
-                            min={0}
+                            value={customGoal === 0 ? '' : customGoal}
+                            onChange={value => {
+                                setCustomGoal(value === '' ? 0 : Number(value));
+                                setError(null);
+                            }}
+                            min={100}
+                            max={10000}
                             step={100}
                         />
                         <span className="text-gray-700">ml</span>
                     </div>
                 )}
-
+                </div>
+                 {error && (
+                    <div className="text-red-500 text-sm mb-2">
+                        {error}
+                    </div>
+                )}
+                {success && (
+                    <div className="text-green-600 text-sm mb-2">
+                        Préférences enregistrées avec succès !
+                    </div>
+                )}
                 <button
                     onClick={handleSave}
-                    className="w-full px-4 py-2 bg-[#4D9078] text-white rounded-lg hover:bg-[#3D7A63] transition-colors"
+                    disabled={loading || (useCustomGoal && (customGoal === 0 || customGoal === null))}
+                    className={`w-full px-4 py-2 rounded-lg transition-colors ${
+                        loading || (useCustomGoal && (customGoal === 0 || customGoal === null))
+                            ? 'bg-gray-200 text-gray-400 border-2 border-gray-200 cursor-not-allowed'
+                            : 'text-[#4D9078] hover:bg-lime-100 border-2 border-[#4D9078]'
+                    }`}
                 >
-                    Enregistrer
+                    {loading ? 'Enregistrement...' : 'Enregistrer'}
                 </button>
             </div>
         </Card>

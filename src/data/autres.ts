@@ -47,6 +47,7 @@ export const AUTRES: FoodItem[] = [
     // Nouilles & Pâtes
     { foodId: 'AU060', label: 'Spaghetti', nutrients: { calories: 158, protein: 5.8, carbs: 30.9, fat: 0.9 }, unit: 'g', category: 'nouilles' },
     { foodId: 'AU061', label: 'Penne', nutrients: { calories: 157, protein: 5.7, carbs: 30.8, fat: 0.9 }, unit: 'g', category: 'nouilles' },
+    { foodId: 'AU065', label: 'Pates', nutrients: { calories: 157, protein: 5.7, carbs: 30.8, fat: 0.9 }, unit: 'g', category: 'nouilles' },
     { foodId: 'AU062', label: 'Nouilles de riz', nutrients: { calories: 108, protein: 1.6, carbs: 24.9, fat: 0.2 }, unit: 'g', category: 'nouilles' },
     { foodId: 'AU063', label: 'Tagliatelles', nutrients: { calories: 158, protein: 5.8, carbs: 30.9, fat: 0.9 }, unit: 'g', category: 'nouilles' },
     { foodId: 'AU064', label: 'Vermicelles', nutrients: { calories: 150, protein: 5.0, carbs: 32.0, fat: 0.5 }, unit: 'g', category: 'nouilles' },

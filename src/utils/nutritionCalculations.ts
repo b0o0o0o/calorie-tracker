@@ -17,11 +17,12 @@ export const calculateNutritionValues = (
     const isEgg = food.foodId.startsWith('oeuf');
     const ratio = isEgg ? quantity : quantity ;
 
+    // Les valeurs nutritionnelles sont stockées pour 100g, donc on divise par 100
     return {
-        calories: Math.round(food.nutrients.calories * ratio),
-        protein: Math.round(food.nutrients.protein * ratio * 10) / 10,
-        carbs: Math.round(food.nutrients.carbs * ratio * 10) / 10,
-        fat: Math.round(food.nutrients.fat * ratio * 10) / 10
+        calories: Math.round((food.nutrients.calories * ratio) / 100),
+        protein: Math.round((food.nutrients.protein * ratio * 10) / 100) / 10,
+        carbs: Math.round((food.nutrients.carbs * ratio * 10) / 100) / 10,
+        fat: Math.round((food.nutrients.fat * ratio * 10) / 100) / 10
     };
 };
 

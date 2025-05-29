@@ -27,9 +27,29 @@ interface SubmitOptions {
 }
 
 export function useProfileSubmit() {
+    const validateInputs = (data: ProfileData): { isValid: boolean; error?: string } => {
+        if (!data.weight || data.weight <= 0) {
+            return { isValid: false, error: 'Veuillez entrer un poids valide' };
+        }
+        if (!data.height || data.height <= 0) {
+            return { isValid: false, error: 'Veuillez entrer une taille valide' };
+        }
+        if (!data.age || data.age <= 0) {
+            return { isValid: false, error: 'Veuillez entrer un âge valide' };
+        }
+        return { isValid: true };
+    };
+
     const handleSubmit = async (data: ProfileData, options: SubmitOptions = {}) => {
         const { onSuccess, onError } = options;
         const { user, weight, height, age, sex, activity, goal } = data;
+
+        // Validation des entrées
+        const validation = validateInputs(data);
+        if (!validation.isValid) {
+            onError?.(new Error(validation.error || 'Données invalides'));
+            return;
+        }
 
         try {
             // Calculs des objectifs

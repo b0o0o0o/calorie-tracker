@@ -36,8 +36,8 @@ const ManualFoodForm: React.FC<ManualFoodFormProps> = ({
                     <Input
                         id="calories"
                         type="number"
-                        value={manualEntry.calories}
-                        onChange={value => onManualEntryChange('calories', Number(value))}
+                        value={manualEntry.calories === 0 ? '' : manualEntry.calories}
+                        onChange={value => onManualEntryChange('calories', value === '' ? 0 : Number(value))}
                         placeholder="0"
                         label="Calories"
                     />
@@ -46,8 +46,8 @@ const ManualFoodForm: React.FC<ManualFoodFormProps> = ({
                     <Input
                         id="protein"
                         type="number"
-                        value={manualEntry.protein}
-                        onChange={value => onManualEntryChange('protein', Number(value))}
+                        value={manualEntry.protein === 0 ? '' : manualEntry.protein}
+                        onChange={value => onManualEntryChange('protein', value === '' ? 0 : Number(value))}
                         placeholder="0"
                         label="Protéines (g)"
                     />
@@ -58,8 +58,8 @@ const ManualFoodForm: React.FC<ManualFoodFormProps> = ({
                     <Input
                         id="carbs"
                         type="number"
-                        value={manualEntry.carbs}
-                        onChange={value => onManualEntryChange('carbs', Number(value))}
+                        value={manualEntry.carbs === 0 ? '' : manualEntry.carbs}
+                        onChange={value => onManualEntryChange('carbs', value === '' ? 0 : Number(value))}
                         placeholder="0"
                         label="Glucides (g)"
                     />
@@ -68,8 +68,8 @@ const ManualFoodForm: React.FC<ManualFoodFormProps> = ({
                     <Input
                         id="fat"
                         type="number"
-                        value={manualEntry.fat}
-                        onChange={value => onManualEntryChange('fat', Number(value))}
+                        value={manualEntry.fat === 0 ? '' : manualEntry.fat}
+                        onChange={value => onManualEntryChange('fat', value === '' ? 0 : Number(value))}
                         placeholder="0"
                         label="Lipides (g)"
                     />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProfileFields } from '../../hooks/auth/useProfileFields';
+import { useNavigate } from 'react-router-dom';
 import { useProfileSubmit } from '../../hooks/auth/useProfileSubmit';
 import { FoodUnit, Sex, ActivityLevel, GoalType } from '../../types/common';
 import type { User } from 'firebase/auth';
@@ -13,6 +14,7 @@ interface EditProfileFormProps {
 }
 
 const EditProfileForm: React.FC<EditProfileFormProps> = ({ user, onError }) => {
+    const navigate = useNavigate();
     const [weight, setWeight] = useState<number>(70);
     const [height, setHeight] = useState<number>(170);
     const [age, setAge] = useState<number>(30);
@@ -20,6 +22,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ user, onError }) => {
     const [activity, setActivity] = useState<ActivityLevel>(ActivityLevel.SEDENTARY);
     const [goal, setGoal] = useState<GoalType>(GoalType.MAINTAIN);
     const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { inputFields, selectFields } = useProfileFields(
         weight, setWeight,
@@ -35,21 +38,33 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ user, onError }) => {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
+        setIsSubmitting(true);
 
         try {
             await handleSubmit(
                 { user, weight, height, age, sex, activity, goal },
                 {
-                    onSuccess: () => {
-                        // Mettre à jour les préférences d'unité si nécessaire
-                        const userDoc = doc(db, 'users', user.uid);
-                        updateDoc(userDoc, {
-                            unit: FoodUnit.GRAM
-                        });
+                    onSuccess: async () => {
+                        try {
+                            // Mettre à jour les préférences d'unité si nécessaire
+                            const userDoc = doc(db, 'users', user.uid);
+                            await updateDoc(userDoc, {
+                                unit: FoodUnit.GRAM
+                            });
+                            
+                            // Rediriger vers la page des paramètres après un court délai
+                            setTimeout(() => {
+                                navigate('/settings');
+                            }, 1000);
+                        } catch (err) {
+                            console.error('Error updating user preferences:', err);
+                            setError('Erreur lors de la mise à jour des préférences');
+                        }
                     },
                     onError: (err: Error) => {
                         setError(err.message);
                         onError(err.message);
+                        setIsSubmitting(false);
                     }
                 }
             );
@@ -57,6 +72,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ user, onError }) => {
             const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
             setError(errorMessage);
             onError(errorMessage);
+            setIsSubmitting(false);
         }
     };
 
@@ -71,6 +87,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ user, onError }) => {
                     selectFields={selectFields}
                     error={error}
                     onSubmit={onSubmit}
+                    isSubmitting={isSubmitting}
                 />
             </div>
         </div>
