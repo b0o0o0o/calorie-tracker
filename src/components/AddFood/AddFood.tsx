@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { FoodItem } from '../../data/baseIngredients';
 import type { SearchableRecipe } from '../../types/Recipe';
