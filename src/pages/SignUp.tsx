@@ -3,8 +3,11 @@ import AuthForm from '../components/Auth/AuthForm';
 import AuthInput from '../components/Auth/AuthInput';
 import AuthButton from '../components/Auth/AuthButton';
 import { useAuthForm } from '../hooks/auth';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
+    const navigate = useNavigate();
+    
     const {
         email,
         setEmail,
@@ -12,7 +15,10 @@ export default function SignUp() {
         setPassword,
         error,
         handleSubmit,
-    } = useAuthForm({ mode: 'signup' });
+    } = useAuthForm({ 
+        mode: 'signup',
+        onSuccess: () => navigate('/profile')
+    });
 
     return (
         <AuthForm

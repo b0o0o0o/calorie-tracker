@@ -1,5 +1,7 @@
 // src/App.tsx
 import React, { useState, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
     BrowserRouter,
     Routes,
@@ -132,7 +134,20 @@ export default function App() {
                                 </Layout>
                             }
                         />
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="light"
+                    />
                 </DateProvider>
             </AuthProvider>
         </BrowserRouter>

@@ -40,6 +40,9 @@ const Input: React.FC<InputProps> = ({
         focus:outline-none focus:ring-2 focus:ring-[#4D9078]
         transition-all duration-200
         text-base
+        appearance-none
+        bg-white
+        h-12
     `;
 
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -75,19 +78,26 @@ const Input: React.FC<InputProps> = ({
             )}
 
             {options ? (
-                <select
-                    id={id}
-                    value={value}
-                    onChange={e => onChange(e.target.value)}
-                    className={baseClasses}
-                    required={required}
-                >
+                <div className="relative">
+                    <select
+                        id={id}
+                        value={value}
+                        onChange={e => onChange(e.target.value)}
+                        className={`${baseClasses} pr-10`}
+                        required={required}
+                    >
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
+                    </div>
                     {options.map(opt => (
                         <option key={opt.value} value={opt.value}>
                             {opt.label}
                         </option>
                     ))}
-                </select>
+                    </select>
+                </div>
             ) : (
                 <input
                     id={id}

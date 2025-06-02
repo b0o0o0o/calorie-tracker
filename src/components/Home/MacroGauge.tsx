@@ -1,6 +1,8 @@
 import React from 'react';
 import { MACRO_COLORS, BACKGROUND_COLORS } from '../../config/theme';
 
+const OVER_GOAL_COLOR = '#f04f4f'; // Rouge personnalisé pour les valeurs dépassées
+
 interface MacroGaugeProps {
     value: number;
     goal: number;
@@ -18,8 +20,10 @@ const MacroGauge: React.FC<MacroGaugeProps> = ({
 }) => {
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
-    const progress = Math.min(1, value / goal);
-    const strokeDashoffset = circumference - circumference * progress;
+    const progress = value / goal;
+    const isOverGoal = progress > 1;
+    const displayProgress = Math.min(1, progress);
+    const strokeDashoffset = circumference - circumference * displayProgress;
 
     return (
         <div className="flex-1 bg-white rounded-2xl p-2 flex flex-col items-center shadow-md border border-gray-100">
@@ -38,7 +42,7 @@ const MacroGauge: React.FC<MacroGaugeProps> = ({
                         cy={size / 2}
                         r={radius}
                         fill="none"
-                        stroke={MACRO_COLORS[label.toLowerCase() as keyof typeof MACRO_COLORS]}
+                        stroke={isOverGoal ? OVER_GOAL_COLOR : MACRO_COLORS[label.toLowerCase() as keyof typeof MACRO_COLORS]}
                         strokeWidth={strokeWidth - 1}
                         strokeDasharray={circumference}
                         strokeDashoffset={strokeDashoffset}
@@ -48,13 +52,17 @@ const MacroGauge: React.FC<MacroGaugeProps> = ({
                     />
                 </svg>
                 <span 
-                    className="absolute inset-0 flex items-center justify-center font-bold" 
+                    className="absolute inset-0 flex flex-col items-center justify-center font-bold" 
                     style={{
-                        fontSize: '0.7rem',
-                        color: MACRO_COLORS[label.toLowerCase() as keyof typeof MACRO_COLORS]
+                        fontSize: '0.65rem',
+                        textAlign: 'center',
+                        color: isOverGoal ? OVER_GOAL_COLOR : MACRO_COLORS[label.toLowerCase() as keyof typeof MACRO_COLORS],
+                        lineHeight: '1.1',
+                        padding: '0 2px'
                     }}
                 >
-                    {value.toFixed(1)} g
+                    <span>{`${value.toFixed(0)}g`}</span>
+                    <span>/ {goal}g</span>
                 </span>
             </div>
             <div 

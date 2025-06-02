@@ -3,53 +3,65 @@ import { getCustomIngredients } from '../data/customIngredients';
 import type { FoodItem } from '../data/baseIngredients';
 import type { SearchableRecipe } from '../types/Recipe';
 import { recipeService } from '../services/recipeService';
+import { foodService } from '../services/foodService';
 import { FoodUnit } from '../types/common';
+
+// Fonction utilitaire pour normaliser le texte de recherche
+function normalize(str: string) {
+    return str.toLowerCase().replace(/œ/g, 'oe');
+}
+
+// Algorithme de scoring pour classer les résultats
+function getScore(label: string, query: string) {
+    const l = normalize(label);
+    const q = normalize(query);
+    if (l === q) return 300;
+    if (l.startsWith(q)) return 200;
+    const index = l.indexOf(q);
+    if (index > 0) return 100 - index; // plus c'est loin, moins c'est pertinent
+    return 0;
+}
 
 export const searchFood = async (query: string, excludeRecipes: boolean = false): Promise<(FoodItem | SearchableRecipe)[]> => {
     if (!query.trim()) {
         return [];
     }
-    const customs = getCustomIngredients();
-    const allIngredients = [...customs, ...BASE_INGREDIENTS];
-    const lowerQuery = query.toLowerCase();
+
+    // Récupérer les aliments de base et personnalisés en parallèle
+    const [customs, customFoods] = await Promise.all([
+        getCustomIngredients(),
+        foodService.searchCustomFoods(query)
+    ]);
+    
+    const allIngredients = [...customs, ...BASE_INGREDIENTS, ...customFoods];
 
     // Recherche des recettes seulement si on ne les exclut pas
     let searchableRecipes: SearchableRecipe[] = [];
     if (!excludeRecipes) {
-        const recipes = await recipeService.getAllRecipes();
-        searchableRecipes = recipes.map(recipe => ({
-            foodId: `recipe_${recipe.id}`,
-            label: recipe.name,
-            nutrients: {
-                calories: recipe.calories,
-                protein: recipe.protein,
-                carbs: recipe.carbs,
-                fat: recipe.fat
-            },
-            servingSize: 1,
-            unit: FoodUnit.GRAM,
-            category: 'recipe',
-            recipeId: recipe.id,
-            servings: recipe.servings
-        }));
+        try {
+            const recipes = await recipeService.getAllRecipes();
+            searchableRecipes = recipes.map(recipe => ({
+                foodId: `recipe_${recipe.id}`,
+                label: recipe.name,
+                nutrients: {
+                    calories: recipe.calories,
+                    protein: recipe.protein,
+                    carbs: recipe.carbs,
+                    fat: recipe.fat
+                },
+                servingSize: 1,
+                unit: FoodUnit.GRAM,
+                category: 'recipe',
+                recipeId: recipe.id,
+                servings: recipe.servings
+            }));
+        } catch (error) {
+            console.error('Erreur lors du chargement des recettes:', error);
+        }
     }
 
-    // Combiner et trier les résultats
+    // Combiner tous les résultats
     const allResults = [...allIngredients, ...searchableRecipes];
-    // Fonction de normalisation pour gérer 'oe' et 'œ'
-    function normalize(str: string) {
-        return str.toLowerCase().replace(/œ/g, 'oe');
-    }
-    // Algorithme de scoring avancé
-    function getScore(label: string, query: string) {
-        const l = normalize(label);
-        const q = normalize(query);
-        if (l === q) return 300;
-        if (l.startsWith(q)) return 200;
-        const index = l.indexOf(q);
-        if (index > 0) return 100 - index; // plus c'est loin, moins c'est pertinent
-        return 0;
-    }
     const filtered = allResults.filter(item => normalize(item.label).includes(normalize(query)));
     const scored = filtered.map(item => ({ item, score: getScore(item.label, query) }));
     scored.sort((a, b) => b.score - a.score || a.item.label.localeCompare(b.item.label));

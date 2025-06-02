@@ -46,7 +46,7 @@ export default function Home() {
     const macroGoals = calculateMacroGoals(caloricGoal);
 
   return (
-      <div className="flex flex-col items-center w-full min-h-screen">
+      <div className="flex flex-col items-center w-full min-h-screen ">
             <h1 className="text-xl sm:text-2xl tracking-widest text-[#4D9078] text-center my-8 font-bold opacity-90 drop-shadow" style={{letterSpacing:'0.15em'}}>
                 CALORIES COUNTER
             </h1>
@@ -57,12 +57,25 @@ export default function Home() {
                 <div className="flex flex-col items-center w-full gap-10">
                   {/* Cercle principal */}
                         <ProgressCircle value={totals.calories} max={caloricGoal}>
-                            <div className="text-3xl sm:text-5xl font-extrabold text-[#B4436C] mb-0.5 tracking-widest drop-shadow-lg">
-                                {percent}%
-                    </div>
-                            <div className="text-base sm:text-xl font-bold" style={{color: PALETTE.yellow}}>
-                                {calLeft > 0 ? `${calLeft} cal left` : `${-calLeft} cal over`}
-                  </div>
+                            {(viewMode) => viewMode === 'percentage' ? (
+                                <>
+                                    <div className="text-3xl sm:text-5xl font-extrabold text-[#B4436C] mb-0.5 tracking-widest drop-shadow-lg">
+                                        {percent}%
+                                    </div>
+                                    <div className="text-base sm:text-xl font-bold" style={{color: PALETTE.yellow}}>
+                                        {calLeft > 0 ? `${calLeft} cal left` : `${-calLeft} cal over`}
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="text-3xl sm:text-5xl font-extrabold text-[#B4436C] mb-0.5 tracking-widest drop-shadow-lg">
+                                        {Math.round(totals.calories)}
+                                    </div>
+                                    <div className="text-base sm:text-xl font-bold" style={{color: PALETTE.yellow}}>
+                                        / {caloricGoal} cal
+                                    </div>
+                                </>
+                            )}
                         </ProgressCircle>
 
                   {/* Jauges macros */}

@@ -8,9 +8,9 @@ const navItems = [
     { to: '/', label: 'Accueil', icon: FaHome },
     { to: '/diary', label: 'Journal', icon: FaBook },
     { to: '/recipes', label: 'Recettes', icon: FaUtensils },
-    { to: '/add-food', label: '+ Aliment', icon: FaPlus, green: true },
     { to: '/stats', label: 'Stats', icon: FaChartBar },
     { to: '/settings', label: 'Réglages', icon: FaCog },
+    { to: '/add-food', label: '+ Aliment', icon: FaPlus, green: true },
 ];
 
 function useIsDesktop() {
