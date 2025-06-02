@@ -1,5 +1,5 @@
 // src/pages/AddFood.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDate } from '../contexts/DateContext';
 import type { MealType } from '../config/theme';
